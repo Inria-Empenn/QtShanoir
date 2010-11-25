@@ -1,0 +1,1 @@
+../QtShanoirDownload/qt_shanoir.h
