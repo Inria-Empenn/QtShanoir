@@ -1,1 +1,0 @@
-../QtShanoirDownload/main.cpp

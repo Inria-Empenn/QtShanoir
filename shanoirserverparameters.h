@@ -1,1 +1,0 @@
-../QtShanoirDownload/shanoirserverparameters.h
