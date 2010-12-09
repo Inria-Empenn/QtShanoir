@@ -17,18 +17,17 @@ win32 {
 
 
 INCLUDEPATH += .
-INCLUDEPATH +=
 DEFINES += 
 
 CONFIG += x86_64 \
     Gui \
-    xml
+    Xml
+
+QT += xml
 
 win32:CONFIG += release
 
 include (qtsoap/src/qtsoap.pri)
-
-LIBS += -L$$VISTAL_LIB_PATH
 
 # Input
 HEADERS += qt_shanoir.h \
@@ -41,11 +40,5 @@ SOURCES += main.cpp \
     qt_shanoir.cpp \
     shanoirserverparameters.cpp
 
-QMAKE_INFO_PLIST = Info.plist
-OTHER_FILES += Info.plist \
-    css/MRView.css
 
-ICON = IconeQuickMRView.icns
 
-RESOURCES += css.qrc \
-    icones.qrc

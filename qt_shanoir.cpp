@@ -240,12 +240,12 @@ void QtShanoir::setLogin(QString key, QString ws, QString impl)
     //    qDebug() << ws;
     uname->WsImpl = impl;
     uname->WsMethod="setUsername";
-    uname->WsMethodarg.push_back(qMakePair(QString( ws == "Downloader" ? "arg0" : "username"), user));
+    uname->WsMethodarg.push_back(qMakePair(QString("username"), user));
 
     WsQuery* pass = new WsQuery(ws);
     pass->WsImpl = impl;
     pass->WsMethod="setPassword";
-    pass->WsMethodarg.push_back(qMakePair(QString(ws == "Downloader" ? "arg0" : "dummy"), password));
+    pass->WsMethodarg.push_back(qMakePair(QString("dummy"), password));
 
     perWsQuery[key].push_back(uname);
     perWsQuery[key].push_back(pass);
@@ -589,7 +589,7 @@ void QtShanoir::setDownload(QString key, QString id)
 
     WsQuery* setId = new WsQuery(webs, impl);
     setId->WsMethod = "setDatasetId";
-    setId->WsMethodarg.push_back(qMakePair(QString("arg0"),QString("%1").arg(id)));
+    setId->WsMethodarg.push_back(qMakePair(QString("datasetId"),QString("%1").arg(id)));
 
     WsQuery* download = new WsQuery(webs, impl);
     download->WsMethod="download";
