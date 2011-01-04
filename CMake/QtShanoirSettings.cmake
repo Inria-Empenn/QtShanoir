@@ -1,0 +1,1 @@
+# QtShanoirSettings.cmake

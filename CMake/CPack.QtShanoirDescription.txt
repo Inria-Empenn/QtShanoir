@@ -1,0 +1,6 @@
+DESCRIPTION
+===========
+
+Welcome in the installation process of QtShanoir.
+
+Enjoy QtShanoir !

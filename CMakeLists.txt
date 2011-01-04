@@ -82,16 +82,3 @@ configure_file(${QTSHANOIR_SOURCE_DIR}/CMake/UseQtShanoir.cmake.in
               ${QTSHANOIR_BINARY_DIR}/UseQtShanoir.cmake)
 configure_file(${QTSHANOIR_SOURCE_DIR}/CMake/QtShanoirConfig.cmake.in
               ${QTSHANOIR_BINARY_DIR}/QtShanoirConfig.cmake)
-
-# Save the compiler settings so another project can import them.
-# include(${CMAKE_ROOT}/Modules/CMakeExportBuildSettings.cmake)
-# cmake_export_build_settings(${QTSHANOIR_BINARY_DIR}/QtShanoirBuildSettings.cmake)
-# export_library_dependencies(${QTSHANOIR_BINARY_DIR}/QtShanoirLibraryDepends.cmake)
-# 
-# # Create the QtShanoirConfig.cmake file containing the QtShanoir configuration used with make install and CPack.
-# include (${QTSHANOIR_SOURCE_DIR}/CMake/QtShanoirGenerateInstall.cmake)
-# if ( NOT BUILD_PACKAGE OR BUILD_PACKAGE_BINARY OR BUILD_PACKAGE_SDK)
-#   install_targets(${INSTALL_LIB} qtshanoir)
-# endif ( NOT BUILD_PACKAGE OR BUILD_PACKAGE_BINARY OR BUILD_PACKAGE_SDK)
-
-
