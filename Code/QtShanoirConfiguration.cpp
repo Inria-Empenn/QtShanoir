@@ -1,5 +1,5 @@
-#include "shanoirserverparameters.h"
-#include "ui_shanoirserverparameters.h"
+#include "QtShanoirConfiguration.h"
+#include "ui_qtshanoirconfiguration.h"
 
 ShanoirServerParameters::ShanoirServerParameters(QWidget *parent) :
         QDialog(parent),

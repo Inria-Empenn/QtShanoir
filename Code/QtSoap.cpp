@@ -44,7 +44,7 @@
 **
 ****************************************************************************/
 
-#include "qtsoap.h"
+#include "QtSoap.h"
 #include <QtCore/QSet>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>

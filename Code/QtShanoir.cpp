@@ -1,5 +1,5 @@
-#include "qt_shanoir.h"
-#include "ui_qt_shanoir.h"
+#include "QtShanoir.h"
+#include "ui_qtshanoir.h"
 
 #include <iostream>
 
@@ -14,7 +14,7 @@
 #include <QNetworkReply>
 #include <QSslConfiguration>
  #include <QMenu>
-#include "shanoirserverparameters.h"
+#include "QtShanoirConfiguration.h"
 
 QtShanoir::QtShanoir(QWidget *parent) :
         QDialog(parent),

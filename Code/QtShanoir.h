@@ -2,7 +2,7 @@
 #define QT_SHANOIR_H
 
 #include <QDialog>
-#include <qtsoap.h>
+#include <QtSoap.h>
 #include <QNetworkRequest>
 
 namespace Ui {
