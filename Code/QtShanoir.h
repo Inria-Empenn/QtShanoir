@@ -9,7 +9,6 @@ namespace Ui {
     class QtShanoir;
 }
 
-
 struct WsQuery: public QObject
 {
     Q_OBJECT
@@ -30,12 +29,15 @@ signals:
     void response(QString string) const;
 };
 
+
+
 class QTreeWidgetItem;
 class QListWidgetItem;
 class QNetworkRequest;
 class QIcon;
 
-class QtShanoir : public QDialog {
+//class QtShanoir : public QDialog {
+class QtShanoir : public QWidget {
     Q_OBJECT
 public:
     QtShanoir(QWidget *parent = 0);

@@ -3,7 +3,7 @@
 
 ShanoirServerParameters::ShanoirServerParameters(QWidget *parent) :
         QDialog(parent),
-        ui(new Ui::ShanoirServerParameters)
+        ui(new Ui::QtShanoirConfig)
 {
     ui->setupUi(this);
 }

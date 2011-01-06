@@ -4,7 +4,7 @@
 #include <QDialog>
 
 namespace Ui {
-    class ShanoirServerParameters;
+    class QtShanoirConfig;
 }
 
 class ShanoirServerParameters : public QDialog {
@@ -19,7 +19,7 @@ protected:
     void changeEvent(QEvent *e);
 
 private:
-    Ui::ShanoirServerParameters *ui;
+    Ui::QtShanoirConfig *ui;
 };
 
 #endif // SHANOIRSERVERPARAMETERS_H

@@ -43,12 +43,20 @@ if(QT4_FOUND)
 endif(QT4_FOUND)
 
 set(SAMPLE_SRCS
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettingsWidget.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirController.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirWsQuery.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirTreeWidget.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoir.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtSoap.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirConfiguration.cpp
 )
 
 set(SAMPLE_HDRS
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettingsWidget.h
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirController.h
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirWsQuery.h
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirTreeWidget.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoir.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtSoap.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirConfiguration.h
@@ -57,11 +65,14 @@ set(SAMPLE_HDRS
 set(SAMPLE_UIS
   ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoir.ui
   ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirconfiguration.ui
+  ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirsettingswidget.ui
+  ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirtreewidget.ui
 )
 
 set(SAMPLE_MOC_HDRS ${SAMPLE_HDRS})
 
 set(QTSHANOIR_SRCS
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettings.cpp
 )
 
 qt4_wrap_ui( SAMPLE_UI_HDRS ${SAMPLE_UIS})

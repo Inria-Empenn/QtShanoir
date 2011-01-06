@@ -1,1 +1,40 @@
 # QtShanoirConfig.cmake.in
+# This file saves all the configuration of QTSHANOIR compilation
+
+#path to the source of QTSHANOIR
+SET(QTSHANOIR_SOURCE_DIR "@QTSHANOIR_SOURCE_DIR@/Code")
+
+#path to cmake files of Vistal
+SET(QTSHANOIR_CMAKE_DIR "@QTSHANOIR_CMAKE_DIR@")
+
+#path to binary dir of QTSHANOIR
+SET(QTSHANOIR_BINARY_DIR "@QTSHANOIR_BIN_DIR@")
+
+# all include dirs pour QTSHANOIR
+SET(QTSHANOIR_INCLUDE_DIRS  "@QTSHANOIR_INCLUDE_DIRS@")
+
+# all library dirs pour QTSHANOIR
+SET(QTSHANOIR_LIBRARY_DIRS  "@QTSHANOIR_LIBRARY_DIRS@")
+
+# The C and C++ flags added by QtShanoir to the cmake-configured flags.
+SET(QTSHANOIR_CMAKE_MODULE_PATH "@QTSHANOIR_CMAKE_MODULE_PATH@")
+
+# The QtShanoir version number
+SET(QTSHANOIR_VERSION_MAJOR "@QTSHANOIR_VERSION_MAJOR@")
+SET(QTSHANOIR_VERSION_MINOR "@QTSHANOIR_VERSION_MINOR@")
+SET(QTSHANOIR_VERSION_PATCH "@QTSHANOIR_VERSION_PATCH@")
+
+# The location of the UseQtShanoir.cmake file.
+SET(QTSHANOIR_USE_FILE "@QTSHANOIR_USE_FILE@")
+
+# The build settings file.
+SET(QTSHANOIR_BUILD_SETTINGS_FILE "@QTSHANOIR_BUILD_SETTINGS_FILE@")
+
+# The library depends file.
+SET(QTSHANOIR_LIBRARY_DEPENDS_FILE "@QTSHANOIR_LIBRARY_DEPENDS_FILE@")
+
+# Whether QtShanoir was built with shared libraries.
+SET(QTSHANOIR_BUILD_SHARED "@BUILD_SHARED_LIBS@")
+
+# all QTSHANOIR libs
+SET(QTSHANOIR_LIBS "@QTSHANOIR_LIBS@")

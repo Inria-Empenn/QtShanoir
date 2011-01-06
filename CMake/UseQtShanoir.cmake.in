@@ -1,1 +1,27 @@
 # UseQtShanoir.cmake.in
+
+#
+# This file sets up include directories, link directories, and
+# compiler settings for a project to use Vistal.  It should not be
+# included directly, but rather through the QTSHANOIR_USE_FILE setting
+# obtained from QtShanoirConfig.cmake.
+#
+
+IF(QTSHANOIR_BUILD_SETTINGS_FILE)
+  INCLUDE("${CMAKE_ROOT}/Modules/CMakeImportBuildSettings.cmake")
+  CMAKE_IMPORT_BUILD_SETTINGS(${QTSHANOIR_BUILD_SETTINGS_FILE})
+ENDIF(QTSHANOIR_BUILD_SETTINGS_FILE)
+
+# Add include directories needed to use Vistal.
+INCLUDE_DIRECTORIES(${QTSHANOIR_INCLUDE_DIRS})
+
+# Add link directories needed to use Vistal.
+LINK_DIRECTORIES(${QTSHANOIR_LIBRARY_DIRS})
+SET(CMAKE_MODULE_PATH "${QTSHANOIR_CMAKE_MODULE_PATH}")
+
+find_package( Qt4 REQUIRED  COMPONENTS QtCore QtGui QtNetwork QtXml)
+if(QT4_FOUND)
+  include(${QT_USE_FILE})
+  set(QT_USE_QTNETWORK true)
+  set(QT_USE_QTXML true)
+endif(QT4_FOUND)
