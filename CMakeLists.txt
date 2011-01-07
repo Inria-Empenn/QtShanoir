@@ -10,7 +10,7 @@ add_definitions(-g -Wno-deprecated)
 
 # option(BUILD_DOCUMENTATION "Build QtShanoir Documentation" OFF)
 option(BUILD_PACKAGE "Configure QtShanoir packaging" OFF)
-
+option(BUILD_DEMO "Build example application" OFF)
 option(BUILD_SHARED_LIBS "Build QtShanoir with shared libraries." ON)
 
 if (BUILD_PACKAGE)
@@ -47,9 +47,8 @@ set(SAMPLE_SRCS
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirController.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirWsQuery.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirTreeWidget.cpp
-  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoir.cpp
+#  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoir.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtSoap.cpp
-  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirConfiguration.cpp
 )
 
 set(SAMPLE_HDRS
@@ -57,9 +56,8 @@ set(SAMPLE_HDRS
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirController.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirWsQuery.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirTreeWidget.h
-  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoir.h
+#  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoir.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtSoap.h
-  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirConfiguration.h
 )
 
 set(SAMPLE_UIS
@@ -81,7 +79,7 @@ qt4_wrap_cpp( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS})
 
 include_directories(${CMAKE_BINARY_DIR} ${QTSHANOIR_SOURCE_DIR}/Code/ ${QTSHANOIR_BINARY_DIR})
 add_library( qtshanoir ${QTSHANOIR_SRCS} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_UI_HDRS})
-target_link_libraries( qtshanoir ${QT_LIBRARIES} ${QT_QTNETWORK_LIBRARY})
+target_link_libraries( qtshanoir ${QT_LIBRARIES} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY})
 
 
 # External inclusion stuff :
@@ -93,3 +91,7 @@ configure_file(${QTSHANOIR_SOURCE_DIR}/CMake/UseQtShanoir.cmake.in
               ${QTSHANOIR_BINARY_DIR}/UseQtShanoir.cmake)
 configure_file(${QTSHANOIR_SOURCE_DIR}/CMake/QtShanoirConfig.cmake.in
               ${QTSHANOIR_BINARY_DIR}/QtShanoirConfig.cmake)
+              
+if(BUILD_DEMO)
+subdirs(Demo)
+endif(BUILD_DEMO)

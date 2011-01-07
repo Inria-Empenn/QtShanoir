@@ -36,8 +36,7 @@ class QListWidgetItem;
 class QNetworkRequest;
 class QIcon;
 
-//class QtShanoir : public QDialog {
-class QtShanoir : public QWidget {
+class QtShanoir : public QObject {
     Q_OBJECT
 public:
     QtShanoir(QWidget *parent = 0);

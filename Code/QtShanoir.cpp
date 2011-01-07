@@ -13,7 +13,7 @@
 #include <QMessageBox>
 #include <QNetworkReply>
 #include <QSslConfiguration>
- #include <QMenu>
+#include <QMenu>
 #include "QtShanoirConfiguration.h"
 
 QtShanoir::QtShanoir(QWidget *parent) :
@@ -292,13 +292,10 @@ void QtShanoir::parseStudy(QString xmlserial)
     // Sub root the document to remove the SOAP Enveloppe
 
     QTreeWidgetItem *root =  this->ui->treeWidget->invisibleRootItem();
-
     QTreeWidgetItem* shanoir = new QTreeWidgetItem();
     root->addChild(shanoir);
 
-
 //    shanoir
-
     shanoir->setText(0, QString("Shanoir (%1)").arg(host));
     shanoir->setToolTip(0, QString("User:%1 (port: %2)").arg(user).arg(port));
     shanoir->setExpanded(true);
@@ -351,10 +348,10 @@ void QtShanoir::parseStudy(QString xmlserial)
 
 
 
-void WsQuery::answer(QString str) const
-{
-    emit response(str);
-}
+//void WsQuery::answer(QString str) const
+//{
+//    emit response(str);
+//}
 
 
 void QtShanoir::setMrExamQuery(QString key, QString id)

@@ -9,9 +9,10 @@
 #define QTSHANOIRCONTROLLER_H_
 
 #include <QtGui>
-#include <QNetworkRequest>
+#include <QtSoap.h>
 
 class QNetworkRequest;
+class QtShanoirTreeWidget;
 class QtShanoirControllerPrivate;
 
 class QtShanoirController : public QObject
@@ -22,6 +23,8 @@ class QtShanoirController : public QObject
 
         void
         doQuery(QString);
+        void
+        attachTreeWidget(QtShanoirTreeWidget * tree);
 
     protected:
         void
@@ -41,14 +44,17 @@ class QtShanoirController : public QObject
         void getResponse();
         void sslErrors ( const QList<QSslError> & errors );
         void sendMessage();
-        void parseStudy(QString xmlserial);
-        void parseMrExamination(QString xmlserial);
-        void parseAcquisition(QString xmlserial);
         void download(QString xmlserial);
         void getError(QString);
-        void setConfiguration();
-        void downloadProgress ( qint64 bytesReceived, qint64 bytesTotal );
-        void uploadProgress ( qint64 bytesSent, qint64 bytesTotal );
+//        void downloadProgress ( qint64 bytesReceived, qint64 bytesTotal );
+//        void uploadProgress ( qint64 bytesSent, qint64 bytesTotal );
+        void
+        mrExamQuery(QString);
+        void
+        datasetQuery(QString, QString);
+        void
+        currentId(int);
+
 
     private:
         QtShanoirControllerPrivate * d;

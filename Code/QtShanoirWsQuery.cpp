@@ -8,7 +8,7 @@
 #include <QtShanoirWsQuery.h>
 
 void
-QtShanoirWsQuery::answer(QString str)
+QtShanoirWsQuery::answer(QString str) const
 {
     emit response(str);
 }
