@@ -2,7 +2,7 @@
 # This file saves all the configuration of QTSHANOIR compilation
 
 #path to the source of QTSHANOIR
-SET(QTSHANOIR_SOURCE_DIR "@QTSHANOIR_SOURCE_DIR@/Code")
+SET(QTSHANOIR_SOURCE_DIR "@QTSHANOIR_SOURCE_DIR@")
 
 #path to cmake files of Vistal
 SET(QTSHANOIR_CMAKE_DIR "@QTSHANOIR_CMAKE_DIR@")
