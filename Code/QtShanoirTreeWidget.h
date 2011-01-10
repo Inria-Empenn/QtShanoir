@@ -29,6 +29,8 @@ class QtShanoirTreeWidget : public QWidget, public Ui::QtShanoirTree
         id(int);
         void
         selected(QList<int>);
+        void
+        filename(QString);
 
     public slots:
         void

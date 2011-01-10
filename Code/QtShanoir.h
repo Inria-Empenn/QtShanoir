@@ -42,6 +42,7 @@ class QtShanoir : public QObject
         void setLogin(QString key, QString ws, QString impl = "http://finder.impl.webservices.shanoir.org");
         void setMrExamQuery(QString key, QString id);
         void setDownload(QString key, QString id);
+        void setFilename(QString key, QString id);
         void setDatasetQuery(QString key, QString id, QString exId);
     signals:
         void nextMessage();
@@ -51,8 +52,10 @@ class QtShanoir : public QObject
         void sslErrors ( const QList<QSslError> & errors );
         void sendMessage();
         void download(QString xmlserial);
+        void getFileName(QString xmlserial);
         void getError(QString);
         void updateSelected(QList<int>);
+        void setDownloadFilename(QString filename);
 //        void downloadProgress ( qint64 bytesReceived, qint64 bytesTotal );
 //        void uploadProgress ( qint64 bytesSent, qint64 bytesTotal );
         void

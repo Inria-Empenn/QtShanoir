@@ -94,8 +94,9 @@ QtShanoirTreeWidget::updateCheckBoxes(QTreeWidgetItem * item)
             d->selectedId.removeOne(item->data(0, QTreeWidgetItem::UserType + 6).toInt());
         }
     }
-
-    qDebug()<< d->selectedId;
+    emit
+    filename(QString(""));
+//    qDebug()<< d->selectedId;
     emit
     selected(d->selectedId);
 }

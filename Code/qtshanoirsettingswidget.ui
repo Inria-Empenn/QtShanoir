@@ -190,10 +190,16 @@
      <property name="text">
       <string>Apply</string>
      </property>
+     <property name="icon">
+      <iconset resource="../Resources/qtshanoir.qrc">
+       <normaloff>:/Images/displayPrefs.16x16.png</normaloff>:/Images/displayPrefs.16x16.png</iconset>
+     </property>
     </widget>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../Resources/qtshanoir.qrc"/>
+ </resources>
  <connections/>
 </ui>

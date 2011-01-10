@@ -18,11 +18,12 @@ Demo::Demo(QWidget * parent) :
     d(new DemoPrivate)
 {
     setupUi(this);
-    QObject::connect(findButton, SIGNAL(clicked()), this, SLOT(find()));
-
     d->controller = new QtShanoir;
     d->controller->attachTreeWidget(treeWidget);
     d->controller->initWS();
+
+    QObject::connect(findButton, SIGNAL(clicked()), this, SLOT(find()));
+    QObject::connect(downloadButton, SIGNAL(clicked()), d->controller, SLOT(download()));
 }
 
 void

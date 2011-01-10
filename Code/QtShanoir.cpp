@@ -29,13 +29,24 @@ class QtShanoirPrivate
         int curId;
         QList<int> selectedIds;
         QString downloadDir;
+        //        bool waitForDownload;
+        QString downloadFileName;
+
 };
 
 QtShanoir::QtShanoir() :
     d(new QtShanoirPrivate)
 {
     d->tree = 0;
+    d->downloadFileName = "";
+    //    d->waitForDownload = false;
     this->doQuery("StudyFindId");
+}
+
+void
+QtShanoir::setDownloadFilename(QString filename)
+{
+    d->downloadFileName = filename;
 }
 
 void
@@ -69,6 +80,7 @@ QtShanoir::attachTreeWidget(QtShanoirTreeWidget * widget)
         QObject::connect(d->tree, SIGNAL(datasetQuery(QString,QString)), this, SLOT(datasetQuery(QString,QString)));
         QObject::connect(d->tree, SIGNAL(id(int)), this, SLOT(currentId(int)));
         QObject::connect(d->tree, SIGNAL(selected(QList<int>)), this, SLOT(updateSelected(QList<int>)));
+        QObject::connect(d->tree, SIGNAL(filename(QString)), this, SLOT(setDownloadFilename(QString)));
     }
 }
 
@@ -102,7 +114,7 @@ QtShanoir::sendMessage()
 
     QNetworkReply *nrep = d->http.networkReply();
     QObject::connect(nrep, SIGNAL(sslErrors ( const QList<QSslError> & )), this, SLOT(sslErrors ( const QList<QSslError> &)));
-//    QObject::connect(nrep, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+    //    QObject::connect(nrep, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
 }
 
 void
@@ -299,7 +311,7 @@ QtShanoir::currentId(int id)
 void
 QtShanoir::download()
 {
-    if (d->selectedIds.size() != 0) {
+    if ((d->selectedIds.size() != 0) || !d->downloadFileName.isEmpty()) {
         // Open a QFileDialog in directory mode.
         QFileDialog * dialog = new QFileDialog(d->tree);
         dialog->setFileMode(QFileDialog::Directory);
@@ -315,10 +327,16 @@ QtShanoir::download()
             d->downloadDir = directory;
         delete dialog;
 
-        for (int i = 0; i < d->selectedIds.size(); i++) {
-            this->setDownload("download", QString::number(d->selectedIds[i]));
-            this->doQuery("download");
-        }
+        d->curId = d->selectedIds.size() - 1;
+        //        this->setFilename("getFileName",QString::number(d->curId));
+        //        this->doQuery("getFileName");
+        this->setDownload("download", QString::number(d->curId));
+        this->doQuery("download");
+
+        //        for (int i = 0; i < d->selectedIds.size(); i++) {
+        //            this->setDownload("download", QString::number(d->selectedIds[i]));
+        //            this->doQuery("download");
+        //        }
     }
     else {
         QMessageBox * msgBox = new QMessageBox(d->tree);
@@ -330,18 +348,51 @@ QtShanoir::download()
 
 }
 
-//void
-//QtShanoir::download(QString dirName)
-//{
-//
-//}
+void
+QtShanoir::setFilename(QString key, QString id)
+{
+    //    d->waitForDownload = true;
+    d->curId = id.toInt();
+    //    qDebug() << "Prepare WS query for Id" << id;
+    QString webs = "Downloader";
+    QString impl = "http://impl.webservices.shanoir.org/";
+    d->perWsQuery[key].clear();
 
+    this->setLogin(key, webs, impl);
+
+    QtShanoirWsQuery* setId = new QtShanoirWsQuery(webs, impl);
+    setId->WsMethod = "setDatasetId";
+    setId->WsMethodarg.push_back(qMakePair(QString("datasetId"), QString("%1").arg(id)));
+
+    QtShanoirWsQuery* filename = new QtShanoirWsQuery(webs, impl);
+    filename->WsMethod = "getFileName";
+    QObject::connect(filename, SIGNAL(response(QString)), this, SLOT(getFileName(QString)));
+
+    QtShanoirWsQuery* errors = new QtShanoirWsQuery(webs, impl);
+    errors->WsMethod = "getErrorMessage";
+    QObject::connect(errors, SIGNAL(response(QString)), this, SLOT(getError(QString)));
+
+    d->perWsQuery[key].push_back(setId);
+    d->perWsQuery[key].push_back(filename);
+    d->perWsQuery[key].push_back(errors);
+}
+
+void
+QtShanoir::getFileName(QString xmlserial)
+{
+    qDebug() << xmlserial;
+    QDomDocument doc;
+    doc.setContent(xmlserial);
+    doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());
+    doc.removeChild(doc.firstChild());
+}
 
 void
 QtShanoir::setDownload(QString key, QString id)
 {
+    //    d->waitForDownload = true;
     d->curId = id.toInt();
-    qDebug() << "Prepare WS query for Id" << id;
+    //    qDebug() << "Prepare WS query for Id" << id;
     QString webs = "Downloader";
     QString impl = "http://impl.webservices.shanoir.org/";
     d->perWsQuery[key].clear();
@@ -368,20 +419,20 @@ QtShanoir::setDownload(QString key, QString id)
 void
 QtShanoir::download(QString xmlserial)
 {
-    qDebug() << xmlserial;
+    //    qDebug() << xmlserial;
     const QtSoapMessage &message = d->http.getResponse();
     const QByteArray& bin = message.getBinary();
     if (bin.isEmpty()) {
         qDebug() << "Binary is empty";
         return;
     }
-    qDebug() << d->curId;
+//    QFile dFile(d->downloadDir + QDir::separator() + d->downloadFileName + ".nii");
     QFile dFile(d->downloadDir + QDir::separator() + QString::number(d->curId) + ".nii");
 
-    qDebug() << dFile.fileName();
     dFile.open(QFile::WriteOnly);
     dFile.write(bin);
     dFile.close();
+    //    d->waitForDownload = false;
 }
 
 void
