@@ -19,23 +19,44 @@
    </property>
    <item row="0" column="0">
     <widget class="QTreeWidget" name="treeWidget">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="font">
       <font>
        <pointsize>9</pointsize>
       </font>
      </property>
+     <property name="animated">
+      <bool>true</bool>
+     </property>
      <attribute name="headerVisible">
-      <bool>false</bool>
+      <bool>true</bool>
      </attribute>
      <column>
       <property name="text">
-       <string notr="true">1</string>
+       <string notr="true">Description</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../Resources/qtshanoir.qrc">
+        <normaloff>:/Images/details.16x16.png</normaloff>:/Images/details.16x16.png</iconset>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Type</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../Resources/qtshanoir.qrc">
+        <normaloff>:/Images/datasetDetail.64x64.png</normaloff>:/Images/datasetDetail.64x64.png</iconset>
       </property>
      </column>
     </widget>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../Resources/qtshanoir.qrc"/>
+ </resources>
  <connections/>
 </ui>
