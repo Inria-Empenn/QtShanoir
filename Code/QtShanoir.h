@@ -27,6 +27,10 @@ class QtShanoir : public QObject
         doQuery(QString);
         void
         attachTreeWidget(QtShanoirTreeWidget * tree);
+        void clearTree();
+
+    public slots:
+        void download();
 
     protected:
         void
@@ -48,6 +52,7 @@ class QtShanoir : public QObject
         void sendMessage();
         void download(QString xmlserial);
         void getError(QString);
+        void updateSelected(QList<int>);
 //        void downloadProgress ( qint64 bytesReceived, qint64 bytesTotal );
 //        void uploadProgress ( qint64 bytesSent, qint64 bytesTotal );
         void

@@ -42,6 +42,10 @@ if(QT4_FOUND)
   include(${QT_USE_FILE})
 endif(QT4_FOUND)
 
+set(QTSHANOIR_RCCS
+    ${QTSHANOIR_SOURCE_DIR}/Resources/qtshanoir.qrc
+)
+
 set(SAMPLE_SRCS
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettingsWidget.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirWsQuery.cpp
@@ -70,12 +74,13 @@ set(QTSHANOIR_SRCS
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettings.cpp
 )
 
+qt4_add_resources(QTSHANOIR_RCC_SRCS ${QTSHANOIR_RCCS})
 qt4_wrap_ui( SAMPLE_UI_HDRS ${SAMPLE_UIS})
 qt4_wrap_cpp( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS})
 
 
 include_directories(${CMAKE_BINARY_DIR} ${QTSHANOIR_SOURCE_DIR}/Code/ ${QTSHANOIR_BINARY_DIR})
-add_library( qtshanoir ${QTSHANOIR_SRCS} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_UI_HDRS})
+add_library( qtshanoir ${QTSHANOIR_SRCS} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_UI_HDRS} ${QTSHANOIR_RCC_SRCS})
 target_link_libraries( qtshanoir ${QT_LIBRARIES} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY})
 
 

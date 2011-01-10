@@ -27,6 +27,8 @@ class QtShanoirTreeWidget : public QWidget, public Ui::QtShanoirTree
         datasetQuery(QString, QString);
         void
         id(int);
+        void
+        selected(QList<int>);
 
     public slots:
         void
@@ -41,11 +43,15 @@ class QtShanoirTreeWidget : public QWidget, public Ui::QtShanoirTree
         parseStudy(QString xmlserial);
         void
         parseMrExamination(QString xmlserial);
+//        void
+//        clearTree();
 
     private:
         void
         initConnections();
         QtShanoirTreeWidgetPrivate * d;
+        void
+        updateCheckBoxes(QTreeWidgetItem * item);
 };
 
 #endif /* QTSHANOIRTREEWIDGET_H_ */

@@ -27,6 +27,8 @@ class QtShanoirPrivate
         // Fill the following map with the properly set up query
         QMap<QString, QList<QtShanoirWsQuery*> > perWsQuery;
         int curId;
+        QList<int> selectedIds;
+        QString downloadDir;
 };
 
 QtShanoir::QtShanoir() :
@@ -34,6 +36,14 @@ QtShanoir::QtShanoir() :
 {
     d->tree = 0;
     this->doQuery("StudyFindId");
+}
+
+void
+QtShanoir::clearTree()
+{
+    d->selectedIds.clear();
+    if (d->tree)
+        d->tree->treeWidget->clear();
 }
 
 void
@@ -58,6 +68,7 @@ QtShanoir::attachTreeWidget(QtShanoirTreeWidget * widget)
         QObject::connect(d->tree, SIGNAL(mrExamQuery(QString)), this, SLOT(mrExamQuery(QString)));
         QObject::connect(d->tree, SIGNAL(datasetQuery(QString,QString)), this, SLOT(datasetQuery(QString,QString)));
         QObject::connect(d->tree, SIGNAL(id(int)), this, SLOT(currentId(int)));
+        QObject::connect(d->tree, SIGNAL(selected(QList<int>)), this, SLOT(updateSelected(QList<int>)));
     }
 }
 
@@ -76,7 +87,7 @@ QtShanoir::sendMessage()
     if (!d->query)
         return;
 
-    qDebug() << d->query->WsMethod;
+    //qDebug() << d->query->WsMethod;
 
     QtSoapMessage request;
     request.setMethod(d->query->WsMethod, d->query->WsImpl);
@@ -91,7 +102,7 @@ QtShanoir::sendMessage()
 
     QNetworkReply *nrep = d->http.networkReply();
     QObject::connect(nrep, SIGNAL(sslErrors ( const QList<QSslError> & )), this, SLOT(sslErrors ( const QList<QSslError> &)));
-    //    QObject::connect(nrep, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+//    QObject::connect(nrep, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
 }
 
 void
@@ -105,7 +116,7 @@ QtShanoir::doQuery(QString ws)
 void
 QtShanoir::getError(QString xmlserial)
 {
-//    qDebug() << xmlserial;
+    //    qDebug() << xmlserial;
 
     QDomDocument doc;
     doc.setContent(xmlserial);
@@ -116,7 +127,7 @@ QtShanoir::getError(QString xmlserial)
 
     if (!errmsg.isEmpty())
         qDebug() << "SOAP Error" << errmsg;
-    qDebug() << ".";
+    //qDebug() << ".";
 }
 
 void
@@ -212,7 +223,7 @@ QtShanoir::mrExamQuery(QString str)
 void
 QtShanoir::setMrExamQuery(QString key, QString id)
 {
-    qDebug() << "Prepare WS query for Id" << id;
+    //    qDebug() << "Prepare WS query for Id" << id;
 
     QString webs = "MrExaminationFinder";
     QString impl = "http://finder.impl.webservices.shanoir.org/";
@@ -242,7 +253,6 @@ QtShanoir::setMrExamQuery(QString key, QString id)
 void
 QtShanoir::datasetQuery(QString str1, QString str2)
 {
-    qDebug() << "Dataset query";
     this->setDatasetQuery("FindDataset", str1, str2);
     this->doQuery("FindDataset");
 }
@@ -250,7 +260,7 @@ QtShanoir::datasetQuery(QString str1, QString str2)
 void
 QtShanoir::setDatasetQuery(QString key, QString id, QString exId)
 {
-    qDebug() << "Prepare WS query for Id" << id << exId;
+    //    qDebug() << "Prepare WS query for Id" << id << exId;
     QString webs = "MrDatasetFinder";
     QString impl = "http://finder.impl.webservices.shanoir.org/";
     d->perWsQuery[key].clear();
@@ -287,39 +297,50 @@ QtShanoir::currentId(int id)
 }
 
 void
-QtShanoir::download(QString xmlserial)
+QtShanoir::download()
 {
-    qDebug() << xmlserial;
-    const QtSoapMessage &message = d->http.getResponse();
-    const QByteArray& bin = message.getBinary();
-    if (bin.isEmpty())
-        return;
+    if (d->selectedIds.size() != 0) {
+        // Open a QFileDialog in directory mode.
+        QFileDialog * dialog = new QFileDialog(d->tree);
+        dialog->setFileMode(QFileDialog::Directory);
+        dialog->setOption(QFileDialog::ShowDirsOnly, true);
+        dialog->setDirectory(QDir::home().dirName());
+        dialog->setWindowTitle(tr("Choose datasets download directory"));
+        QString directory;
+        if (dialog->exec()) {
+            directory = dialog->selectedFiles()[0];
+        }
+        dialog->close();
+        if (!directory.isEmpty()) // A file has been chosen
+            d->downloadDir = directory;
+        delete dialog;
 
-    QString t = "toto.nii";
+        for (int i = 0; i < d->selectedIds.size(); i++) {
+            this->setDownload("download", QString::number(d->selectedIds[i]));
+            this->doQuery("download");
+        }
+    }
+    else {
+        QMessageBox * msgBox = new QMessageBox(d->tree);
+        msgBox->setIcon(QMessageBox::Information);
+        msgBox->setText(tr("Please select at least one dataset to download"));
+        msgBox->exec();
+        delete msgBox;
+    }
 
-    QString defFileName;
-    //#ifdef Q_WS_MAC
-    //    defFileName = QDir::homePath()+"/Documents/"+t;
-    //#elif Q_WS_WIN
-    //    defFileName = QDir::homePath()+tr("\\Mes Documents\\")+t;
-    //#else
-    //    defFileName = QDir::homePath()+"/Documents/"+t;
-    //#endif
-    //
-    //    QString fname = QFileDialog::getSaveFileName(this, "Save downloaded file", defFileName, "Nifti (*.nii);;");
-    //    if (fname.isEmpty()) return;
-    //    QFile file(fname);
-    //
-    //    if (!file.open(QFile::WriteOnly))
-    //        QMessageBox::warning(this, "Warning", QString("File not writable %1").arg(fname));
-    //
-    //    file.write(bin);
-    //    file.close();
 }
+
+//void
+//QtShanoir::download(QString dirName)
+//{
+//
+//}
+
 
 void
 QtShanoir::setDownload(QString key, QString id)
 {
+    d->curId = id.toInt();
     qDebug() << "Prepare WS query for Id" << id;
     QString webs = "Downloader";
     QString impl = "http://impl.webservices.shanoir.org/";
@@ -333,14 +354,39 @@ QtShanoir::setDownload(QString key, QString id)
 
     QtShanoirWsQuery* download = new QtShanoirWsQuery(webs, impl);
     download->WsMethod = "download";
-    connect(download, SIGNAL(response(QString)), this, SLOT(download(QString)));
+    QObject::connect(download, SIGNAL(response(QString)), this, SLOT(download(QString)));
 
     QtShanoirWsQuery* errors = new QtShanoirWsQuery(webs, impl);
     errors->WsMethod = "getErrorMessage";
-    connect(errors, SIGNAL(response(QString)), this, SLOT(getError(QString)));
+    QObject::connect(errors, SIGNAL(response(QString)), this, SLOT(getError(QString)));
 
     d->perWsQuery[key].push_back(setId);
     d->perWsQuery[key].push_back(download);
     d->perWsQuery[key].push_back(errors);
+}
+
+void
+QtShanoir::download(QString xmlserial)
+{
+    qDebug() << xmlserial;
+    const QtSoapMessage &message = d->http.getResponse();
+    const QByteArray& bin = message.getBinary();
+    if (bin.isEmpty()) {
+        qDebug() << "Binary is empty";
+        return;
+    }
+    qDebug() << d->curId;
+    QFile dFile(d->downloadDir + QDir::separator() + QString::number(d->curId) + ".nii");
+
+    qDebug() << dFile.fileName();
+    dFile.open(QFile::WriteOnly);
+    dFile.write(bin);
+    dFile.close();
+}
+
+void
+QtShanoir::updateSelected(QList<int> listId)
+{
+    d->selectedIds = listId;
 }
 
