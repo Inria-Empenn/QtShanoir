@@ -60,7 +60,6 @@ set(SAMPLE_HDRS
 
 set(SAMPLE_UIS
   ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoir.ui
-  ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirconfiguration.ui
   ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirsettingswidget.ui
   ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirtreewidget.ui
 )

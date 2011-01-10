@@ -242,6 +242,7 @@ QtShanoir::setMrExamQuery(QString key, QString id)
 void
 QtShanoir::datasetQuery(QString str1, QString str2)
 {
+    qDebug() << "Dataset query";
     this->setDatasetQuery("FindDataset", str1, str2);
     this->doQuery("FindDataset");
 }
