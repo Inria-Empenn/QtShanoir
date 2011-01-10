@@ -11,11 +11,21 @@
 #include <QtGui>
 #include "ui_demo.h"
 
+class DemoPrivate;
+
 class Demo : public QMainWindow, public Ui::Demo
 {
     Q_OBJECT
     public:
         Demo(QWidget * parent = 0);
+
+    public slots:
+
+        void
+        find();
+
+    private:
+        DemoPrivate *d;
 };
 
 #endif /* DEMO_H_ */

@@ -10,6 +10,11 @@
     <height>497</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>QtShanoir Demo</string>
   </property>
@@ -18,7 +23,7 @@
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QtShanoirTreeWidget" name="widget" native="true">
+       <widget class="QtShanoirTreeWidget" name="treeWidget" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -36,7 +41,7 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QtShanoirSettingsWidget" name="widget_2" native="true">
+         <widget class="QtShanoirSettingsWidget" name="settingsWidget" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -54,6 +59,18 @@
             <width>350</width>
             <height>152</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="findButton">
+          <property name="text">
+           <string>Find</string>
           </property>
          </widget>
         </item>
@@ -119,7 +136,7 @@
      <x>0</x>
      <y>0</y>
      <width>768</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

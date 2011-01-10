@@ -6,8 +6,27 @@
  */
 
 #include <Demo.h>
+#include <QtShanoir.h>
 
-Demo::Demo(QWidget * parent)
+class DemoPrivate
+{
+    public:
+        QtShanoir * controller;
+};
+
+Demo::Demo(QWidget * parent) :
+    d(new DemoPrivate)
 {
     setupUi(this);
+    QObject::connect(findButton, SIGNAL(clicked()), this, SLOT(find()));
+
+    d->controller = new QtShanoir;
+    d->controller->attachTreeWidget(treeWidget);
+    d->controller->initWS();
+}
+
+void
+Demo::find()
+{
+    d->controller->doQuery("StudyFindId");
 }

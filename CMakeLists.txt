@@ -44,19 +44,17 @@ endif(QT4_FOUND)
 
 set(SAMPLE_SRCS
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettingsWidget.cpp
-  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirController.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirWsQuery.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirTreeWidget.cpp
-#  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoir.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoir.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtSoap.cpp
 )
 
 set(SAMPLE_HDRS
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettingsWidget.h
-  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirController.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirWsQuery.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirTreeWidget.h
-#  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoir.h
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoir.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtSoap.h
 )
 

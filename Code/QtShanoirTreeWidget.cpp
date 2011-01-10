@@ -6,7 +6,8 @@
  */
 
 #include <QtShanoirTreeWidget.h>
-#include <QtShanoirController.h>
+#include <QtShanoir.h>
+#include <QtShanoirSettings.h>
 
 class QtShanoirTreeWidgetPrivate
 {
@@ -38,28 +39,12 @@ void
 QtShanoirTreeWidget::itemClicked(QTreeWidgetItem* item, int )
 {
     // Item has user defined datatype && the data was not fetched yet
-    if (!item->data(0, QTreeWidgetItem::UserType + 3).isNull() && item->childCount() == 0) {
+    if (!item->data(0, QTreeWidgetItem::UserType + 3).isNull() && item->childCount() == 0)
         emit mrExamQuery(item->data(0, QTreeWidgetItem::UserType + 3).toString());
-//        setMrExamQuery("FindMrExam", item->data(0, QTreeWidgetItem::UserType + 3).toString());
-//        doQuery("FindMrExam");
-    }
-
-    if (!item->data(0, QTreeWidgetItem::UserType + 4).isNull() && item->childCount() == 0) {
+    if (!item->data(0, QTreeWidgetItem::UserType + 4).isNull() && item->childCount() == 0)
         emit datasetQuery(item->data(0, QTreeWidgetItem::UserType + 4).toString(), item->data(0, QTreeWidgetItem::UserType + 5).toString());
-
-//        setDatasetQuery("FindDataset", item->data(0, QTreeWidgetItem::UserType + 4).toString(), item->data(0, QTreeWidgetItem::UserType + 5).toString());
-//        doQuery("FindDataset");
-    }
-
-    if (!item->data(0, QTreeWidgetItem::UserType + 6).isNull()) {
-//        emit acquisitionQuery(item->data(0, QTreeWidgetItem::UserType + 6).toString().toInt());
-//        ui->label->setText(QString("%1 - %2").arg(item->text(0)).arg(item->data(0, QTreeWidgetItem::UserType + 6).toString()));
+    if (!item->data(0, QTreeWidgetItem::UserType + 6).isNull())
         emit id(item->data(0, QTreeWidgetItem::UserType + 6).toString().toInt());
-
-//        ui->label->show();
-//        ui->toolButton->show();
-    }
-
 }
 
 void
@@ -85,9 +70,9 @@ QtShanoirTreeWidget::parseStudy(QString xmlserial)
     root->addChild(shanoir);
 
     //    shanoir
-//    shanoir->setText(0, QString("Shanoir (%1)").arg(host));
+    shanoir->setText(0, QString("Shanoir (%1)").arg(QtShanoirSettings::Instance()->host()));
 //    shanoir->setToolTip(0, QString("User:%1 (port: %2)").arg(user).arg(port));
-//    shanoir->setExpanded(true);
+    shanoir->setExpanded(true);
 //    shanoir->setIcon(0, *ico_shanoir);
     // list the study by name + id
     QDomNode n = doc.firstChild().firstChild();
@@ -159,6 +144,7 @@ QtShanoirTreeWidget::parseMrExamination(QString xmlserial)
 void
 QtShanoirTreeWidget::parseAcquisition(QString xmlserial)
 {
+    qDebug() << "Parse Acquisition";
     QDomDocument doc;
     doc.setContent(xmlserial);
     doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());
@@ -181,7 +167,6 @@ QtShanoirTreeWidget::parseAcquisition(QString xmlserial)
         exam->setToolTip(0, QString("%1 - (TR %2, TE %3, FA %4) ").arg(el.firstChildElement("comment").firstChild().nodeValue()) .arg(el.firstChildElement("repetitionTime").firstChildElement("repetitionTimeValue").firstChild().nodeValue()) .arg(el.firstChildElement("echoTime").firstChildElement("echoTimeValue").firstChild().nodeValue()) .arg(el.firstChildElement("flipAngle").firstChildElement("flipAngleValue").firstChild().nodeValue()));
 
         exam->setData(0, QTreeWidgetItem::UserType + 6, QString(el.firstChildElement("id").firstChild().nodeValue()));
-//        exam->setIcon(0, *ico_acq);
         exam->setCheckState(0, Qt::Unchecked);
 
         sub->addChild(exam);

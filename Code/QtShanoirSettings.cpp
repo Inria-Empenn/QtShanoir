@@ -65,6 +65,8 @@ QtShanoirSettings::initializeSettings()
 void
 QtShanoirSettings::update()
 {
+    QFile ini(d->iniFile);
+    ini.remove();
     QSettings prefs(d->iniFile, QSettings::IniFormat);
     prefs.beginGroup("User");
     prefs.setValue("login", d->login);

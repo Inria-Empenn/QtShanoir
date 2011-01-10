@@ -8,13 +8,16 @@
 #include <QtShanoirSettingsWidget.h>
 #include <QtShanoirSettings.h>
 
-QtShanoirSettingsWidget::QtShanoirSettingsWidget(QWidget * parent) : QWidget(parent)
+QtShanoirSettingsWidget::QtShanoirSettingsWidget(QWidget * parent) :
+    QWidget(parent)
 {
     setupUi(this);
     loginEdit->setText(QtShanoirSettings::Instance()->login());
     passwordEdit->setText(QtShanoirSettings::Instance()->password());
     hostEdit->setText(QtShanoirSettings::Instance()->host());
     portSpinBox->setValue(QtShanoirSettings::Instance()->port().toInt());
+
+    this->initConnections();
 }
 
 void
@@ -24,9 +27,8 @@ QtShanoirSettingsWidget::initConnections()
     QObject::connect(passwordEdit, SIGNAL(textChanged(QString)), this, SLOT(passwordTextChanged(QString)));
     QObject::connect(hostEdit, SIGNAL(textChanged(QString)), this, SLOT(hostTextChanged(QString)));
     QObject::connect(portSpinBox, SIGNAL(valueChanged(int)), this, SLOT(portValueChanged(int)));
-    QObject::connect(applyButton,SIGNAL(clicked()), this, SLOT(save()));
+    QObject::connect(applyButton, SIGNAL(clicked()), this, SLOT(save()));
 }
-
 
 void
 QtShanoirSettingsWidget::loginTextChanged(QString text)
