@@ -13,6 +13,7 @@
 
 class QNetworkRequest;
 class QtShanoirTreeWidget;
+class QtShanoirProgressWidget;
 class QtShanoirPrivate;
 
 class QtShanoir : public QObject
@@ -27,6 +28,8 @@ class QtShanoir : public QObject
         doQuery(QString);
         void
         attachTreeWidget(QtShanoirTreeWidget * tree);
+        void
+        attachProgressWidget(QtShanoirProgressWidget * progress);
         void clearTree();
 
     public slots:
@@ -46,17 +49,21 @@ class QtShanoir : public QObject
         void setDatasetQuery(QString key, QString id, QString exId);
     signals:
         void nextMessage();
+        void startDownload();
+        void getFileName();
 
     private slots:
         void getResponse();
         void sslErrors ( const QList<QSslError> & errors );
         void sendMessage();
         void download(QString xmlserial);
+        void callDownloadWS();
+        void callGetFileNameWS();
         void getFileName(QString xmlserial);
         void getError(QString);
         void updateSelected(QList<int>);
         void setDownloadFilename(QString filename);
-//        void downloadProgress ( qint64 bytesReceived, qint64 bytesTotal );
+        void downloadProgress ( qint64 bytesReceived, qint64 bytesTotal );
 //        void uploadProgress ( qint64 bytesSent, qint64 bytesTotal );
         void
         mrExamQuery(QString);
@@ -64,6 +71,9 @@ class QtShanoir : public QObject
         datasetQuery(QString, QString);
         void
         currentId(int);
+        void
+        queryFinished();
+
 
 
     private:

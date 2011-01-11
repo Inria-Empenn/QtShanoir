@@ -187,6 +187,12 @@
    </item>
    <item row="4" column="0">
     <widget class="QPushButton" name="applyButton">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>27</height>
+      </size>
+     </property>
      <property name="text">
       <string>Apply</string>
      </property>

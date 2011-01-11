@@ -155,6 +155,8 @@ QtShanoirTreeWidget::parseStudy(QString xmlserial)
     }
     //    treeWidget->itemClicked();
     doc.clear();
+
+    emit queryFinished();
 }
 
 void
@@ -189,6 +191,8 @@ QtShanoirTreeWidget::parseMrExamination(QString xmlserial)
     sub->setExpanded(true);
 
     doc.clear();
+
+    emit queryFinished();
 }
 
 void
@@ -226,5 +230,7 @@ QtShanoirTreeWidget::parseAcquisition(QString xmlserial)
     }
     sub->setExpanded(true);
     doc.clear();
+
+    emit queryFinished();
 }
 

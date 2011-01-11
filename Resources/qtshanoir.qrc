@@ -1,5 +1,6 @@
 <RCC>
   <qresource>
+    <file>Images/quit.svg</file>
     <file>Images/action.16x16.png</file>
     <file>Images/action.32x32.png</file>
     <file>Images/add.8x8.png</file>

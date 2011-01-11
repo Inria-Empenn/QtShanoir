@@ -9,6 +9,7 @@
 #include <QtShanoirWsQuery.h>
 #include <QtShanoirSettings.h>
 #include <QtShanoirTreeWidget.h>
+#include <QtShanoirProgressWidget.h>
 #include <QtShanoirSettingsWidget.h>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -18,6 +19,7 @@ class QtShanoirPrivate
 {
     public:
         QtShanoirTreeWidget * tree;
+        QtShanoirProgressWidget * progress;
         int num_message;
         QtSoapHttpTransport http;
         QNetworkRequest req;
@@ -38,6 +40,7 @@ QtShanoir::QtShanoir() :
     d(new QtShanoirPrivate)
 {
     d->tree = 0;
+    d->progress = 0;
     d->downloadFileName = "";
     //    d->waitForDownload = false;
     this->doQuery("StudyFindId");
@@ -68,7 +71,8 @@ QtShanoir::initWS()
         QObject::connect(&(d->http), SIGNAL(responseReady()), this, SLOT(getResponse()));
         d->req.sslConfiguration().setPeerVerifyMode(QSslSocket::VerifyNone);
     }
-
+    QObject::connect(this, SIGNAL(getFileName()), this, SLOT(callGetFileNameWS()));
+    QObject::connect(this, SIGNAL(startDownload()), this, SLOT(callDownloadWS()));
 }
 
 void
@@ -81,7 +85,14 @@ QtShanoir::attachTreeWidget(QtShanoirTreeWidget * widget)
         QObject::connect(d->tree, SIGNAL(id(int)), this, SLOT(currentId(int)));
         QObject::connect(d->tree, SIGNAL(selected(QList<int>)), this, SLOT(updateSelected(QList<int>)));
         QObject::connect(d->tree, SIGNAL(filename(QString)), this, SLOT(setDownloadFilename(QString)));
+        //        QObject::connect(d->tree, SIGNAL(queryFinished()), this, SLOT(queryFinished()));
     }
+}
+
+void
+QtShanoir::attachProgressWidget(QtShanoirProgressWidget * widget)
+{
+    d->progress = widget;
 }
 
 void
@@ -114,7 +125,9 @@ QtShanoir::sendMessage()
 
     QNetworkReply *nrep = d->http.networkReply();
     QObject::connect(nrep, SIGNAL(sslErrors ( const QList<QSslError> & )), this, SLOT(sslErrors ( const QList<QSslError> &)));
-    //    QObject::connect(nrep, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+
+    //    if (d->progress)
+    //        QObject::connect(nrep, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
 }
 
 void
@@ -327,12 +340,12 @@ QtShanoir::download()
             d->downloadDir = directory;
         delete dialog;
 
-        d->curId = d->selectedIds.size() - 1;
-        //        this->setFilename("getFileName",QString::number(d->curId));
-        //        this->doQuery("getFileName");
-        this->setDownload("download", QString::number(d->curId));
-        this->doQuery("download");
-
+        //        qDebug() << d->selectedIds;
+        d->curId = d->selectedIds.first();
+        emit getFileName();
+        //        qDebug() << d->curId;
+//        this->setFilename("getFileName", QString::number(d->curId));
+//        this->doQuery("getFileName");
         //        for (int i = 0; i < d->selectedIds.size(); i++) {
         //            this->setDownload("download", QString::number(d->selectedIds[i]));
         //            this->doQuery("download");
@@ -346,6 +359,22 @@ QtShanoir::download()
         delete msgBox;
     }
 
+}
+
+void
+QtShanoir::callGetFileNameWS()
+{
+    qDebug() << "Start calling GetFilename";
+    this->setFilename("getFileName", QString::number(d->curId));
+    this->doQuery("getFileName");
+}
+
+void
+QtShanoir::callDownloadWS()
+{
+    qDebug() << "Start Download";
+    this->setDownload("download", QString::number(d->curId));
+    this->doQuery("download");
 }
 
 void
@@ -380,11 +409,15 @@ QtShanoir::setFilename(QString key, QString id)
 void
 QtShanoir::getFileName(QString xmlserial)
 {
-    qDebug() << xmlserial;
+    //    qDebug() << xmlserial;
     QDomDocument doc;
     doc.setContent(xmlserial);
-    doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());
-    doc.removeChild(doc.firstChild());
+    QDomNode n = doc.firstChild().firstChild().nextSibling().firstChild().firstChild();
+    if (n.isElement()) {
+        d->downloadFileName = n.toElement().text();
+    }
+    qDebug() << "Get Filename";
+    emit startDownload();
 }
 
 void
@@ -426,12 +459,17 @@ QtShanoir::download(QString xmlserial)
         qDebug() << "Binary is empty";
         return;
     }
-//    QFile dFile(d->downloadDir + QDir::separator() + d->downloadFileName + ".nii");
-    QFile dFile(d->downloadDir + QDir::separator() + QString::number(d->curId) + ".nii");
+    QFile dFile(d->downloadDir + QDir::separator() + d->downloadFileName);
+    //    QFile dFile(d->downloadDir + QDir::separator() + QString::number(d->curId) + ".nii");
 
     dFile.open(QFile::WriteOnly);
     dFile.write(bin);
     dFile.close();
+
+    qDebug() << "Download finished";
+
+    if (d->progress)
+        d->progress->download->setValue(0);
     //    d->waitForDownload = false;
 }
 
@@ -439,5 +477,20 @@ void
 QtShanoir::updateSelected(QList<int> listId)
 {
     d->selectedIds = listId;
+}
+
+void
+QtShanoir::queryFinished()
+{
+    if (d->progress)
+        d->progress->download->setValue(0);
+}
+
+void
+QtShanoir::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+{
+    d->progress->download->setMaximum(bytesTotal);
+    d->progress->download->setValue(bytesReceived);
+    qApp->processEvents();
 }
 

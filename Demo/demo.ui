@@ -26,6 +26,9 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>2</number>
+      </property>
       <item>
        <widget class="QtShanoirTreeWidget" name="treeWidget" native="true">
         <property name="sizePolicy">
@@ -44,65 +47,101 @@
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>2</number>
+        </property>
         <item>
-         <widget class="QtShanoirSettingsWidget" name="settingsWidget" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="title">
+           <string>Server settings</string>
           </property>
-          <property name="minimumSize">
-           <size>
-            <width>240</width>
-            <height>152</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>350</width>
-            <height>152</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>9</pointsize>
-           </font>
-          </property>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QtShanoirSettingsWidget" name="settingsWidget" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>240</width>
+               <height>152</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>350</width>
+               <height>152</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+          </layout>
+          <zorder>settingsWidget</zorder>
+          <zorder>settingsWidget</zorder>
+          <zorder>settingsWidget</zorder>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="findButton">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>27</height>
-           </size>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Queries</string>
           </property>
-          <property name="text">
-           <string>Find</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../Resources/qtshanoir.qrc">
-            <normaloff>:/Images/search.22x22.png</normaloff>:/Images/search.22x22.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="downloadButton">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>27</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Download</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../Resources/qtshanoir.qrc">
-            <normaloff>:/Images/downloadNifti.16x16.png</normaloff>:/Images/downloadNifti.16x16.png</iconset>
-          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QPushButton" name="findButton">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>27</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Find</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../Resources/qtshanoir.qrc">
+               <normaloff>:/Images/search.22x22.png</normaloff>:/Images/search.22x22.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="downloadButton">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>27</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Download</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../Resources/qtshanoir.qrc">
+               <normaloff>:/Images/downloadNifti.16x16.png</normaloff>:/Images/downloadNifti.16x16.png</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
@@ -117,6 +156,16 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QtShanoirProgressWidget" name="progressWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>29</height>
+           </size>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -143,8 +192,18 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../Resources/qtshanoir.qrc">
+     <normaloff>:/Images/quit.svg</normaloff>:/Images/quit.svg</iconset>
+   </property>
    <property name="text">
     <string>Quit</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
    </property>
   </action>
  </widget>
@@ -159,6 +218,12 @@
    <class>QtShanoirSettingsWidget</class>
    <extends>QWidget</extends>
    <header location="global">QtShanoirSettingsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtShanoirProgressWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QtShanoirProgressWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

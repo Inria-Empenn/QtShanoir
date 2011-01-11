@@ -20,6 +20,7 @@ Demo::Demo(QWidget * parent) :
     setupUi(this);
     d->controller = new QtShanoir;
     d->controller->attachTreeWidget(treeWidget);
+    d->controller->attachProgressWidget(progressWidget);
     d->controller->initWS();
 
     QObject::connect(findButton, SIGNAL(clicked()), this, SLOT(find()));
@@ -29,5 +30,6 @@ Demo::Demo(QWidget * parent) :
 void
 Demo::find()
 {
+    d->controller->clearTree();
     d->controller->doQuery("StudyFindId");
 }
