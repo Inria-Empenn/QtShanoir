@@ -22,6 +22,7 @@ QtShanoirTreeWidget::QtShanoirTreeWidget(QWidget * widget) :
     setupUi(this);
     treeWidget->setColumnWidth(0, 350);
     treeWidget->setColumnWidth(1, 50);
+    treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     initConnections();
 }
 
@@ -29,7 +30,7 @@ void
 QtShanoirTreeWidget::initConnections()
 {
     QObject::connect(treeWidget, SIGNAL(itemClicked (QTreeWidgetItem*, int)), this, SLOT(itemClicked(QTreeWidgetItem*, int)));
-    QObject::connect(treeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem*, int)), this, SLOT(itemDoubleClicked(QTreeWidgetItem*, int)));
+//    QObject::connect(treeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem*, int)), this, SLOT(itemDoubleClicked(QTreeWidgetItem*, int)));
     QObject::connect(treeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextExportMenu(QPoint)));
 }
 
@@ -51,6 +52,41 @@ QtShanoirTreeWidget::itemClicked(QTreeWidgetItem* item, int)
         emit id(item->data(0, QTreeWidgetItem::UserType + 6).toString().toInt());
 
     this->updateCheckBoxes(item);
+}
+
+void
+QtShanoirTreeWidget::contextExportMenu(const QPoint point)
+{
+    // Get the QTreeWidgetItem corresponding to the clic
+//    QTreeWidgetItem * item = 0;
+//    item = treeWidget->itemAt(point);
+    QMenu menu(treeWidget);
+    QAction * find = new QAction(this);
+//    QAction * expand = QAction(this);
+    QAction * download = new QAction(this);
+
+//    if (item != 0) {
+//        // If the selected item is a patient
+//        if (item->type() == QTreeWidgetItem::UserType + 3) {
+//            expand->setText(tr("Expand"));
+//            QObject::connect(expand, SIGNAL(triggered()), this, SLOT(showPreview()));
+//            menu.addAction(actionPreview);
+//            menu.addSeparator();
+//        }
+//    }
+
+    // By default the context menu contains an open dicomdir a find command.
+    find->setText(tr("Find studies"));
+    QObject::connect(find, SIGNAL(triggered()), QtShanoir::instance(), SLOT(find()));
+    menu.addAction(find);
+    // If there's items selected
+    if (!d->selectedId.isEmpty()) {
+        menu.addSeparator();
+        download->setText(tr("Download"));
+        QObject::connect(download, SIGNAL(triggered()), QtShanoir::instance(), SLOT(download()));
+        menu.addAction(download);
+    }
+    menu.exec(treeWidget->mapToGlobal(point));
 }
 
 void
@@ -93,18 +129,11 @@ QtShanoirTreeWidget::updateCheckBoxes(QTreeWidgetItem * item)
             item->parent()->parent()->setCheckState(0, Qt::Unchecked);
             d->selectedId.removeOne(item->data(0, QTreeWidgetItem::UserType + 6).toInt());
         }
-    }
-    emit
+    } emit
     filename(QString(""));
-//    qDebug()<< d->selectedId;
+    //    qDebug()<< d->selectedId;
     emit
     selected(d->selectedId);
-}
-
-void
-QtShanoirTreeWidget::contextExportMenu(const QPoint point)
-{
-
 }
 
 void
@@ -122,7 +151,7 @@ QtShanoirTreeWidget::parseStudy(QString xmlserial)
     //    shanoir
     shanoir->setText(0, QString("Shanoir (%1)").arg(QtShanoirSettings::Instance()->host()));
     shanoir->setText(1, QString("SERVER"));
-    shanoir->setIcon(0,QIcon(":Images/network.64x64.png"));
+    shanoir->setIcon(0, QIcon(":Images/network.64x64.png"));
     shanoir->setExpanded(true);
     // list the study by name + id
     QDomNode n = doc.firstChild().firstChild();
@@ -132,7 +161,7 @@ QtShanoirTreeWidget::parseStudy(QString xmlserial)
             QTreeWidgetItem * study = new QTreeWidgetItem;
             study->setText(0, QString("%1").arg(n.firstChildElement("name").firstChild().toText().nodeValue()));
             study->setText(1, "STUDY");
-            study->setIcon(0,QIcon(":Images/study.64x64.png"));
+            study->setIcon(0, QIcon(":Images/study.64x64.png"));
             study->setToolTip(0, QString("Study Id : %1").arg(n.firstChildElement("id").firstChild().toText().nodeValue()));
             shanoir->addChild(study);
             // find patients for each study
@@ -143,7 +172,7 @@ QtShanoirTreeWidget::parseStudy(QString xmlserial)
                 QTreeWidgetItem* sub = new QTreeWidgetItem(QTreeWidgetItem::UserType + 3);
                 sub->setText(0, QString("%1").arg(el.firstChildElement("subject").firstChildElement("name").firstChild().nodeValue()));
                 sub->setText(1, "SUBJECT");
-                sub->setIcon(0,QIcon(":Images/subject.64x64.png"));
+                sub->setIcon(0, QIcon(":Images/subject.64x64.png"));
                 sub->setToolTip(0, QString("Sex: %2 BirthDate: %3 (id: %1)") .arg(el.firstChildElement("subject").firstChildElement("id").firstChild().nodeValue()) .arg(el.firstChildElement("subject").firstChildElement("refSex").firstChild().nodeValue()) .arg(QDate::fromString(el.firstChildElement("subject").firstChildElement("birthDate").firstChild().nodeValue(), Qt::ISODate) .toString(Qt::SystemLocaleShortDate)));
                 sub->setData(0, QTreeWidgetItem::UserType + 3, (el.firstChildElement("subject").firstChildElement("id").firstChild().nodeValue()));
                 sub->setCheckState(0, Qt::Unchecked);
@@ -182,7 +211,7 @@ QtShanoirTreeWidget::parseMrExamination(QString xmlserial)
         exam->setText(0, QString("%1 - %2").arg(el.firstChildElement("comment").firstChild().nodeValue()) .arg(QDate::fromString(el.firstChildElement("examinationDate").firstChild().nodeValue(), Qt::ISODate).toString(Qt::SystemLocaleShortDate)));
         exam->setData(0, QTreeWidgetItem::UserType + 4, QString(el.firstChildElement("id").firstChild().nodeValue()));
         exam->setData(0, QTreeWidgetItem::UserType + 5, id);
-        exam->setIcon(0,QIcon(":Images/examination.16x16.png"));
+        exam->setIcon(0, QIcon(":Images/examination.16x16.png"));
         exam->setText(1, "Exam");
         exam->setCheckState(0, sub->checkState(0));
         sub->addChild(exam);
@@ -218,7 +247,7 @@ QtShanoirTreeWidget::parseAcquisition(QString xmlserial)
         exam->setText(0, QString("%1 - %2").arg(el.firstChildElement("name").firstChild().nodeValue()) .arg(QDate::fromString(el.firstChildElement("datasetCreationDate").firstChild().nodeValue(), Qt::ISODate).toString(Qt::SystemLocaleShortDate)));
         exam->setToolTip(0, QString("%1 - (TR %2, TE %3, FA %4) ").arg(el.firstChildElement("comment").firstChild().nodeValue()) .arg(el.firstChildElement("repetitionTime").firstChildElement("repetitionTimeValue").firstChild().nodeValue()) .arg(el.firstChildElement("echoTime").firstChildElement("echoTimeValue").firstChild().nodeValue()) .arg(el.firstChildElement("flipAngle").firstChildElement("flipAngleValue").firstChild().nodeValue()));
         exam->setText(1, "DATASET");
-        exam->setIcon(0,QIcon(":Images/dataset.64x64.png"));
+        exam->setIcon(0, QIcon(":Images/dataset.64x64.png"));
         exam->setData(0, QTreeWidgetItem::UserType + 6, QString(el.firstChildElement("id").firstChild().nodeValue()));
         exam->setCheckState(0, sub->checkState(0));
 

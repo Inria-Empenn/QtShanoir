@@ -40,13 +40,13 @@ class QtShanoirTreeWidget : public QWidget, public Ui::QtShanoirTree
         void
         itemClicked(QTreeWidgetItem* item, int column);
         void
-        contextExportMenu(const QPoint point);
-        void
         parseAcquisition(QString xmlserial);
         void
         parseStudy(QString xmlserial);
         void
         parseMrExamination(QString xmlserial);
+        void
+        contextExportMenu( const QPoint point );
 //        void
 //        clearTree();
 

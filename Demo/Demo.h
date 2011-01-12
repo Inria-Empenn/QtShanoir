@@ -19,11 +19,6 @@ class Demo : public QMainWindow, public Ui::Demo
     public:
         Demo(QWidget * parent = 0);
 
-    public slots:
-
-        void
-        find();
-
     private:
         DemoPrivate *d;
 };

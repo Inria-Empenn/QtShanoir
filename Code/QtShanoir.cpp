@@ -15,6 +15,8 @@
 #include <QNetworkReply>
 #include <QSslConfiguration>
 
+QtShanoir * QtShanoir::_instance = 0;
+
 class QtShanoirPrivate
 {
     public:
@@ -35,6 +37,14 @@ class QtShanoirPrivate
         QString downloadFileName;
 
 };
+
+QtShanoir *
+QtShanoir::instance()
+  {
+    if (_instance == 0)
+      _instance = new QtShanoir();
+    return _instance;
+  }
 
 QtShanoir::QtShanoir() :
     d(new QtShanoirPrivate)
@@ -322,6 +332,13 @@ QtShanoir::currentId(int id)
 }
 
 void
+QtShanoir::find()
+{
+    this->clearTree();
+    this->doQuery("StudyFindId");
+}
+
+void
 QtShanoir::download()
 {
     if ((d->selectedIds.size() != 0) || !d->downloadFileName.isEmpty()) {
@@ -337,19 +354,22 @@ QtShanoir::download()
         }
         dialog->close();
         if (!directory.isEmpty()) // A file has been chosen
+        {
             d->downloadDir = directory;
-        delete dialog;
+            d->curId = d->selectedIds.first();
+            //            emit getFileName();
 
-        //        qDebug() << d->selectedIds;
-        d->curId = d->selectedIds.first();
-        emit getFileName();
-        //        qDebug() << d->curId;
-//        this->setFilename("getFileName", QString::number(d->curId));
-//        this->doQuery("getFileName");
-        //        for (int i = 0; i < d->selectedIds.size(); i++) {
-        //            this->setDownload("download", QString::number(d->selectedIds[i]));
-        //            this->doQuery("download");
-        //        }
+            emit startDownload();
+            //        qDebug() << d->curId;
+            //        this->setFilename("getFileName", QString::number(d->curId));
+            //        this->doQuery("getFileName");
+            //        for (int i = 0; i < d->selectedIds.size(); i++) {
+            //            this->setDownload("download", QString::number(d->selectedIds[i]));
+            //            this->doQuery("download");
+            //        }
+
+        }
+        delete dialog;
     }
     else {
         QMessageBox * msgBox = new QMessageBox(d->tree);
@@ -381,6 +401,7 @@ void
 QtShanoir::setFilename(QString key, QString id)
 {
     //    d->waitForDownload = true;
+    qDebug() << "Call set filename";
     d->curId = id.toInt();
     //    qDebug() << "Prepare WS query for Id" << id;
     QString webs = "Downloader";
@@ -403,20 +424,21 @@ QtShanoir::setFilename(QString key, QString id)
 
     d->perWsQuery[key].push_back(setId);
     d->perWsQuery[key].push_back(filename);
-    d->perWsQuery[key].push_back(errors);
+    //    d->perWsQuery[key].push_back(errors);
 }
 
 void
 QtShanoir::getFileName(QString xmlserial)
 {
-    //    qDebug() << xmlserial;
+    qDebug() << xmlserial;
     QDomDocument doc;
     doc.setContent(xmlserial);
     QDomNode n = doc.firstChild().firstChild().nextSibling().firstChild().firstChild();
     if (n.isElement()) {
         d->downloadFileName = n.toElement().text();
     }
-    qDebug() << "Get Filename";
+    qDebug() << d->downloadFileName;
+    qDebug() << "Filename Set";
     emit startDownload();
 }
 
@@ -452,15 +474,15 @@ QtShanoir::setDownload(QString key, QString id)
 void
 QtShanoir::download(QString xmlserial)
 {
-    //    qDebug() << xmlserial;
+    qDebug() << xmlserial;
     const QtSoapMessage &message = d->http.getResponse();
     const QByteArray& bin = message.getBinary();
     if (bin.isEmpty()) {
         qDebug() << "Binary is empty";
         return;
     }
-    QFile dFile(d->downloadDir + QDir::separator() + d->downloadFileName);
-    //    QFile dFile(d->downloadDir + QDir::separator() + QString::number(d->curId) + ".nii");
+//    QFile dFile(d->downloadDir + QDir::separator() + d->downloadFileName);
+            QFile dFile(d->downloadDir + QDir::separator() + QString::number(d->curId) + ".nii");
 
     dFile.open(QFile::WriteOnly);
     dFile.write(bin);
@@ -489,8 +511,8 @@ QtShanoir::queryFinished()
 void
 QtShanoir::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    d->progress->download->setMaximum(bytesTotal);
-    d->progress->download->setValue(bytesReceived);
+    //    d->progress->download->setMaximum(bytesTotal);
+    d->progress->download->setValue(100 * bytesReceived / bytesTotal);
     qApp->processEvents();
 }
 
