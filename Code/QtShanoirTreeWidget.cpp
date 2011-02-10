@@ -77,12 +77,16 @@ QtShanoirTreeWidget::contextExportMenu(const QPoint point)
 
     // By default the context menu contains an open dicomdir a find command.
     find->setText(tr("Find studies"));
+    find->setIconVisibleInMenu(true);
+    find->setIcon(QIcon(":/Images/search.16x16.png"));
     QObject::connect(find, SIGNAL(triggered()), QtShanoir::instance(), SLOT(find()));
     menu.addAction(find);
     // If there's items selected
     if (!d->selectedId.isEmpty()) {
         menu.addSeparator();
         download->setText(tr("Download"));
+        download->setIconVisibleInMenu(true);
+        download->setIcon(QIcon(":/Images/download.16x16.png"));
         QObject::connect(download, SIGNAL(triggered()), QtShanoir::instance(), SLOT(download()));
         menu.addAction(download);
     }

@@ -53,7 +53,7 @@ QtShanoir::QtShanoir() :
     d->progress = 0;
     d->downloadFileName = "";
     //    d->waitForDownload = false;
-    this->doQuery("StudyFindId");
+    //this->doQuery("StudyFindId");
 }
 
 void
@@ -151,7 +151,7 @@ QtShanoir::doQuery(QString ws)
 void
 QtShanoir::getError(QString xmlserial)
 {
-    //    qDebug() << xmlserial;
+    qDebug() << xmlserial;
 
     QDomDocument doc;
     doc.setContent(xmlserial);
@@ -194,6 +194,7 @@ QtShanoir::getResponse()
     else {
         // Get the return value, and print the result.
         if (d->query) {
+            qDebug() << message.toXmlString();
             if (d->query->displayResult)
                 qDebug() << message.toXmlString();
             d->query->answer(message.toXmlString());
@@ -206,6 +207,8 @@ QtShanoir::getResponse()
 void
 QtShanoir::setLogin(QString key, QString ws, QString impl)
 {
+//    qDebug() << QtShanoirSettings::Instance()->login() << " : " << QtShanoirSettings::Instance()->password();
+
     QtShanoirWsQuery* uname = new QtShanoirWsQuery(ws);
     uname->WsImpl = impl;
     uname->WsMethod = "setUsername";
@@ -251,6 +254,7 @@ QtShanoir::populateQueries()
 void
 QtShanoir::mrExamQuery(QString str)
 {
+    qDebug() << "mrExamquery";
     this->setMrExamQuery("FindMrExam", str);
     this->doQuery("FindMrExam");
 }
@@ -335,6 +339,7 @@ void
 QtShanoir::find()
 {
     this->clearTree();
+    this->populateQueries();
     this->doQuery("StudyFindId");
 }
 
@@ -371,13 +376,13 @@ QtShanoir::download()
         }
         delete dialog;
     }
-    else {
-        QMessageBox * msgBox = new QMessageBox(d->tree);
-        msgBox->setIcon(QMessageBox::Information);
-        msgBox->setText(tr("Please select at least one dataset to download"));
-        msgBox->exec();
-        delete msgBox;
-    }
+//    else {
+//        QMessageBox * msgBox = new QMessageBox(d->tree);
+//        msgBox->setIcon(QMessageBox::Information);
+//        msgBox->setText(tr("Please select at least one dataset to download"));
+//        msgBox->exec();
+//        delete msgBox;
+//    }
 
 }
 

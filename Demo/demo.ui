@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>770</width>
-    <height>520</height>
+    <width>784</width>
+    <height>578</height>
    </rect>
   </property>
   <property name="font">
@@ -23,16 +23,13 @@
     <normaloff>:/Images/logo.shanoir.64x64.png</normaloff>:/Images/logo.shanoir.64x64.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
+   <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="spacing">
-       <number>2</number>
-      </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QtShanoirTreeWidget" name="treeWidget" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -47,15 +44,21 @@
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
-        <property name="spacing">
-         <number>2</number>
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
         </property>
         <item>
          <widget class="QGroupBox" name="groupBox">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="title">
            <string>Server settings</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_2">
+          <layout class="QGridLayout" name="gridLayout">
            <property name="margin">
             <number>2</number>
            </property>
@@ -73,7 +76,7 @@
              <property name="minimumSize">
               <size>
                <width>240</width>
-               <height>152</height>
+               <height>130</height>
               </size>
              </property>
              <property name="maximumSize">
@@ -90,13 +93,16 @@
             </widget>
            </item>
           </layout>
-          <zorder>settingsWidget</zorder>
-          <zorder>settingsWidget</zorder>
-          <zorder>settingsWidget</zorder>
          </widget>
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_2">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="title">
            <string>Queries</string>
           </property>
@@ -111,7 +117,7 @@
             <widget class="QPushButton" name="findButton">
              <property name="maximumSize">
               <size>
-               <width>16777215</width>
+               <width>238</width>
                <height>27</height>
               </size>
              </property>
@@ -128,7 +134,7 @@
             <widget class="QPushButton" name="downloadButton">
              <property name="maximumSize">
               <size>
-               <width>16777215</width>
+               <width>238</width>
                <height>27</height>
               </size>
              </property>
@@ -149,6 +155,9 @@
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
@@ -165,6 +174,12 @@
             <height>29</height>
            </size>
           </property>
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
          </widget>
         </item>
        </layout>
@@ -178,7 +193,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>770</width>
+     <width>784</width>
      <height>25</height>
     </rect>
    </property>

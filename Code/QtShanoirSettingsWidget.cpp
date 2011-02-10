@@ -27,31 +27,35 @@ QtShanoirSettingsWidget::initConnections()
     QObject::connect(passwordEdit, SIGNAL(textChanged(QString)), this, SLOT(passwordTextChanged(QString)));
     QObject::connect(hostEdit, SIGNAL(textChanged(QString)), this, SLOT(hostTextChanged(QString)));
     QObject::connect(portSpinBox, SIGNAL(valueChanged(int)), this, SLOT(portValueChanged(int)));
-    QObject::connect(applyButton, SIGNAL(clicked()), this, SLOT(save()));
+//    QObject::connect(applyButton, SIGNAL(clicked()), this, SLOT(save()));
 }
 
 void
 QtShanoirSettingsWidget::loginTextChanged(QString text)
 {
     QtShanoirSettings::Instance()->setLogin(text.trimmed());
+    QtShanoirSettings::Instance()->update();
 }
 
 void
 QtShanoirSettingsWidget::passwordTextChanged(QString text)
 {
     QtShanoirSettings::Instance()->setPassword(text.trimmed());
+    QtShanoirSettings::Instance()->update();
 }
 
 void
 QtShanoirSettingsWidget::hostTextChanged(QString text)
 {
     QtShanoirSettings::Instance()->setHost(text.trimmed());
+    QtShanoirSettings::Instance()->update();
 }
 
 void
 QtShanoirSettingsWidget::portValueChanged(int value)
 {
     QtShanoirSettings::Instance()->setPort(QString::number(value));
+    QtShanoirSettings::Instance()->update();
 }
 
 void
