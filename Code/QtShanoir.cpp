@@ -343,12 +343,21 @@ QtShanoir::find()
     this->doQuery("StudyFindId");
 }
 
+void QtShanoir::downloadToDir(QString tmpDir)
+{
+	d->downloadDir = tmpDir;
+	d->curId = d->selectedIds.first();
+	
+	emit startDownload();
+}
+
 void
 QtShanoir::download()
 {
     if ((d->selectedIds.size() != 0) || !d->downloadFileName.isEmpty()) {
         // Open a QFileDialog in directory mode.
-        QFileDialog * dialog = new QFileDialog(d->tree);
+        /*
+				QFileDialog * dialog = new QFileDialog(d->tree);
         dialog->setFileMode(QFileDialog::Directory);
         dialog->setOption(QFileDialog::ShowDirsOnly, true);
         dialog->setDirectory(QDir::home().dirName());
@@ -358,6 +367,7 @@ QtShanoir::download()
             directory = dialog->selectedFiles()[0];
         }
         dialog->close();
+			
         if (!directory.isEmpty()) // A file has been chosen
         {
             d->downloadDir = directory;
@@ -375,6 +385,9 @@ QtShanoir::download()
 
         }
         delete dialog;
+				 */
+			
+			emit startDownload();
     }
 //    else {
 //        QMessageBox * msgBox = new QMessageBox(d->tree);
@@ -492,6 +505,8 @@ QtShanoir::download(QString xmlserial)
     dFile.open(QFile::WriteOnly);
     dFile.write(bin);
     dFile.close();
+	
+		emit downloadFinished(dFile.fileName());
 
     qDebug() << "Download finished";
 

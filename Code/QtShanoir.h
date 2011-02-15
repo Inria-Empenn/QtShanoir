@@ -34,6 +34,7 @@ class QtShanoir : public QObject
         attachProgressWidget(QtShanoirProgressWidget * progress);
         void
         clearTree();
+				void downloadToDir(QString tmpDir);
 
     public slots:
         void
@@ -65,6 +66,7 @@ class QtShanoir : public QObject
         startDownload();
         void
         getFileName();
+				void downloadFinished(QString fileName);
 
     private slots:
         void
