@@ -40,11 +40,11 @@ class QtShanoirPrivate
 
 QtShanoir *
 QtShanoir::instance()
-  {
+{
     if (_instance == 0)
-      _instance = new QtShanoir();
+        _instance = new QtShanoir();
     return _instance;
-  }
+}
 
 QtShanoir::QtShanoir() :
     d(new QtShanoirPrivate)
@@ -151,7 +151,7 @@ QtShanoir::doQuery(QString ws)
 void
 QtShanoir::getError(QString xmlserial)
 {
-    qDebug() << xmlserial;
+    //    qDebug() << xmlserial;
 
     QDomDocument doc;
     doc.setContent(xmlserial);
@@ -194,7 +194,7 @@ QtShanoir::getResponse()
     else {
         // Get the return value, and print the result.
         if (d->query) {
-            qDebug() << message.toXmlString();
+            //            qDebug() << message.toXmlString();
             if (d->query->displayResult)
                 qDebug() << message.toXmlString();
             d->query->answer(message.toXmlString());
@@ -207,7 +207,7 @@ QtShanoir::getResponse()
 void
 QtShanoir::setLogin(QString key, QString ws, QString impl)
 {
-//    qDebug() << QtShanoirSettings::Instance()->login() << " : " << QtShanoirSettings::Instance()->password();
+    //    qDebug() << QtShanoirSettings::Instance()->login() << " : " << QtShanoirSettings::Instance()->password();
 
     QtShanoirWsQuery* uname = new QtShanoirWsQuery(ws);
     uname->WsImpl = impl;
@@ -254,7 +254,6 @@ QtShanoir::populateQueries()
 void
 QtShanoir::mrExamQuery(QString str)
 {
-    qDebug() << "mrExamquery";
     this->setMrExamQuery("FindMrExam", str);
     this->doQuery("FindMrExam");
 }
@@ -343,12 +342,13 @@ QtShanoir::find()
     this->doQuery("StudyFindId");
 }
 
-void QtShanoir::downloadToDir(QString tmpDir)
+void
+QtShanoir::downloadToDir(QString directory)
 {
-	d->downloadDir = tmpDir;
-	d->curId = d->selectedIds.first();
-	
-	emit startDownload();
+    d->downloadDir = directory;
+    d->curId = d->selectedIds.first();
+
+    emit startDownload();
 }
 
 void
@@ -356,8 +356,7 @@ QtShanoir::download()
 {
     if ((d->selectedIds.size() != 0) || !d->downloadFileName.isEmpty()) {
         // Open a QFileDialog in directory mode.
-        /*
-				QFileDialog * dialog = new QFileDialog(d->tree);
+        QFileDialog * dialog = new QFileDialog(d->tree);
         dialog->setFileMode(QFileDialog::Directory);
         dialog->setOption(QFileDialog::ShowDirsOnly, true);
         dialog->setDirectory(QDir::home().dirName());
@@ -367,7 +366,7 @@ QtShanoir::download()
             directory = dialog->selectedFiles()[0];
         }
         dialog->close();
-			
+
         if (!directory.isEmpty()) // A file has been chosen
         {
             d->downloadDir = directory;
@@ -385,17 +384,14 @@ QtShanoir::download()
 
         }
         delete dialog;
-				 */
-			
-			emit startDownload();
     }
-//    else {
-//        QMessageBox * msgBox = new QMessageBox(d->tree);
-//        msgBox->setIcon(QMessageBox::Information);
-//        msgBox->setText(tr("Please select at least one dataset to download"));
-//        msgBox->exec();
-//        delete msgBox;
-//    }
+    //    else {
+    //        QMessageBox * msgBox = new QMessageBox(d->tree);
+    //        msgBox->setIcon(QMessageBox::Information);
+    //        msgBox->setText(tr("Please select at least one dataset to download"));
+    //        msgBox->exec();
+    //        delete msgBox;
+    //    }
 
 }
 
@@ -492,21 +488,22 @@ QtShanoir::setDownload(QString key, QString id)
 void
 QtShanoir::download(QString xmlserial)
 {
-    qDebug() << xmlserial;
+    //    qDebug() << xmlserial;
     const QtSoapMessage &message = d->http.getResponse();
     const QByteArray& bin = message.getBinary();
     if (bin.isEmpty()) {
         qDebug() << "Binary is empty";
         return;
     }
-//    QFile dFile(d->downloadDir + QDir::separator() + d->downloadFileName);
-            QFile dFile(d->downloadDir + QDir::separator() + QString::number(d->curId) + ".nii");
+    //    QFile dFile(d->downloadDir + QDir::separator() + d->downloadFileName);
+    QFile dFile(d->downloadDir + QDir::separator() + QString::number(d->curId) + ".nii");
 
     dFile.open(QFile::WriteOnly);
     dFile.write(bin);
     dFile.close();
-	
-		emit downloadFinished(dFile.fileName());
+
+    emit
+    downloadFinished(dFile.fileName());
 
     qDebug() << "Download finished";
 
