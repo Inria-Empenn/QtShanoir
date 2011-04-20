@@ -27,8 +27,6 @@ class QtShanoir : public QObject
         void
         initWS();
         void
-        doQuery(QString);
-        void
         attachTreeWidget(QtShanoirTreeWidget * tree);
         void
         attachProgressWidget(QtShanoirProgressWidget * progress);
@@ -77,8 +75,7 @@ class QtShanoir : public QObject
         sslErrors(const QList<QSslError> & errors);
         void
         sendMessage();
-        void
-        download(QString xmlserial);
+
         void
         callDownloadWS();
         void
