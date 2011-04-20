@@ -6,7 +6,7 @@
  */
 
 #include <QtShanoir.h>
-#include <QtShanoirWsQuery.h>
+//#include <QtShanoirWsQuery.h>
 #include <QtShanoirSettings.h>
 #include <QtShanoirTreeWidget.h>
 #include <QtShanoirProgressWidget.h>
@@ -29,9 +29,9 @@ public:
     QNetworkRequest req;
     // the server, the namespace of the ws and the ws name
     QString wsimpl, ws;
-    const QtShanoirWsQuery * query;
+//    const QtShanoirWsQuery * query;
     // Fill the following map with the properly set up query
-    QMap<QString, QList<QtShanoirWsQuery*> > perWsQuery;
+//    QMap<QString, QList<QtShanoirWsQuery*> > perWsQuery;
     int curId;
     QList<int> selectedIds;
     QString downloadDir;
@@ -111,36 +111,36 @@ QtShanoir::attachProgressWidget(QtShanoirProgressWidget * widget)
 void
 QtShanoir::prepareMessage()
 {
-    d->query = 0;
-    if (d->num_message < d->perWsQuery[d->ws].count())
-        d->query = d->perWsQuery[d->ws].at(d->num_message);
+//    d->query = 0;
+//    if (d->num_message < d->perWsQuery[d->ws].count())
+//        d->query = d->perWsQuery[d->ws].at(d->num_message);
 }
 
 void
 QtShanoir::sendMessage()
 {
-    this->prepareMessage();
-    if (!d->query)
-        return;
+//    this->prepareMessage();
+//    if (!d->query)
+//        return;
 
-    //qDebug() << d->query->WsMethod;
+//    //qDebug() << d->query->WsMethod;
 
-    QtSoapMessage request;
-    request.setMethod(d->query->WsMethod, d->query->WsImpl);
-    for (int i = 0; i < d->query->WsMethodarg.count(); ++i)
-        request.addMethodArgument(d->query->WsMethodarg.at(i).first, "", d->query->WsMethodarg.at(i).second);
+//    QtSoapMessage request;
+//    request.setMethod(d->query->WsMethod, d->query->WsImpl);
+//    for (int i = 0; i < d->query->WsMethodarg.count(); ++i)
+//        request.addMethodArgument(d->query->WsMethodarg.at(i).first, "", d->query->WsMethodarg.at(i).second);
 
-    // Submit the request the the web service.
-    d->http.setHost(QtShanoirSettings::Instance()->host(), true, QtShanoirSettings::Instance()->port().toInt()); // set secure connection and port
+//    // Submit the request the the web service.
+//    d->http.setHost(QtShanoirSettings::Instance()->host(), true, QtShanoirSettings::Instance()->port().toInt()); // set secure connection and port
 
-    d->http.setAction(QString("https://%1//Shanoir-Shanoir/%2").arg(QtShanoirSettings::Instance()->host()).arg(d->query->WebService));
-    d->http.submitRequest(d->req, request, "//Shanoir-Shanoir/" + d->query->WebService);
+//    d->http.setAction(QString("https://%1//Shanoir-Shanoir/%2").arg(QtShanoirSettings::Instance()->host()).arg(d->query->WebService));
+//    d->http.submitRequest(d->req, request, "//Shanoir-Shanoir/" + d->query->WebService);
 
-    QNetworkReply *nrep = d->http.networkReply();
-    QObject::connect(nrep, SIGNAL(sslErrors ( const QList<QSslError> & )), this, SLOT(sslErrors ( const QList<QSslError> &)));
+//    QNetworkReply *nrep = d->http.networkReply();
+//    QObject::connect(nrep, SIGNAL(sslErrors ( const QList<QSslError> & )), this, SLOT(sslErrors ( const QList<QSslError> &)));
 
-    //    if (d->progress)
-    //        QObject::connect(nrep, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+//    //    if (d->progress)
+//    //        QObject::connect(nrep, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
 }
 
 
@@ -179,44 +179,44 @@ void
 QtShanoir::getResponse()
 {
     // Get a reference to the response message.
-    const QtSoapMessage &message = d->http.getResponse();
+//    const QtSoapMessage &message = d->http.getResponse();
 
-    // Check if the response is a SOAP Fault message
-    if (message.isFault()) {
-        qDebug() << message.faultString().value().toString();
-        qDebug() << message.faultCode();
-        qDebug() << message.toXmlString();
-    }
-    else {
-        // Get the return value, and print the result.
-        if (d->query) {
-            //            qDebug() << message.toXmlString();
-            if (d->query->displayResult)
-                qDebug() << message.toXmlString();
-            d->query->answer(message.toXmlString());
-        }
-    }
-    d->num_message++;
-    emit nextMessage();
+//    // Check if the response is a SOAP Fault message
+//    if (message.isFault()) {
+//        qDebug() << message.faultString().value().toString();
+//        qDebug() << message.faultCode();
+//        qDebug() << message.toXmlString();
+//    }
+//    else {
+//        // Get the return value, and print the result.
+//        if (d->query) {
+//            //            qDebug() << message.toXmlString();
+//            if (d->query->displayResult)
+//                qDebug() << message.toXmlString();
+//            d->query->answer(message.toXmlString());
+//        }
+//    }
+//    d->num_message++;
+//    emit nextMessage();
 }
 
 void
 QtShanoir::setLogin(QString key, QString ws, QString impl)
 {
-    //    qDebug() << QtShanoirSettings::Instance()->login() << " : " << QtShanoirSettings::Instance()->password();
+//    //    qDebug() << QtShanoirSettings::Instance()->login() << " : " << QtShanoirSettings::Instance()->password();
 
-    QtShanoirWsQuery* uname = new QtShanoirWsQuery(ws);
-    uname->WsImpl = impl;
-    uname->WsMethod = "setUsername";
-    uname->WsMethodarg.push_back(qMakePair(QString("username"), QtShanoirSettings::Instance()->login()));
+//    QtShanoirWsQuery* uname = new QtShanoirWsQuery(ws);
+//    uname->WsImpl = impl;
+//    uname->WsMethod = "setUsername";
+//    uname->WsMethodarg.push_back(qMakePair(QString("username"), QtShanoirSettings::Instance()->login()));
 
-    QtShanoirWsQuery* pass = new QtShanoirWsQuery(ws);
-    pass->WsImpl = impl;
-    pass->WsMethod = "setPassword";
-    pass->WsMethodarg.push_back(qMakePair(QString("dummy"), QtShanoirSettings::Instance()->password()));
+//    QtShanoirWsQuery* pass = new QtShanoirWsQuery(ws);
+//    pass->WsImpl = impl;
+//    pass->WsMethod = "setPassword";
+//    pass->WsMethodarg.push_back(qMakePair(QString("dummy"), QtShanoirSettings::Instance()->password()));
 
-    d->perWsQuery[key].push_back(uname);
-    d->perWsQuery[key].push_back(pass);
+//    d->perWsQuery[key].push_back(uname);
+//    d->perWsQuery[key].push_back(pass);
 }
 
 void
@@ -257,29 +257,29 @@ QtShanoir::setMrExamQuery(QString key, QString id)
 {
     //    qDebug() << "Prepare WS query for Id" << id;
 
-    QString webs = "MrExaminationFinder";
-    QString impl = "http://finder.impl.webservices.shanoir.org/";
+//    QString webs = "MrExaminationFinder";
+//    QString impl = "http://finder.impl.webservices.shanoir.org/";
 
-    d->perWsQuery[key].clear();
+//    d->perWsQuery[key].clear();
 
-    this->setLogin(key, webs, impl);
+//    this->setLogin(key, webs, impl);
 
-    QtShanoirWsQuery* setId = new QtShanoirWsQuery(webs, impl);
-    setId->WsMethod = "setSubjectIds";
-    setId->WsMethodarg.push_back(qMakePair(QString("examinationSubjectIds"), QString("%1").arg(id)));
+//    QtShanoirWsQuery* setId = new QtShanoirWsQuery(webs, impl);
+//    setId->WsMethod = "setSubjectIds";
+//    setId->WsMethodarg.push_back(qMakePair(QString("examinationSubjectIds"), QString("%1").arg(id)));
 
-    QtShanoirWsQuery* find = new QtShanoirWsQuery(webs, impl);
-    find->WsMethod = "find";
-    if (d->tree)
-        QObject::connect(find, SIGNAL(response(QString)), d->tree, SLOT(parseMrExamination(QString)));
+//    QtShanoirWsQuery* find = new QtShanoirWsQuery(webs, impl);
+//    find->WsMethod = "find";
+//    if (d->tree)
+//        QObject::connect(find, SIGNAL(response(QString)), d->tree, SLOT(parseMrExamination(QString)));
 
-    QtShanoirWsQuery* errors = new QtShanoirWsQuery(webs, impl);
-    errors->WsMethod = "getErrorMessage";
-    QObject::connect(errors, SIGNAL(response(QString)), this, SLOT(getError(QString)));
+//    QtShanoirWsQuery* errors = new QtShanoirWsQuery(webs, impl);
+//    errors->WsMethod = "getErrorMessage";
+//    QObject::connect(errors, SIGNAL(response(QString)), this, SLOT(getError(QString)));
 
-    d->perWsQuery[key].push_back(setId);
-    d->perWsQuery[key].push_back(find);
-    d->perWsQuery[key].push_back(errors);
+//    d->perWsQuery[key].push_back(setId);
+//    d->perWsQuery[key].push_back(find);
+//    d->perWsQuery[key].push_back(errors);
 }
 
 void
@@ -313,33 +313,33 @@ void
 QtShanoir::setDatasetQuery(QString key, QString id, QString exId)
 {
     //    qDebug() << "Prepare WS query for Id" << id << exId;
-    QString webs = "MrDatasetFinder";
-    QString impl = "http://finder.impl.webservices.shanoir.org/";
-    d->perWsQuery[key].clear();
+//    QString webs = "MrDatasetFinder";
+//    QString impl = "http://finder.impl.webservices.shanoir.org/";
+//    d->perWsQuery[key].clear();
 
-    this->setLogin(key, webs, impl);
+//    this->setLogin(key, webs, impl);
 
-    QtShanoirWsQuery* setId = new QtShanoirWsQuery(webs, impl);
-    setId->WsMethod = "setSubjectIds";
-    setId->WsMethodarg.push_back(qMakePair(QString("mrDatasetSubjectIds"), QString("%1").arg(exId)));
+//    QtShanoirWsQuery* setId = new QtShanoirWsQuery(webs, impl);
+//    setId->WsMethod = "setSubjectIds";
+//    setId->WsMethodarg.push_back(qMakePair(QString("mrDatasetSubjectIds"), QString("%1").arg(exId)));
 
-    QtShanoirWsQuery* setEx = new QtShanoirWsQuery(webs, impl);
-    setEx->WsMethod = "setExaminationIds";
-    setEx->WsMethodarg.push_back(qMakePair(QString("mrDatasetExaminations"), QString("%1").arg(id)));
+//    QtShanoirWsQuery* setEx = new QtShanoirWsQuery(webs, impl);
+//    setEx->WsMethod = "setExaminationIds";
+//    setEx->WsMethodarg.push_back(qMakePair(QString("mrDatasetExaminations"), QString("%1").arg(id)));
 
-    QtShanoirWsQuery* find = new QtShanoirWsQuery(webs, impl);
-    find->WsMethod = "find";
-    if (d->tree)
-        QObject::connect(find, SIGNAL(response(QString)), d->tree, SLOT(parseAcquisition(QString)));
+//    QtShanoirWsQuery* find = new QtShanoirWsQuery(webs, impl);
+//    find->WsMethod = "find";
+//    if (d->tree)
+//        QObject::connect(find, SIGNAL(response(QString)), d->tree, SLOT(parseAcquisition(QString)));
 
-    QtShanoirWsQuery* errors = new QtShanoirWsQuery(webs, impl);
-    errors->WsMethod = "getErrorMessage";
-    QObject::connect(errors, SIGNAL(response(QString)), this, SLOT(getError(QString)));
+//    QtShanoirWsQuery* errors = new QtShanoirWsQuery(webs, impl);
+//    errors->WsMethod = "getErrorMessage";
+//    QObject::connect(errors, SIGNAL(response(QString)), this, SLOT(getError(QString)));
 
-    //    perWsQuery[key].push_back(setId);
-    d->perWsQuery[key].push_back(setEx);
-    d->perWsQuery[key].push_back(find);
-    d->perWsQuery[key].push_back(errors);
+//    //    perWsQuery[key].push_back(setId);
+//    d->perWsQuery[key].push_back(setEx);
+//    d->perWsQuery[key].push_back(find);
+//    d->perWsQuery[key].push_back(errors);
 }
 
 void
@@ -420,7 +420,7 @@ QtShanoir::callGetFileNameWS()
 void
 QtShanoir::callDownloadWS()
 {
-    qDebug() << "Start Download";
+    qDebug() << "QtShanoir Start Download";
     this->setDownload("download", QString::number(d->curId));
 //    this->doQuery("download");
 }
@@ -450,21 +450,23 @@ QtShanoir::setFilename(QString key, QString id)
 void
 QtShanoir::getFileName(QString xmlserial)
 {
-    qDebug() << xmlserial;
+//    qDebug() << xmlserial;
     QDomDocument doc;
     doc.setContent(xmlserial);
     QDomNode n = doc.firstChild().firstChild().nextSibling().firstChild().firstChild();
     if (n.isElement()) {
         d->downloadFileName = n.toElement().text();
     }
-    qDebug() << d->downloadFileName;
-    qDebug() << "Filename Set";
+//    qDebug() << d->downloadFileName;
+//    qDebug() << "Filename Set";
 //    emit startDownload();
 }
 
 void
 QtShanoir::setDownload(QString key, QString id)
 {
+
+    qDebug() << "Setting download" << key << id;
 
     setFilename(key, id);
     //    d->waitForDownload = true;
@@ -480,12 +482,13 @@ QtShanoir::setDownload(QString key, QString id)
     //    qDebug() << "Prepare WS query for Id" << id;
 
 
-    WebServices::Query(ws, "setUsername", impl, QStringList() << "arg0", QStringList() << QtShanoirSettings::Instance()->login());
-    WebServices::Query(ws, "setPassword", impl, QStringList() << "arg0", QStringList() << QtShanoirSettings::Instance()->password());
+    WebServices::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
+    WebServices::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
     WebServices::Query(ws, "setDatasetId", impl, QStringList() << "datasetId", QStringList() << id);
 
 
     QByteArray bin = WebServices::BinaryQuery(ws, "download", impl, QStringList(), QStringList() );
+
     WebServices::Query(ws, "getErrorMessage", impl, QStringList(), QStringList() );
 
     if (bin.isEmpty()) {

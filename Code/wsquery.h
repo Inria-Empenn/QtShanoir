@@ -30,6 +30,8 @@ public:
     void query(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval);
     QString getresult() { return result; }
     QByteArray& getRaw() { return raw; }
+    static WSQuery& Instance() { static WSQuery q; return q; }
+
 public:
     void run();
     //    QMutex mutex;

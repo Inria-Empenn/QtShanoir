@@ -28,9 +28,12 @@ void WSQuery::getResponse()
     }
     else
         this->result = message.toXmlString();
-
-    if (!message.getBinary().isEmpty())
-        raw = message.getBinary();
+    const QByteArray& bin = message.getBinary();
+    if (!bin.isEmpty())
+    {
+        qDebug() << "Binary file...";
+        raw = bin;
+    }
     done = true;
     //    mutex.unlock();
 }
@@ -100,7 +103,7 @@ void WSQuery::query(QString WebService_, QString WsMethod_, QString WsImpl_, QSt
 
 QString Query(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval)
 {
-    static WSQuery query;
+    WSQuery& query = WSQuery::Instance();
 
     query.query(WebService,  WsMethod,  WsImpl,  argname,  argval);
 
@@ -112,7 +115,7 @@ QString Query(QString WebService, QString WsMethod, QString WsImpl, QStringList 
 
 QByteArray BinaryQuery(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval)
 {
-    static WSQuery query;
+    WSQuery& query = WSQuery::Instance();
 
     query.query(WebService,  WsMethod,  WsImpl,  argname,  argval);
 
