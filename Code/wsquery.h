@@ -11,7 +11,7 @@
 #include <QMessageBox>
 #include <QNetworkReply>
 #include <QSslConfiguration>
-#include <qtsoap.h>
+#include <QtSoap.h>
 
 #include <QThread>
 #include "QtShanoirSettings.h"

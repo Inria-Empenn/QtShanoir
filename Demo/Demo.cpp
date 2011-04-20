@@ -21,7 +21,7 @@ Demo::Demo(QWidget * parent) :
 //    d->controller = new QtShanoir;
     QtShanoir::instance()->attachProgressWidget(progressWidget);
     QtShanoir::instance()->attachTreeWidget(treeWidget);
-    QtShanoir::instance()->initWS();
+    QtShanoir::instance()->init();
 
     QObject::connect(findButton, SIGNAL(clicked()), QtShanoir::instance(), SLOT(find()));
     QObject::connect(downloadButton, SIGNAL(clicked()), QtShanoir::instance(), SLOT(download()));

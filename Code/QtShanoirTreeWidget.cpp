@@ -231,6 +231,7 @@ QtShanoirTreeWidget::parseMrExamination(QString xmlserial)
 void
 QtShanoirTreeWidget::parseAcquisition(QString xmlserial)
 {
+    //qDebug() << xmlserial;
     QDomDocument doc;
     doc.setContent(xmlserial);
     doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());

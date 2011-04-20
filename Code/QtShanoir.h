@@ -23,7 +23,7 @@ class QtShanoir : public QObject
         QtShanoir();
 
         static QtShanoir*  instance();
-        void        initWS();
+        void        init();
         void        attachTreeWidget(QtShanoirTreeWidget * tree);
         void        attachProgressWidget(QtShanoirProgressWidget * progress);
         void        clearTree();
@@ -34,25 +34,21 @@ class QtShanoir : public QObject
         void        find();
 
     protected:
-        void        prepareMessage();
         // Create the Queries for a specific
-        void        populateQueries();
+        void        populate();
         // Push the login stack for this ws.
         void        setLogin(QString key, QString ws, QString impl = "http://finder.impl.webservices.shanoir.org");
         void        setMrExamQuery(QString key, QString id);
-        void        setDownload(QString key, QString id);
-        void        setFilename(QString key, QString id);
+        void        setDownload(QString datasetId);
+        void        setFilename(QString datasetId);
         void        setDatasetQuery(QString key, QString id, QString exId);
     signals:
         void        nextMessage();
         void        startDownload();
-        void        getFileName();
         void        downloadFinished(QString fileName);
 
 private slots:
-        void        callDownloadWS();
-        void        callGetFileNameWS();
-        void        getFileName(QString xmlserial);
+        void        callDownload();
         void        getError(QString);
         void        updateSelected(QList<int> );
         void        setDownloadFilename(QString filename);
