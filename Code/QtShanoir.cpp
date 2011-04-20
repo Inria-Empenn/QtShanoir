@@ -6,7 +6,6 @@
  */
 
 #include <QtShanoir.h>
-//#include <QtShanoirWsQuery.h>
 #include <QtShanoirSettings.h>
 #include <QtShanoirTreeWidget.h>
 #include <QtShanoirProgressWidget.h>
