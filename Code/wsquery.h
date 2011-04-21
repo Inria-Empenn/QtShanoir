@@ -37,6 +37,9 @@ public:
     //    QMutex mutex;
     bool finished()  { return done; }
 
+    static QString Query(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval);
+    static QByteArray BinaryQuery(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval);
+
 protected slots:
     void sslErrors ( const QList<QSslError> & errors );
     void getResponse();
@@ -54,7 +57,6 @@ protected:
 
 };
 
-QString Query(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval);
-QByteArray BinaryQuery(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval);
+
 }
 #endif // WSQUERY_H

@@ -101,7 +101,7 @@ void WSQuery::query(QString WebService_, QString WsMethod_, QString WsImpl_, QSt
     this->run();
 }
 
-QString Query(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval)
+QString WSQuery::Query(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval)
 {
     WSQuery& query = WSQuery::Instance();
 
@@ -113,7 +113,7 @@ QString Query(QString WebService, QString WsMethod, QString WsImpl, QStringList 
     return query.getresult();
 }
 
-QByteArray BinaryQuery(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval)
+QByteArray WSQuery::BinaryQuery(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval)
 {
     WSQuery& query = WSQuery::Instance();
 
