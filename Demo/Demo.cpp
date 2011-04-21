@@ -25,4 +25,6 @@ Demo::Demo(QWidget * parent) :
 
     QObject::connect(findButton, SIGNAL(clicked()), QtShanoir::instance(), SLOT(find()));
     QObject::connect(downloadButton, SIGNAL(clicked()), QtShanoir::instance(), SLOT(download()));
+
+    QObject::connect(metadataCheckBox, SIGNAL(stateChanged(int)), QtShanoir::instance(), SLOT(setDownloadMetadata(int)));
 }

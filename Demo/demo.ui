@@ -130,7 +130,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="2" column="0">
             <widget class="QPushButton" name="downloadButton">
              <property name="maximumSize">
               <size>
@@ -144,6 +144,13 @@
              <property name="icon">
               <iconset resource="../Resources/qtshanoir.qrc">
                <normaloff>:/Images/downloadNifti.16x16.png</normaloff>:/Images/downloadNifti.16x16.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="metadataCheckBox">
+             <property name="text">
+              <string>Download Metadata</string>
              </property>
             </widget>
            </item>

@@ -22,42 +22,68 @@ class QtShanoir : public QObject
     public:
         QtShanoir();
 
-        static QtShanoir*  instance();
-        void        init();
-        void        attachTreeWidget(QtShanoirTreeWidget * tree);
-        void        attachProgressWidget(QtShanoirProgressWidget * progress);
-        void        clearTree();
-        void        downloadToDir(QString tmpDir);
+        static QtShanoir*
+        instance();
+        void
+        init();
+        void
+        attachTreeWidget(QtShanoirTreeWidget * tree);
+        void
+        attachProgressWidget(QtShanoirProgressWidget * progress);
+        void
+        clearTree();
+        void
+        downloadToDir(QString tmpDir);
+        void
+        setDownloadMetadata(bool meta);
 
     public slots:
-        void        download();
-        void        find();
+        void
+        setDownloadMetadata(int state);
+        void
+        download();
+        void
+        find();
 
     protected:
         // Create the Queries for a specific
-        void        populate();
+        void
+        populate();
         // Push the login stack for this ws.
-        void        setLogin(QString key, QString ws, QString impl = "http://finder.impl.webservices.shanoir.org");
-        void        setMrExamQuery(QString key, QString id);
-        void        setDownload(QString datasetId);
-        void        setFilename(QString datasetId);
-        void        setDatasetQuery(QString key, QString id, QString exId);
+        void
+        downloadDataset(QString datasetId);
+        void
+        downloadMetadata(QString datasetId);
+        void
+        getDatasetFilename(QString datasetId);
     signals:
-        void        nextMessage();
-        void        startDownload();
-        void        downloadFinished(QString fileName);
+        void
+        nextMessage();
+        void
+        startDownload();
+        void
+        downloadFinished(QString fileName);
 
-private slots:
-        void        callDownload();
-        void        getError(QString);
-        void        updateSelected(QList<int> );
-        void        setDownloadFilename(QString filename);
-        void        downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    private slots:
+        void
+        callDownload();
+        void
+        getError(QString);
+        void
+        updateSelected(QList<int> );
+        void
+        setDownloadFilename(QString filename);
+        void
+        downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
         //        void uploadProgress ( qint64 bytesSent, qint64 bytesTotal );
-        void        mrExamQuery(QString);
-        void        datasetQuery(QString, QString);
-        void        currentId(int);
-        void        queryFinished();
+        void
+        findExam(QString);
+        void
+        findDataset(QString, QString);
+        void
+        currentId(int);
+        void
+        queryFinished();
 
     private:
         static QtShanoir * _instance;
