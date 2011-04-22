@@ -229,14 +229,17 @@ QtShanoir::downloadDataset(QString datasetId)
         qDebug() << "Binary is empty";
         return;
     }
+  
     QFile dFile(d->downloadDir + QDir::separator() + (d->downloadFileName.isEmpty() ? QString("%1.nii").arg(d->curId) : d->downloadFileName));
 
     dFile.open(QFile::WriteOnly);
     dFile.write(bin);
     dFile.close();
-
+  
     if (d->downloadMetadata)
         this->downloadMetadata(datasetId);
+
+    emit downloadFinished(dFile.fileName());
 }
 
 void
