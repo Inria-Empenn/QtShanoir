@@ -40,9 +40,8 @@ class QtShanoirTreeWidget : public QWidget, public Ui::QtShanoirTree
         void
         itemClicked(QTreeWidgetItem* item, int column);
         void
-        parseAcquisition(QString xmlserial, QString datasetNameFilter);
-        void
-        parseStudy(QString xmlserial, QString studyNameFilter, QString patientNameFilter);
+        parseAcquisition(QString xmlserial, QRegExp datasetNameFilter);
+        void parseStudy(QString xmlserial, QRegExp patientNameFilter);
         void
         parseMrExamination(QString xmlserial, QString dateFilter);
         void

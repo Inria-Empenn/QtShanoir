@@ -29,10 +29,10 @@ public:
   QString downloadFileName;
   bool downloadMetadata;
   
-  QString studyNameFilter;
+  QRegExp studyNameFilter;
   QString dateFilter;
-  QString patientNameFilter;
-  QString datasetNameFilter;
+  QRegExp patientNameFilter;
+  QRegExp datasetNameFilter;
 };
 
 QtShanoir *
@@ -51,10 +51,14 @@ d(new QtShanoirPrivate)
   d->downloadFileName = "";
   d->downloadMetadata = false;
 
-  d->studyNameFilter = "";
-  d->patientNameFilter = "";
+  d->studyNameFilter.setPattern("*");
+  d->patientNameFilter.setPattern("*");
   d->dateFilter = "";
-  d->datasetNameFilter = "";
+  d->datasetNameFilter.setPattern("*");
+  
+  d->studyNameFilter.setPatternSyntax(QRegExp::Wildcard);
+  d->patientNameFilter.setPatternSyntax(QRegExp::Wildcard);
+  d->datasetNameFilter.setPatternSyntax(QRegExp::Wildcard);
 }
 
 void
@@ -67,19 +71,28 @@ QtShanoir::setDateFilter(QString text)
 void
 QtShanoir::setStudyNameFilter(QString text)
 {
-  d->studyNameFilter = text;
+  if (text != "")
+    d->studyNameFilter.setPattern(text);
+  else
+    d->studyNameFilter.setPattern("*");
 }
 
 void
 QtShanoir::setPatientNameFilter(QString text)
 {
-  d->patientNameFilter = text;
+  if (text != "")
+    d->patientNameFilter.setPattern(text);
+  else
+    d->patientNameFilter.setPattern("*");
 }
 
 void
 QtShanoir::setDatasetNameFilter(QString text)
 {
-  d->datasetNameFilter = text;
+  if (text != "")
+    d->datasetNameFilter.setPattern(text);
+  else
+    d->datasetNameFilter.setPattern("*");
 }
 
 void
@@ -157,11 +170,11 @@ QtShanoir::populate()
   
   WebServices::WSQuery::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
   WebServices::WSQuery::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-  //WebServices::WSQuery::Query(ws, "setStudyName", impl, QStringList() << "studyName", QStringList() << d->studyNameFilter);
+  WebServices::WSQuery::Query(ws, "setStudyName", impl, QStringList() << "studyName", QStringList() << d->studyNameFilter.pattern());
   QString xmlserial = WebServices::WSQuery::Query(ws, "find", impl, QStringList(), QStringList());
   
   WebServices::WSQuery::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
-  d->tree->parseStudy(xmlserial,d->studyNameFilter,d->patientNameFilter);
+  d->tree->parseStudy(xmlserial,d->patientNameFilter);
 }
 
 void

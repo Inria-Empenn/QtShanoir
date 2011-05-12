@@ -141,7 +141,7 @@ QtShanoirTreeWidget::updateCheckBoxes(QTreeWidgetItem * item)
 }
 
 void
-QtShanoirTreeWidget::parseStudy(QString xmlserial, QString studyNameFilter, QString patientNameFilter)
+QtShanoirTreeWidget::parseStudy(QString xmlserial, QRegExp patientNameFilter)
 {
   QDomDocument doc;
   doc.setContent(xmlserial);
@@ -161,7 +161,7 @@ QtShanoirTreeWidget::parseStudy(QString xmlserial, QString studyNameFilter, QStr
   QDomNode n = doc.firstChild().firstChild();
   
   while (!n.isNull()) {
-    if ((n.toElement().tagName() == "return")&&(n.firstChildElement("name").firstChild().toText().nodeValue().contains(studyNameFilter))) {
+    if (n.toElement().tagName() == "return") {
       QTreeWidgetItem * study = new QTreeWidgetItem;
       study->setText(0, QString("%1").arg(n.firstChildElement("name").firstChild().toText().nodeValue()));
       study->setText(1, "STUDY");
@@ -174,7 +174,7 @@ QtShanoirTreeWidget::parseStudy(QString xmlserial, QString studyNameFilter, QStr
       
       while (!rel.isNull()) {
         QDomElement el = rel.toElement();
-        if (el.firstChildElement("subject").firstChildElement("name").firstChild().nodeValue().contains(patientNameFilter))
+        if (patientNameFilter.exactMatch(el.firstChildElement("subject").firstChildElement("name").firstChild().nodeValue()))
         {
           QTreeWidgetItem* sub = new QTreeWidgetItem(QTreeWidgetItem::UserType + 3);
           sub->setText(0, QString("%1").arg(el.firstChildElement("subject").firstChildElement("name").firstChild().nodeValue()));
@@ -238,7 +238,7 @@ QtShanoirTreeWidget::parseMrExamination(QString xmlserial, QString dateFilter)
 }
 
 void
-QtShanoirTreeWidget::parseAcquisition(QString xmlserial, QString datasetNameFilter)
+QtShanoirTreeWidget::parseAcquisition(QString xmlserial, QRegExp datasetNameFilter)
 {
     //qDebug() << xmlserial;
     QDomDocument doc;
@@ -257,7 +257,7 @@ QtShanoirTreeWidget::parseAcquisition(QString xmlserial, QString datasetNameFilt
     }
 
     while (!el.isNull()) {
-      if (el.firstChildElement("name").firstChild().nodeValue().contains(datasetNameFilter)) {
+      if (datasetNameFilter.exactMatch(el.firstChildElement("name").firstChild().nodeValue())) {
         QTreeWidgetItem* exam = new QTreeWidgetItem(QTreeWidgetItem::UserType + 6);
         exam->setText(0, QString("%1 - %2").arg(el.firstChildElement("name").firstChild().nodeValue()) .arg(QDate::fromString(el.firstChildElement("datasetCreationDate").firstChild().nodeValue(), Qt::ISODate).toString(Qt::SystemLocaleShortDate)));
         exam->setToolTip(0, QString("%1 - (TR %2, TE %3, FA %4) ").arg(el.firstChildElement("comment").firstChild().nodeValue()) .arg(el.firstChildElement("repetitionTime").firstChildElement("repetitionTimeValue").firstChild().nodeValue()) .arg(el.firstChildElement("echoTime").firstChildElement("echoTimeValue").firstChild().nodeValue()) .arg(el.firstChildElement("flipAngle").firstChildElement("flipAngleValue").firstChild().nodeValue()));
