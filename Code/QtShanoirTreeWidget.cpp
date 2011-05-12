@@ -141,59 +141,66 @@ QtShanoirTreeWidget::updateCheckBoxes(QTreeWidgetItem * item)
 }
 
 void
-QtShanoirTreeWidget::parseStudy(QString xmlserial)
+QtShanoirTreeWidget::parseStudy(QString xmlserial, QString studyNameFilter, QString patientNameFilter)
 {
-    QDomDocument doc;
-    doc.setContent(xmlserial);
-    doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());
-    doc.removeChild(doc.firstChild());
-    // Sub root the document to remove the SOAP Enveloppe
-
-    QTreeWidgetItem *root = treeWidget->invisibleRootItem();
-    QTreeWidgetItem* shanoir = new QTreeWidgetItem();
-    root->addChild(shanoir);
-    //    shanoir
-    shanoir->setText(0, QString("Shanoir (%1)").arg(QtShanoirSettings::Instance()->host()));
-    shanoir->setText(1, QString("SERVER"));
-    shanoir->setIcon(0, QIcon(":Images/network.64x64.png"));
-    shanoir->setExpanded(true);
-    // list the study by name + id
-    QDomNode n = doc.firstChild().firstChild();
-
-    while (!n.isNull()) {
-        if (n.toElement().tagName() == "return") {
-            QTreeWidgetItem * study = new QTreeWidgetItem;
-            study->setText(0, QString("%1").arg(n.firstChildElement("name").firstChild().toText().nodeValue()));
-            study->setText(1, "STUDY");
-            study->setIcon(0, QIcon(":Images/study.64x64.png"));
-            study->setToolTip(0, QString("Study Id : %1").arg(n.firstChildElement("id").firstChild().toText().nodeValue()));
-            shanoir->addChild(study);
-            // find patients for each study
-            QDomNode rel = n.firstChildElement("relSubjectStudyList");
-
-            while (!rel.isNull()) {
-                QDomElement el = rel.toElement();
-                QTreeWidgetItem* sub = new QTreeWidgetItem(QTreeWidgetItem::UserType + 3);
-                sub->setText(0, QString("%1").arg(el.firstChildElement("subject").firstChildElement("name").firstChild().nodeValue()));
-                sub->setText(1, "SUBJECT");
-                sub->setIcon(0, QIcon(":Images/subject.64x64.png"));
-                sub->setToolTip(0, QString("Sex: %2 BirthDate: %3 (id: %1)") .arg(el.firstChildElement("subject").firstChildElement("id").firstChild().nodeValue()) .arg(el.firstChildElement("subject").firstChildElement("refSex").firstChild().nodeValue()) .arg(QDate::fromString(el.firstChildElement("subject").firstChildElement("birthDate").firstChild().nodeValue(), Qt::ISODate) .toString(Qt::SystemLocaleShortDate)));
-                sub->setData(0, QTreeWidgetItem::UserType + 3, (el.firstChildElement("subject").firstChildElement("id").firstChild().nodeValue()));
-                sub->setCheckState(0, Qt::Unchecked);
-                study->addChild(sub);
-                rel = rel.nextSiblingElement("relSubjectStudyList");
-            }
+  QDomDocument doc;
+  doc.setContent(xmlserial);
+  doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());
+  doc.removeChild(doc.firstChild());
+  // Sub root the document to remove the SOAP Enveloppe
+  
+  QTreeWidgetItem *root = treeWidget->invisibleRootItem();
+  QTreeWidgetItem* shanoir = new QTreeWidgetItem();
+  root->addChild(shanoir);
+  //    shanoir
+  shanoir->setText(0, QString("Shanoir (%1)").arg(QtShanoirSettings::Instance()->host()));
+  shanoir->setText(1, QString("SERVER"));
+  shanoir->setIcon(0, QIcon(":Images/network.64x64.png"));
+  shanoir->setExpanded(true);
+  // list the study by name + id
+  QDomNode n = doc.firstChild().firstChild();
+  
+  while (!n.isNull()) {
+    if ((n.toElement().tagName() == "return")&&(n.firstChildElement("name").firstChild().toText().nodeValue().contains(studyNameFilter))) {
+      QTreeWidgetItem * study = new QTreeWidgetItem;
+      study->setText(0, QString("%1").arg(n.firstChildElement("name").firstChild().toText().nodeValue()));
+      study->setText(1, "STUDY");
+      study->setIcon(0, QIcon(":Images/study.64x64.png"));
+      study->setToolTip(0, QString("Study Id : %1").arg(n.firstChildElement("id").firstChild().toText().nodeValue()));
+      
+      //shanoir->addChild(study);
+      // find patients for each study
+      QDomNode rel = n.firstChildElement("relSubjectStudyList");
+      
+      while (!rel.isNull()) {
+        QDomElement el = rel.toElement();
+        if (el.firstChildElement("subject").firstChildElement("name").firstChild().nodeValue().contains(patientNameFilter))
+        {
+          QTreeWidgetItem* sub = new QTreeWidgetItem(QTreeWidgetItem::UserType + 3);
+          sub->setText(0, QString("%1").arg(el.firstChildElement("subject").firstChildElement("name").firstChild().nodeValue()));
+          sub->setText(1, "SUBJECT");
+          sub->setIcon(0, QIcon(":Images/subject.64x64.png"));
+          sub->setToolTip(0, QString("Sex: %2 BirthDate: %3 (id: %1)") .arg(el.firstChildElement("subject").firstChildElement("id").firstChild().nodeValue()) .arg(el.firstChildElement("subject").firstChildElement("refSex").firstChild().nodeValue()) .arg(QDate::fromString(el.firstChildElement("subject").firstChildElement("birthDate").firstChild().nodeValue(), Qt::ISODate) .toString(Qt::SystemLocaleShortDate)));
+          sub->setData(0, QTreeWidgetItem::UserType + 3, (el.firstChildElement("subject").firstChildElement("id").firstChild().nodeValue()));
+          sub->setCheckState(0, Qt::Unchecked);
+          study->addChild(sub);
         }
-        n = n.nextSibling();
+        rel = rel.nextSiblingElement("relSubjectStudyList");
+      }
+      
+      if (study->childCount() > 0)
+        shanoir->addChild(study);
     }
-    //    treeWidget->itemClicked();
-    doc.clear();
-
-    emit queryFinished();
+    n = n.nextSibling();
+  }
+  //    treeWidget->itemClicked();
+  doc.clear();
+  
+  emit queryFinished();
 }
 
 void
-QtShanoirTreeWidget::parseMrExamination(QString xmlserial)
+QtShanoirTreeWidget::parseMrExamination(QString xmlserial, QString dateFilter)
 {
     QDomDocument doc;
     doc.setContent(xmlserial);
@@ -211,6 +218,7 @@ QtShanoirTreeWidget::parseMrExamination(QString xmlserial)
         sub->setFont(0, f);
     }
     while (!el.isNull()) {
+      if ((QDate::fromString(el.firstChildElement("examinationDate").firstChild().nodeValue(), Qt::ISODate).toString(Qt::ISODate) == dateFilter)||(dateFilter == "")) {
         QTreeWidgetItem* exam = new QTreeWidgetItem(QTreeWidgetItem::UserType + 4);
         exam->setText(0, QString("%1 - %2").arg(el.firstChildElement("comment").firstChild().nodeValue()) .arg(QDate::fromString(el.firstChildElement("examinationDate").firstChild().nodeValue(), Qt::ISODate).toString(Qt::SystemLocaleShortDate)));
         exam->setData(0, QTreeWidgetItem::UserType + 4, QString(el.firstChildElement("id").firstChild().nodeValue()));
@@ -219,7 +227,8 @@ QtShanoirTreeWidget::parseMrExamination(QString xmlserial)
         exam->setText(1, "Exam");
         exam->setCheckState(0, sub->checkState(0));
         sub->addChild(exam);
-        el = el.nextSiblingElement("return");
+      }
+      el = el.nextSiblingElement("return");
     }
     sub->setExpanded(true);
 
@@ -229,7 +238,7 @@ QtShanoirTreeWidget::parseMrExamination(QString xmlserial)
 }
 
 void
-QtShanoirTreeWidget::parseAcquisition(QString xmlserial)
+QtShanoirTreeWidget::parseAcquisition(QString xmlserial, QString datasetNameFilter)
 {
     //qDebug() << xmlserial;
     QDomDocument doc;
@@ -248,6 +257,7 @@ QtShanoirTreeWidget::parseAcquisition(QString xmlserial)
     }
 
     while (!el.isNull()) {
+      if (el.firstChildElement("name").firstChild().nodeValue().contains(datasetNameFilter)) {
         QTreeWidgetItem* exam = new QTreeWidgetItem(QTreeWidgetItem::UserType + 6);
         exam->setText(0, QString("%1 - %2").arg(el.firstChildElement("name").firstChild().nodeValue()) .arg(QDate::fromString(el.firstChildElement("datasetCreationDate").firstChild().nodeValue(), Qt::ISODate).toString(Qt::SystemLocaleShortDate)));
         exam->setToolTip(0, QString("%1 - (TR %2, TE %3, FA %4) ").arg(el.firstChildElement("comment").firstChild().nodeValue()) .arg(el.firstChildElement("repetitionTime").firstChildElement("repetitionTimeValue").firstChild().nodeValue()) .arg(el.firstChildElement("echoTime").firstChildElement("echoTimeValue").firstChild().nodeValue()) .arg(el.firstChildElement("flipAngle").firstChildElement("flipAngleValue").firstChild().nodeValue()));
@@ -260,7 +270,8 @@ QtShanoirTreeWidget::parseAcquisition(QString xmlserial)
             d->selectedId.append(exam->data(0, QTreeWidgetItem::UserType + 6).toInt());
 
         sub->addChild(exam);
-        el = el.nextSiblingElement("mrDatasetResultList");
+      }
+      el = el.nextSiblingElement("mrDatasetResultList");
     }
     sub->setExpanded(true);
     doc.clear();

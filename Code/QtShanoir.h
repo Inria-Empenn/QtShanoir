@@ -36,8 +36,12 @@ class QtShanoir : public QObject
         downloadToDir(QString tmpDir);
         void
         setDownloadMetadata(bool meta);
-
-    public slots:
+        void setStudyNameFilter(QString text);
+        void setPatientNameFilter(QString text);
+        void setDatasetNameFilter(QString text);
+        void setDateFilter(QString text);
+    
+ public slots:
         void
         setDownloadMetadata(int state);
         void

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>784</width>
+    <width>788</width>
     <height>578</height>
    </rect>
   </property>
@@ -113,7 +113,7 @@
            <property name="spacing">
             <number>2</number>
            </property>
-           <item row="0" column="0">
+           <item row="1" column="0">
             <widget class="QPushButton" name="findButton">
              <property name="maximumSize">
               <size>
@@ -130,7 +130,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="4" column="0">
             <widget class="QPushButton" name="downloadButton">
              <property name="maximumSize">
               <size>
@@ -147,7 +147,10 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="0" column="0">
+            <widget class="QtShanoirSearchWidget" name="widget" native="true"/>
+           </item>
+           <item row="3" column="0">
             <widget class="QCheckBox" name="metadataCheckBox">
              <property name="text">
               <string>Download Metadata</string>
@@ -187,6 +190,8 @@
             <height>16777215</height>
            </size>
           </property>
+          <zorder>groupBox_3</zorder>
+          <zorder>groupBox_2</zorder>
          </widget>
         </item>
        </layout>
@@ -200,8 +205,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>784</width>
-     <height>25</height>
+     <width>788</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -246,6 +251,12 @@
    <class>QtShanoirProgressWidget</class>
    <extends>QWidget</extends>
    <header location="global">QtShanoirProgressWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtShanoirSearchWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QtShanoirSearchWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
