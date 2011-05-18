@@ -18,7 +18,7 @@ class QtShanoirSearchWidget : public QWidget, private Ui::QtShanoirSearch
 public:
   QtShanoirSearchWidget(QWidget * parent = 0);
   void reset();
-  
+
   public slots:
   void studyNameTextChanged(QString text);
   void patientNameTextChanged(QString text);

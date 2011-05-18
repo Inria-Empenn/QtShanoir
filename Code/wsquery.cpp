@@ -64,7 +64,7 @@ void	WSQuery::sslErrors ( const QList<QSslError> & errors )
 void WSQuery::run()
 {
     //    mutex.lock();
-    qDebug() << "Starting query for " << WsMethod;
+//    qDebug() << "Starting query for " << WsMethod;
 
     QtSoapMessage request;
     request.setMethod(WsMethod, WsImpl);
