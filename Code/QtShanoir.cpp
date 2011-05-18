@@ -16,6 +16,9 @@
 
 #include "wsquery.h"
 
+#include <quazip/quazip.h>
+#include <quazip/quazipfile.h>
+
 QtShanoir * QtShanoir::_instance = 0;
 
 class QtShanoirPrivate
@@ -288,7 +291,49 @@ QtShanoir::downloadDataset(QString datasetId)
   if (d->downloadMetadata)
     this->downloadMetadata(datasetId);
   
-  emit downloadFinished(dFile.fileName());
+  if (dFile.fileName().contains(".zip"))
+  {
+    // Decompression using QuaZIP    
+    QuaZip zipFile(dFile.fileName());
+    zipFile.open(QuaZip::mdUnzip);
+    QuaZipFileInfo info;
+    QuaZipFile file(&zipFile);
+    
+    for(bool more=zipFile.goToFirstFile(); more; more=zipFile.goToNextFile())
+    {
+      zipFile.getCurrentFileInfo(&info);
+      file.open(QIODevice::ReadOnly);
+      QString name=file.getActualFileName();
+      
+      QString outFileName = d->downloadDir + QDir::separator() + name;
+      QFile out(outFileName);
+      out.open(QIODevice::WriteOnly);
+      
+      char buf[4096];
+      char c;
+      int len = 0;
+      while (file.getChar(&c))
+      {
+        buf[len++] = c;
+        if (len >= 4096) {
+          out.write(buf, len);
+          len = 0;
+        }
+      }
+      if (len > 0) {
+        out.write(buf, len);
+      }
+      out.close();
+      
+      if (name.contains(".nii"))
+        emit downloadFinished(outFileName);
+      
+      file.close();
+    }
+    zipFile.close();
+  }
+  else
+    emit downloadFinished(dFile.fileName());
 }
 
 void

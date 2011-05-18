@@ -31,7 +31,7 @@ mark_as_advanced(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
 # endif(BUILD_DOCUMENTATION)
 
 set (QTSHANOIR_CMAKE_MODULE_PATH ${QTSHANOIR_SOURCE_DIR}/CMake)
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${QTSHANOIR_CMAKE_MODULE_PATH}")
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${QTSHANOIR_CMAKE_MODULE_PATH}" ${PROJECT_SOURCE_DIR})
 
 include (${QTSHANOIR_SOURCE_DIR}/CMake/QtShanoirSettings.cmake)
 
@@ -41,6 +41,29 @@ if(QT4_FOUND)
   set(QT_USE_QTXML true)
   include(${QT_USE_FILE})
 endif(QT4_FOUND)
+
+# QuaZIP: Nice Qt based decompression of zip files, GPL or LGPL license
+set(QUAZIP_SRCS
+  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/JlCompress.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/ioapi.c
+  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/quaadler32.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/quacrc32.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/quazip.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/quazipfile.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/quazipnewinfo.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/unzip.c
+  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/zip.c
+)
+
+set (QUAZIP_MOC_HDRS
+  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/quazipfile.h
+)
+
+qt4_wrap_cpp(QUAZIP_MOC_SRCS ${QUAZIP_MOC_HDRS})
+
+add_library(quazip ${QUAZIP_MOC_SRCS} ${QUAZIP_SRCS})
+
+target_link_libraries(quazip ${QT_LIBRARIES} z)
 
 set(QTSHANOIR_RCCS
     ${QTSHANOIR_SOURCE_DIR}/Resources/qtshanoir.qrc
@@ -84,11 +107,11 @@ qt4_add_resources(QTSHANOIR_RCC_SRCS ${QTSHANOIR_RCCS})
 qt4_wrap_ui( SAMPLE_UI_HDRS ${SAMPLE_UIS})
 qt4_wrap_cpp( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS})
 
-
 include_directories(${CMAKE_BINARY_DIR} ${QTSHANOIR_SOURCE_DIR}/Code/ ${QTSHANOIR_BINARY_DIR})
-add_library( qtshanoir ${QTSHANOIR_SRCS} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_UI_HDRS} ${QTSHANOIR_RCC_SRCS})
-target_link_libraries( qtshanoir ${QT_LIBRARIES} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY})
 
+add_library(qtshanoir ${QTSHANOIR_SRCS} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_UI_HDRS} ${QTSHANOIR_RCC_SRCS})
+
+target_link_libraries(qtshanoir ${QT_LIBRARIES} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} quazip)
 
 # External inclusion stuff :
 set(QTSHANOIR_USE_FILE ${QTSHANOIR_BINARY_DIR}/UseQtShanoir.cmake)
