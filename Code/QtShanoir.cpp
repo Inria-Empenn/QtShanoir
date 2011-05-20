@@ -14,7 +14,7 @@
 #include <QNetworkReply>
 #include <QSslConfiguration>
 
-#include "wsquery.h"
+#include "QtShanoirWebService.h"
 
 #include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
@@ -171,12 +171,12 @@ QtShanoir::populate()
   QString ws = "StudyFinder";
   QString impl("http://finder.impl.webservices.shanoir.org/");
   
-  WebServices::WSQuery::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-  WebServices::WSQuery::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-  WebServices::WSQuery::Query(ws, "setStudyName", impl, QStringList() << "studyName", QStringList() << d->studyNameFilter.pattern());
-  QString xmlserial = WebServices::WSQuery::Query(ws, "find", impl, QStringList(), QStringList());
+  QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
+  QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
+  QtShanoirWebService::Query(ws, "setStudyName", impl, QStringList() << "studyName", QStringList() << d->studyNameFilter.pattern());
+  QString xmlserial = QtShanoirWebService::Query(ws, "find", impl, QStringList(), QStringList());
   
-  WebServices::WSQuery::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+  QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
   d->tree->parseStudy(xmlserial,d->patientNameFilter);
 }
 
@@ -187,12 +187,12 @@ QtShanoir::findExam(QString str)
   QString ws = "MrExaminationFinder";
   QString impl = "http://finder.impl.webservices.shanoir.org/";
   
-  WebServices::WSQuery::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-  WebServices::WSQuery::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-  WebServices::WSQuery::Query(ws, "setSubjectIds", impl, QStringList() << "examinationSubjectIds", QStringList() << str);
-  QString xmlserial = WebServices::WSQuery::Query(ws, "find", impl, QStringList(), QStringList());
+  QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
+  QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
+  QtShanoirWebService::Query(ws, "setSubjectIds", impl, QStringList() << "examinationSubjectIds", QStringList() << str);
+  QString xmlserial = QtShanoirWebService::Query(ws, "find", impl, QStringList(), QStringList());
   
-  WebServices::WSQuery::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+  QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
   d->tree->parseMrExamination(xmlserial,d->dateFilter);
   
 }
@@ -203,13 +203,13 @@ QtShanoir::findDataset(QString examId, QString subjectId)
   QString ws = "MrDatasetFinder";
   QString impl = "http://finder.impl.webservices.shanoir.org/";
   
-  WebServices::WSQuery::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-  WebServices::WSQuery::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-  WebServices::WSQuery::Query(ws, "setSubjectIds", impl, QStringList() << "mrDatasetSubjectIds", QStringList() << subjectId);
-  WebServices::WSQuery::Query(ws, "setExaminationIds", impl, QStringList() << "mrDatasetExaminations", QStringList() << examId);
-  QString xmlserial = WebServices::WSQuery::Query(ws, "find", impl, QStringList(), QStringList());
+  QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
+  QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
+  QtShanoirWebService::Query(ws, "setSubjectIds", impl, QStringList() << "mrDatasetSubjectIds", QStringList() << subjectId);
+  QtShanoirWebService::Query(ws, "setExaminationIds", impl, QStringList() << "mrDatasetExaminations", QStringList() << examId);
+  QString xmlserial = QtShanoirWebService::Query(ws, "find", impl, QStringList(), QStringList());
   
-  WebServices::WSQuery::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+  QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
   d->tree->parseAcquisition(xmlserial,d->datasetNameFilter);
 }
 
@@ -222,12 +222,12 @@ QtShanoir::getDatasetFilename(QString datasetId)
   qDebug() << "Call set filename";
   d->curId = datasetId.toInt();
   
-  WebServices::WSQuery::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-  WebServices::WSQuery::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-  WebServices::WSQuery::Query(ws, "setDatasetId", impl, QStringList() << "datasetId", QStringList() << datasetId);
+  QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
+  QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
+  QtShanoirWebService::Query(ws, "setDatasetId", impl, QStringList() << "datasetId", QStringList() << datasetId);
   
-  QString xmlserial = WebServices::WSQuery::Query(ws, "getFileName", impl, QStringList(), QStringList());
-  WebServices::WSQuery::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+  QString xmlserial = QtShanoirWebService::Query(ws, "getFileName", impl, QStringList(), QStringList());
+  QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
   
   QDomDocument doc;
   doc.setContent(xmlserial);
@@ -243,12 +243,12 @@ QtShanoir::downloadMetadata(QString datasetId)
   QString ws = "MrDatasetFinder";
   QString impl = "http://finder.impl.webservices.shanoir.org/";
   
-  WebServices::WSQuery::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-  WebServices::WSQuery::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-  WebServices::WSQuery::Query(ws, "setMrDatasetIds", impl, QStringList() << "mrDatasetIds", QStringList() << datasetId);
-  QString xmlserial = WebServices::WSQuery::Query(ws, "find", impl, QStringList(), QStringList());
+  QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
+  QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
+  QtShanoirWebService::Query(ws, "setMrDatasetIds", impl, QStringList() << "mrDatasetIds", QStringList() << datasetId);
+  QString xmlserial = QtShanoirWebService::Query(ws, "find", impl, QStringList(), QStringList());
   
-  WebServices::WSQuery::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+  QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
   
   QDomDocument doc;
   doc.setContent(xmlserial);
@@ -270,13 +270,13 @@ QtShanoir::downloadDataset(QString datasetId)
   
   d->curId = datasetId.toInt();
   
-  WebServices::WSQuery::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-  WebServices::WSQuery::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-  WebServices::WSQuery::Query(ws, "setDatasetId", impl, QStringList() << "datasetId", QStringList() << datasetId);
+  QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
+  QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
+  QtShanoirWebService::Query(ws, "setDatasetId", impl, QStringList() << "datasetId", QStringList() << datasetId);
   
-  QByteArray bin = WebServices::WSQuery::BinaryQuery(ws, "download", impl, QStringList(), QStringList());
+  QByteArray bin = QtShanoirWebService::BinaryQuery(ws, "download", impl, QStringList(), QStringList());
   
-  WebServices::WSQuery::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+  QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
   if (bin.isEmpty()) {
     qDebug() << "Binary is empty";
     return;

@@ -24,6 +24,7 @@ public:
   void patientNameTextChanged(QString text);
   void examDateChanged(QString text);
   void datasetNameTextChanged(QString text);
+  void eventExamDate(int oldpos, int newpos);
   
 private:
   void initConnections();

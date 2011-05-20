@@ -76,6 +76,9 @@
      </item>
      <item>
       <widget class="QLineEdit" name="examDateFilter">
+       <property name="contextMenuPolicy">
+        <enum>Qt::CustomContextMenu</enum>
+       </property>
        <property name="styleSheet">
         <string notr="true">color: rgb(138, 138, 138);</string>
        </property>
