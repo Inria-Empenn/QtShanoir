@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>843</width>
-    <height>684</height>
+    <width>1075</width>
+    <height>744</height>
    </rect>
   </property>
   <property name="font">
@@ -123,7 +123,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>331</height>
+              <height>391</height>
              </size>
             </property>
            </spacer>
@@ -153,7 +153,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>520</height>
+              <height>553</height>
              </size>
             </property>
            </spacer>
@@ -200,7 +200,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>440</height>
+              <height>473</height>
              </size>
             </property>
            </spacer>
@@ -228,7 +228,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>843</width>
+     <width>1075</width>
      <height>25</height>
     </rect>
    </property>

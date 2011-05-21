@@ -19,6 +19,9 @@ class QtShanoirUploadWidget : public QWidget, public Ui::QtShanoirUpload
 
     public:
         QtShanoirUploadWidget(QWidget * parent = 0);
+
+        void
+        print();
     private:
         void
         initConnections();
@@ -34,16 +37,16 @@ class QtShanoirUploadWidget : public QWidget, public Ui::QtShanoirUpload
         datasetNameChanged(QString name);
 
         void
-        datasetCommentChanged(QString comment);
+        datasetCommentChanged();
 
         void
-        addDataset(int id);
+        addDataset();
 
         void
-        datasetProcessingChanged(int index);
+        processingChanged(int index);
 
         void
-        processingCommentChanged(QString comment);
+        processingCommentChanged();
 
     private:
         QtShanoirUploadWidgetPrivate * d;
