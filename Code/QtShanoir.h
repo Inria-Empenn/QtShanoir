@@ -48,6 +48,8 @@ class QtShanoir : public QObject
         download();
         void
         find();
+        void
+        upload();
 
     protected:
         // Create the Queries for a specific
@@ -60,17 +62,23 @@ class QtShanoir : public QObject
         downloadMetadata(QString datasetId);
         void
         getDatasetFilename(QString datasetId);
+        void
+        getProcessingListId();
     signals:
         void
         nextMessage();
         void
         startDownload();
         void
+        startUpload();
+        void
         downloadFinished(QString fileName);
 
     private slots:
         void
         callDownload();
+        void
+        callUpload();
         void
         getError(QString);
         void

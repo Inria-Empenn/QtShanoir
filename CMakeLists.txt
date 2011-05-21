@@ -71,6 +71,7 @@ set(QTSHANOIR_RCCS
 
 set(SAMPLE_SRCS
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettingsWidget.cpp
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirUploadWidget.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSearchWidget.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirWebService.cpp
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirProgressWidget.cpp
@@ -81,6 +82,7 @@ set(SAMPLE_SRCS
 
 set(SAMPLE_HDRS
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettingsWidget.h
+  ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirUploadWidget.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSearchWidget.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirWebService.h
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirProgressWidget.h
@@ -94,6 +96,7 @@ set(SAMPLE_UIS
   ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirprogress.ui
   ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirsettingswidget.ui
   ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirsearchwidget.ui
+  ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoiruploadwidget.ui
   ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirtreewidget.ui
 )
 

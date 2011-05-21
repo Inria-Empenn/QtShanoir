@@ -57,9 +57,6 @@ QtShanoirWebService::getResponse()
         qDebug() << message.faultString().value().toString();
         qDebug() << message.faultCode();
         qDebug() << message.toXmlString();
-        //        qDebug() << "Error: " << message.faultDetail().toString();
-
-        //        qDebug("Error: %s", message.returnValue().toString().toLatin1().constData());
     }
     else
         d->result = message.toXmlString();
@@ -94,9 +91,6 @@ QtShanoirWebService::sslErrors(const QList<QSslError> & errors)
 void
 QtShanoirWebService::run()
 {
-    //    mutex.lock();
-    //    qDebug() << "Starting query for " << WsMethod;
-
     QtSoapMessage request;
     request.setMethod(d->WsMethod, d->WsImpl);
 
