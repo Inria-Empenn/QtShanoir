@@ -89,6 +89,8 @@ class QtShanoir : public QObject
         void
         updateSelected(QMap<int,QString> );
         void
+        receiveUploadData(QMultiMap<QString, QString> mmap);
+        void
         setDownloadFilename(QString filename);
         void
         downloadProgress(qint64 bytesReceived, qint64 bytesTotal);

@@ -10,13 +10,16 @@
 class QtShanoirUploadWidgetPrivate
 {
     public:
-        int datasetId;
         int processingId;
+        int studyId;
         QString datasetName;
         QString datasetPath;
+        QString resultDatasetType;
+        QStringList processingDatatype;
         QString datasetComment;
         QString processingComment;
         QList<int> inputDatasetList;
+        QMultiMap<QString, QString> uploadData;
 
 };
 
@@ -24,16 +27,21 @@ QtShanoirUploadWidget::QtShanoirUploadWidget(QWidget * parent) :
     d(new QtShanoirUploadWidgetPrivate)
 {
     setupUi(this);
-    initConnections();
-    d->datasetId = 0;
-    d->processingId = 0;
+    d->processingDatatype << "" << "MrDataset" << "MrSpectroscopyDataset" << "CalibrationDataset" << "EegDataset" << "MegDataset" << "MeshDataset" << "ParameterQuantificationDataset" << "PetDataset"
+            << "RegistrationDataset" << "SpectDataset" << "StatisticalDataset" << "TemplateDataset" << "SegmentationDataset" << "CtDataset";
+    for (int i = 0; i < d->processingDatatype.size(); i++)
+        resultTypeComboBox->insertItem(i, d->processingDatatype.at(i));
+    d->processingId = -1;
+    d->studyId = -1;
     d->datasetName = "";
     d->datasetPath = "";
     d->datasetComment = "";
     d->processingComment = "";
+    d->resultDatasetType = "";
 
     inputDataTreeWidget->setColumnWidth(0, 40);
-//    inputDataTreeWidget->setColumnWidth(1, 50);
+
+    initConnections();
 }
 
 void
@@ -44,15 +52,15 @@ QtShanoirUploadWidget::initConnections()
     QObject::connect(datasetNameLineEdit, SIGNAL(textChanged(QString)), this, SLOT(datasetNameChanged(QString)));
     QObject::connect(datasetCommentTextEdit, SIGNAL(textChanged()), this, SLOT(datasetCommentChanged()));
     QObject::connect(processingCommentTextEdit, SIGNAL(textChanged()), this, SLOT(processingCommentChanged()));
-//    QObject::connect(addDatasetButton, SIGNAL(clicked()), this, SLOT(addDataset()));
     QObject::connect(processingComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(processingChanged(int)));
+    QObject::connect(studyComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(studyChanged(int)));
+    QObject::connect(resultTypeComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(datasetTypeChanged(int)));
 }
 
 void
 QtShanoirUploadWidget::print()
 {
     qDebug() << "Upload state : ";
-    qDebug() << "      Dataset Id : " << d->datasetId;
     qDebug() << "      Processing Id : " << d->processingId;
     qDebug() << "      Dataset file : " << d->datasetPath;
     qDebug() << "      Dataset name : " << d->datasetName;
@@ -63,7 +71,25 @@ QtShanoirUploadWidget::print()
 void
 QtShanoirUploadWidget::upload()
 {
-    this->print();
+    //    this->print();
+    d->uploadData.clear();
+    d->uploadData.insert("datasetType", d->resultDatasetType);
+    d->uploadData.insert("datasetName", d->datasetName);
+    d->uploadData.insert("datasetPath", d->datasetPath);
+    d->uploadData.insert("datasetComment", d->datasetComment);
+    d->uploadData.insert("processingId", QString::number(d->processingId));
+    d->uploadData.insert("studyId", QString::number(d->studyId));
+    d->uploadData.insert("processingComment", d->processingComment);
+    for (int i = 0; i < d->inputDatasetList.size(); i++)
+        d->uploadData.insert("inputDatasets", QString::number(d->inputDatasetList.at(i)));
+
+    if (!(d->uploadData.values("inputDatasets").isEmpty() ||
+            d->uploadData.value("datasetName").isEmpty() ||
+            d->uploadData.value("datasetPath").isEmpty() ||
+            d->uploadData.value("datasetType").isEmpty() ||
+            ((d->uploadData.value("studyId").toInt() - 1) == -1) ||
+            ((d->uploadData.value("processingId").toInt() - 1) == -1)))
+        emit uploadData(d->uploadData);
 }
 
 void
@@ -97,14 +123,15 @@ QtShanoirUploadWidget::datasetCommentChanged()
 void
 QtShanoirUploadWidget::updateInputDataset(QMap<int, QString> map)
 {
+    d->inputDatasetList.clear();
+    d->inputDatasetList = map.keys();
     inputDataTreeWidget->clear();
     QTreeWidgetItem *root = inputDataTreeWidget->invisibleRootItem();
-    for (int i = 0; i < map.keys().size(); i++)
-    {
-          QTreeWidgetItem* input = new QTreeWidgetItem();
-          root->addChild(input);
-          input->setText(0, QString::number(map.keys().at(i)));
-          input->setText(1, map[map.keys().at(i)]);
+    for (int i = 0; i < map.keys().size(); i++) {
+        QTreeWidgetItem* input = new QTreeWidgetItem();
+        root->addChild(input);
+        input->setText(0, QString::number(map.keys().at(i)));
+        input->setText(1, map[map.keys().at(i)]);
     }
 }
 
@@ -117,15 +144,29 @@ QtShanoirUploadWidget::updateProcessingComboBox(QMap<int, QString> map)
 }
 
 void
-QtShanoirUploadWidget::addDataset()
+QtShanoirUploadWidget::updateStudyComboBox(QMap<int, QString> map)
 {
+    studyComboBox->clear();
+    for (int i = 0; i < map.size(); i++)
+        studyComboBox->insertItem(i, map[i]);
+}
 
+void
+QtShanoirUploadWidget::datasetTypeChanged(int index)
+{
+    d->resultDatasetType = resultTypeComboBox->currentText();
 }
 
 void
 QtShanoirUploadWidget::processingChanged(int index)
 {
     d->processingId = index;
+}
+
+void
+QtShanoirUploadWidget::studyChanged(int index)
+{
+    d->studyId = index;
 }
 
 void

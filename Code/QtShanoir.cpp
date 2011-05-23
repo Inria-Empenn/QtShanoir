@@ -35,6 +35,8 @@ class QtShanoirPrivate
         bool downloadMetadata;
         QList<QString> filesToUploadList;
 
+        QMultiMap<QString, QString> dataToUpload;
+
         QRegExp studyNameFilter;
         QString dateFilter;
         QRegExp patientNameFilter;
@@ -129,7 +131,7 @@ QtShanoir::init()
     if (d->tree)
         QtShanoirSettings::Instance();
     QObject::connect(this, SIGNAL(startDownload()), this, SLOT(callDownload()));
-    QObject::connect(this, SIGNAL(startUpload()), this, SLOT(callUpload()));
+    QObject::connect(this, SIGNAL(startUpload()), this, SLOT(upload()));
 }
 
 void
@@ -157,13 +159,13 @@ void
 QtShanoir::attachUploadWidget(QtShanoirUploadWidget * widget)
 {
     d->upload = widget;
-    if (d->upload && d->tree)
-    {
+    if (d->upload && d->tree) {
         QObject::connect(d->tree, SIGNAL(selected(QMap<int,QString>)), d->upload, SLOT(updateInputDataset(QMap<int,QString>)));
+        QObject::connect(d->tree, SIGNAL(studyMap(QMap<int,QString>)), d->upload, SLOT(updateStudyComboBox(QMap<int,QString>)));
         QObject::connect(this, SIGNAL(processingMap(QMap<int, QString>)), d->upload, SLOT(updateProcessingComboBox(QMap<int, QString>)));
+        QObject::connect(d->upload, SIGNAL(uploadData(QMultiMap<QString, QString>)), this, SLOT(receiveUploadData(QMultiMap<QString, QString>)));
     }
 }
-
 
 void
 QtShanoir::getError(QString xmlserial)
@@ -269,7 +271,7 @@ QtShanoir::getProcessingListId()
 
     QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
 
-    QMap<int,QString> map;
+    QMap<int, QString> map;
     int id;
     QString label;
     QDomDocument doc;
@@ -281,7 +283,7 @@ QtShanoir::getProcessingListId()
     while (!n.isNull()) {
         id = n.firstChildElement("id").firstChild().toText().nodeValue().toInt();
         label = n.firstChildElement("label").firstChild().toText().nodeValue();
-        map.insert(id ,label);
+        map.insert(id, label);
         n = n.nextSibling();
     }
     emit processingMap(map);
@@ -450,28 +452,41 @@ QtShanoir::callDownload()
 void
 QtShanoir::upload()
 {
-    d->filesToUploadList.clear();
-    QFileDialog dialog(d->tree);
-    dialog.setFileMode(QFileDialog::ExistingFile);
-    dialog.setDirectory(QDir::home().dirName());
-    dialog.setWindowTitle("Open filename");
-    dialog.setNameFilter(tr("Images (*.nii *.vtk)"));
+    QString ws = "DatasetImporter";
+    QString impl = "http://importer.impl.webservices.shanoir.org/";
 
-    if (dialog.exec()) {
-        d->filesToUploadList = dialog.selectedFiles();
-        emit startUpload();
-    }
-    dialog.close();
+    QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
+    QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
+    QtShanoirWebService::Query(ws, "setDatasetName", impl, QStringList() << "datasetName", QStringList() << d->dataToUpload.value("datasetName"));
+    QtShanoirWebService::Query(ws, "setDatasetComment", impl, QStringList() << "datasetComment", QStringList() << d->dataToUpload.value("datasetComment"));
+    QtShanoirWebService::Query(ws, "setDatasetProcessingId", impl, QStringList() << "datasetProcessingId", QStringList() << d->dataToUpload.value("processingId"));
+    QtShanoirWebService::Query(ws, "setProcessingComment", impl, QStringList() << "processingComment", QStringList() << d->dataToUpload.value("processingComment"));
+    QtShanoirWebService::Query(ws, "setDatasetClass", impl, QStringList() << "datasetClass", QStringList() << d->dataToUpload.value("datasetType"));
+    QtShanoirWebService::Query(ws, "setStudyId", impl, QStringList() << "studyId", QStringList() << d->dataToUpload.value("studyId"));
+    QtShanoirWebService::Query(ws, "setInputDatasetIdList", impl, QStringList() << "inputDatasetIdList", QStringList() << d->dataToUpload.values("inputDatasets"));
+
+//    QtShanoirWebService::Query(ws,"uploadFile", impl, QStringList() << "dataHandler", QStringList() );//QByteArray here I suppose);
+
+    QtShanoirWebService::Query(ws, "importDataset", impl, QStringList(), QStringList());
+
+    QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
 }
 
 void
 QtShanoir::callUpload()
 {
-    this->getProcessingListId();
+    qDebug() << "Start upload from qtshanoir";
 }
 
 void
-QtShanoir::updateSelected(QMap<int,QString> listId)
+QtShanoir::receiveUploadData(QMultiMap<QString, QString> mmap)
+{
+    d->dataToUpload = mmap;
+    emit startUpload();
+}
+
+void
+QtShanoir::updateSelected(QMap<int, QString> listId)
 {
     d->selectedIds = listId.keys();
 }

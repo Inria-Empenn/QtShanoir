@@ -31,10 +31,13 @@ class QtShanoirUploadWidget : public QWidget, public Ui::QtShanoirUpload
         upload();
 
         void
-        updateInputDataset(QMap<int, QString>);
+        updateInputDataset(QMap<int, QString> );
 
         void
-        updateProcessingComboBox(QMap<int,QString>);
+        updateProcessingComboBox(QMap<int, QString> );
+
+        void
+        updateStudyComboBox(QMap<int,QString>);
 
         void
         browseDataset();
@@ -46,13 +49,20 @@ class QtShanoirUploadWidget : public QWidget, public Ui::QtShanoirUpload
         datasetCommentChanged();
 
         void
-        addDataset();
-
-        void
         processingChanged(int index);
 
         void
+        studyChanged(int index);
+
+        void
         processingCommentChanged();
+
+        void
+        datasetTypeChanged(int index);
+
+    signals:
+        void
+        uploadData(QMultiMap<QString, QString> mmap);
 
     private:
         QtShanoirUploadWidgetPrivate * d;

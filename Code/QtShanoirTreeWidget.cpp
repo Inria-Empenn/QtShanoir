@@ -13,6 +13,7 @@ class QtShanoirTreeWidgetPrivate
 {
     public:
         QMap<int,QString> selectedId;
+        QMap<int,QString> studyIds;
 
 };
 
@@ -30,7 +31,6 @@ void
 QtShanoirTreeWidget::initConnections()
 {
     QObject::connect(treeWidget, SIGNAL(itemClicked (QTreeWidgetItem*, int)), this, SLOT(itemClicked(QTreeWidgetItem*, int)));
-//    QObject::connect(treeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem*, int)), this, SLOT(itemDoubleClicked(QTreeWidgetItem*, int)));
     QObject::connect(treeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextExportMenu(QPoint)));
 }
 
@@ -144,6 +144,7 @@ QtShanoirTreeWidget::updateCheckBoxes(QTreeWidgetItem * item)
 void
 QtShanoirTreeWidget::parseStudy(QString xmlserial, QRegExp patientNameFilter)
 {
+  d->studyIds.clear();
   QDomDocument doc;
   doc.setContent(xmlserial);
   doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());
@@ -169,6 +170,7 @@ QtShanoirTreeWidget::parseStudy(QString xmlserial, QRegExp patientNameFilter)
       study->setIcon(0, QIcon(":Images/study.64x64.png"));
       study->setToolTip(0, QString("Study Id : %1").arg(n.firstChildElement("id").firstChild().toText().nodeValue()));
       
+      d->studyIds.insert(n.firstChildElement("id").firstChild().toText().nodeValue().toInt(), n.firstChildElement("name").firstChild().toText().nodeValue());
       //shanoir->addChild(study);
       // find patients for each study
       QDomNode rel = n.firstChildElement("relSubjectStudyList");
@@ -194,6 +196,7 @@ QtShanoirTreeWidget::parseStudy(QString xmlserial, QRegExp patientNameFilter)
     }
     n = n.nextSibling();
   }
+  emit studyMap(d->studyIds);
   //    treeWidget->itemClicked();
   doc.clear();
   
