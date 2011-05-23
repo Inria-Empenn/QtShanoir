@@ -14,6 +14,7 @@
 class QNetworkRequest;
 class QtShanoirTreeWidget;
 class QtShanoirProgressWidget;
+class QtShanoirUploadWidget;
 class QtShanoirPrivate;
 
 class QtShanoir : public QObject
@@ -30,6 +31,8 @@ class QtShanoir : public QObject
         attachTreeWidget(QtShanoirTreeWidget * tree);
         void
         attachProgressWidget(QtShanoirProgressWidget * progress);
+        void
+        attachUploadWidget(QtShanoirUploadWidget * upload);
         void
         clearTree();
         void
@@ -73,6 +76,8 @@ class QtShanoir : public QObject
         startUpload();
         void
         downloadFinished(QString fileName);
+        void
+        processingMap(QMap<int, QString> map);
 
     private slots:
         void

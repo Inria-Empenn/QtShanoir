@@ -15,6 +15,7 @@
 #include <QSslConfiguration>
 
 #include "QtShanoirWebService.h"
+#include "QtShanoirUploadWidget.h"
 
 #include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
@@ -26,6 +27,7 @@ class QtShanoirPrivate
     public:
         QtShanoirTreeWidget * tree;
         QtShanoirProgressWidget * progress;
+        QtShanoirUploadWidget * upload;
         int curId;
         QList<int> selectedIds;
         QString downloadDir;
@@ -152,6 +154,18 @@ QtShanoir::attachProgressWidget(QtShanoirProgressWidget * widget)
 }
 
 void
+QtShanoir::attachUploadWidget(QtShanoirUploadWidget * widget)
+{
+    d->upload = widget;
+    if (d->upload && d->tree)
+    {
+        QObject::connect(d->tree, SIGNAL(selected(QList<int>)), d->upload, SLOT(updateInputDatasetComboBox(QList<int>)));
+        QObject::connect(this, SIGNAL(processingMap(QMap<int, QString>)), d->upload, SLOT(updateProcessingComboBox(QMap<int, QString>)));
+    }
+}
+
+
+void
 QtShanoir::getError(QString xmlserial)
 {
     QDomDocument doc;
@@ -245,7 +259,6 @@ QtShanoir::getDatasetFilename(QString datasetId)
 void
 QtShanoir::getProcessingListId()
 {
-    qDebug() << "get dataset processing list";
     QString ws = "ReferenceLister";
     QString impl = "http://impl.webservices.shanoir.org/";
 
@@ -256,7 +269,22 @@ QtShanoir::getProcessingListId()
 
     QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
 
-    qDebug() << xmlserial;
+    QMap<int,QString> map;
+    int id;
+    QString label;
+    QDomDocument doc;
+    doc.setContent(xmlserial);
+    doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());
+    doc.removeChild(doc.firstChild());
+
+    QDomNode n = doc.firstChild().firstChild();
+    while (!n.isNull()) {
+        id = n.firstChildElement("id").firstChild().toText().nodeValue().toInt();
+        label = n.firstChildElement("label").firstChild().toText().nodeValue();
+        map.insert(id ,label);
+        n = n.nextSibling();
+    }
+    emit processingMap(map);
 }
 
 void

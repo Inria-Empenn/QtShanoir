@@ -43,7 +43,6 @@ QtShanoirUploadWidget::initConnections()
     QObject::connect(processingCommentTextEdit, SIGNAL(textChanged()), this, SLOT(processingCommentChanged()));
     QObject::connect(addDatasetButton, SIGNAL(clicked()), this, SLOT(addDataset()));
     QObject::connect(processingComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(processingChanged(int)));
-
 }
 
 void
@@ -73,8 +72,7 @@ QtShanoirUploadWidget::browseDataset()
     dialog.setWindowTitle("Open filename");
     dialog.setNameFilter(tr("Images (*.nii *.vtk)"));
 
-    if (dialog.exec())
-    {
+    if (dialog.exec()) {
         d->datasetPath = dialog.selectedFiles()[0];
         datasetPathLineEdit->setText(d->datasetPath);
     }
@@ -94,8 +92,25 @@ QtShanoirUploadWidget::datasetCommentChanged()
 }
 
 void
+QtShanoirUploadWidget::updateInputDatasetComboBox(QList<int> ids)
+{
+    datasetListComboBox->clear();
+    for (int i = 0; i < ids.size(); i++)
+        datasetListComboBox->addItem(QString::number(ids.at(i)));
+}
+
+void
+QtShanoirUploadWidget::updateProcessingComboBox(QMap<int, QString> map)
+{
+    processingComboBox->clear();
+    for (int i = 0; i < map.size(); i++)
+        processingComboBox->insertItem(i, map[i]);
+}
+
+void
 QtShanoirUploadWidget::addDataset()
 {
+
 }
 
 void

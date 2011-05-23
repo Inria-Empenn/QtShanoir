@@ -31,6 +31,12 @@ class QtShanoirUploadWidget : public QWidget, public Ui::QtShanoirUpload
         upload();
 
         void
+        updateInputDatasetComboBox(QList<int>);
+
+        void
+        updateProcessingComboBox(QMap<int,QString>);
+
+        void
         browseDataset();
 
         void
