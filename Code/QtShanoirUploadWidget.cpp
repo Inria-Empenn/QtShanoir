@@ -31,6 +31,9 @@ QtShanoirUploadWidget::QtShanoirUploadWidget(QWidget * parent) :
     d->datasetPath = "";
     d->datasetComment = "";
     d->processingComment = "";
+
+    inputDataTreeWidget->setColumnWidth(0, 40);
+//    inputDataTreeWidget->setColumnWidth(1, 50);
 }
 
 void
@@ -41,7 +44,7 @@ QtShanoirUploadWidget::initConnections()
     QObject::connect(datasetNameLineEdit, SIGNAL(textChanged(QString)), this, SLOT(datasetNameChanged(QString)));
     QObject::connect(datasetCommentTextEdit, SIGNAL(textChanged()), this, SLOT(datasetCommentChanged()));
     QObject::connect(processingCommentTextEdit, SIGNAL(textChanged()), this, SLOT(processingCommentChanged()));
-    QObject::connect(addDatasetButton, SIGNAL(clicked()), this, SLOT(addDataset()));
+//    QObject::connect(addDatasetButton, SIGNAL(clicked()), this, SLOT(addDataset()));
     QObject::connect(processingComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(processingChanged(int)));
 }
 
@@ -92,11 +95,17 @@ QtShanoirUploadWidget::datasetCommentChanged()
 }
 
 void
-QtShanoirUploadWidget::updateInputDatasetComboBox(QList<int> ids)
+QtShanoirUploadWidget::updateInputDataset(QMap<int, QString> map)
 {
-    datasetListComboBox->clear();
-    for (int i = 0; i < ids.size(); i++)
-        datasetListComboBox->addItem(QString::number(ids.at(i)));
+    inputDataTreeWidget->clear();
+    QTreeWidgetItem *root = inputDataTreeWidget->invisibleRootItem();
+    for (int i = 0; i < map.keys().size(); i++)
+    {
+          QTreeWidgetItem* input = new QTreeWidgetItem();
+          root->addChild(input);
+          input->setText(0, QString::number(map.keys().at(i)));
+          input->setText(1, map[map.keys().at(i)]);
+    }
 }
 
 void

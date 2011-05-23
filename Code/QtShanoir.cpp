@@ -140,7 +140,7 @@ QtShanoir::attachTreeWidget(QtShanoirTreeWidget * widget)
         QObject::connect(d->tree, SIGNAL(mrExamQuery(QString)), this, SLOT(findExam(QString)));
         QObject::connect(d->tree, SIGNAL(datasetQuery(QString,QString)), this, SLOT(findDataset(QString,QString)));
         QObject::connect(d->tree, SIGNAL(id(int)), this, SLOT(currentId(int)));
-        QObject::connect(d->tree, SIGNAL(selected(QList<int>)), this, SLOT(updateSelected(QList<int>)));
+        QObject::connect(d->tree, SIGNAL(selected(QMap<int,QString>)), this, SLOT(updateSelected(QMap<int,QString>)));
         QObject::connect(d->tree, SIGNAL(filename(QString)), this, SLOT(setDownloadFilename(QString)));
     }
 }
@@ -159,7 +159,7 @@ QtShanoir::attachUploadWidget(QtShanoirUploadWidget * widget)
     d->upload = widget;
     if (d->upload && d->tree)
     {
-        QObject::connect(d->tree, SIGNAL(selected(QList<int>)), d->upload, SLOT(updateInputDatasetComboBox(QList<int>)));
+        QObject::connect(d->tree, SIGNAL(selected(QMap<int,QString>)), d->upload, SLOT(updateInputDataset(QMap<int,QString>)));
         QObject::connect(this, SIGNAL(processingMap(QMap<int, QString>)), d->upload, SLOT(updateProcessingComboBox(QMap<int, QString>)));
     }
 }
@@ -471,9 +471,9 @@ QtShanoir::callUpload()
 }
 
 void
-QtShanoir::updateSelected(QList<int> listId)
+QtShanoir::updateSelected(QMap<int,QString> listId)
 {
-    d->selectedIds = listId;
+    d->selectedIds = listId.keys();
 }
 
 void

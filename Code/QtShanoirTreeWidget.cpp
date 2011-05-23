@@ -12,7 +12,7 @@
 class QtShanoirTreeWidgetPrivate
 {
     public:
-        QList<int> selectedId;
+        QMap<int,QString> selectedId;
 
 };
 
@@ -98,16 +98,16 @@ QtShanoirTreeWidget::updateCheckBoxes(QTreeWidgetItem * item)
 {
     if (item->checkState(0) == Qt::Checked) {
         if ((item->type() == QTreeWidgetItem::UserType + 6) && !d->selectedId.contains(item->data(0, QTreeWidgetItem::UserType + 6).toInt())) {
-            d->selectedId.append(item->data(0, QTreeWidgetItem::UserType + 6).toInt());
+            d->selectedId.insert(item->data(0, QTreeWidgetItem::UserType + 6).toInt(), item->text(0));
         }
         for (int i = 0; i < item->childCount(); i++) {
             item->child(i)->setCheckState(0, Qt::Checked);
             if ((item->child(i)->type() == QTreeWidgetItem::UserType + 6) && !d->selectedId.contains(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt()))
-                d->selectedId.append(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt());
+                d->selectedId.insert(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt(), item->child(i)->text(0));
             for (int j = 0; j < item->child(i)->childCount(); j++) {
                 item->child(i)->child(j)->setCheckState(0, Qt::Checked);
                 if ((item->child(i)->child(j)->type() == QTreeWidgetItem::UserType + 6) && !d->selectedId.contains(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt()))
-                    d->selectedId.append(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt());
+                    d->selectedId.insert(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt(),item->child(i)->child(j)->text(0));
             }
         }
     }
@@ -116,14 +116,15 @@ QtShanoirTreeWidget::updateCheckBoxes(QTreeWidgetItem * item)
             for (int i = 0; i < item->childCount(); i++) {
                 item->child(i)->setCheckState(0, Qt::Unchecked);
                 for (int j = 0; j < item->child(i)->childCount(); j++) {
-                    d->selectedId.removeOne(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt());
+                    d->selectedId.remove(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt());
+//                    d->selectedId.removeOne(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt());
                     item->child(i)->child(j)->setCheckState(0, Qt::Unchecked);
                 }
             }
         }
         if (item->type() == QTreeWidgetItem::UserType + 4) {
             for (int i = 0; i < item->childCount(); i++) {
-                d->selectedId.removeOne(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt());
+                d->selectedId.remove(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt());
                 item->child(i)->setCheckState(0, Qt::Unchecked);
             }
             item->parent()->setCheckState(0, Qt::Unchecked);
@@ -131,7 +132,7 @@ QtShanoirTreeWidget::updateCheckBoxes(QTreeWidgetItem * item)
         if (item->type() == QTreeWidgetItem::UserType + 6) {
             item->parent()->setCheckState(0, Qt::Unchecked);
             item->parent()->parent()->setCheckState(0, Qt::Unchecked);
-            d->selectedId.removeOne(item->data(0, QTreeWidgetItem::UserType + 6).toInt());
+            d->selectedId.remove(item->data(0, QTreeWidgetItem::UserType + 6).toInt());
         }
     } emit
     filename(QString(""));
@@ -267,7 +268,7 @@ QtShanoirTreeWidget::parseAcquisition(QString xmlserial, QRegExp datasetNameFilt
         exam->setCheckState(0, sub->checkState(0));
 
         if (sub->checkState(0) == Qt::Checked)
-            d->selectedId.append(exam->data(0, QTreeWidgetItem::UserType + 6).toInt());
+            d->selectedId.insert(exam->data(0, QTreeWidgetItem::UserType + 6).toInt(),exam->text(0));
 
         sub->addChild(exam);
       }

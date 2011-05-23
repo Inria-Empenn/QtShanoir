@@ -87,7 +87,7 @@ class QtShanoir : public QObject
         void
         getError(QString);
         void
-        updateSelected(QList<int> );
+        updateSelected(QMap<int,QString> );
         void
         setDownloadFilename(QString filename);
         void

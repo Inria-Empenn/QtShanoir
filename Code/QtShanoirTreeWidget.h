@@ -27,8 +27,10 @@ class QtShanoirTreeWidget : public QWidget, public Ui::QtShanoirTree
         datasetQuery(QString, QString);
         void
         id(int);
+//        void
+//        selected(QList<int>);
         void
-        selected(QList<int>);
+        selected(QMap<int,QString>);
         void
         filename(QString);
         void
