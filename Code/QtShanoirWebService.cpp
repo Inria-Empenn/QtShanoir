@@ -85,7 +85,6 @@ QtShanoirWebService::sslErrors(const QList<QSslError> & errors)
         qDebug() << errors.at(i).error() << errors.at(i).errorString();
 
     }
-    //    mutex.unlock();
 }
 
 void

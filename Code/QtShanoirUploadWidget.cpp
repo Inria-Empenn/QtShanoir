@@ -31,8 +31,8 @@ QtShanoirUploadWidget::QtShanoirUploadWidget(QWidget * parent) :
             << "RegistrationDataset" << "SpectDataset" << "StatisticalDataset" << "TemplateDataset" << "SegmentationDataset" << "CtDataset";
     for (int i = 0; i < d->processingDatatype.size(); i++)
         resultTypeComboBox->insertItem(i, d->processingDatatype.at(i));
-    d->processingId = -1;
-    d->studyId = -1;
+    d->processingId = 0;
+    d->studyId = 0;
     d->datasetName = "";
     d->datasetPath = "";
     d->datasetComment = "";
@@ -87,8 +87,8 @@ QtShanoirUploadWidget::upload()
             d->uploadData.value("datasetName").isEmpty() ||
             d->uploadData.value("datasetPath").isEmpty() ||
             d->uploadData.value("datasetType").isEmpty() ||
-            ((d->uploadData.value("studyId").toInt() - 1) == -1) ||
-            ((d->uploadData.value("processingId").toInt() - 1) == -1)))
+            ((d->uploadData.value("studyId").toInt()) == 0) ||
+            ((d->uploadData.value("processingId").toInt()) == 0)))
         emit uploadData(d->uploadData);
 }
 

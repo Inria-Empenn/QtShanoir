@@ -187,6 +187,7 @@ QtShanoir::populate()
     QtSoapNamespaces &registry = QtSoapNamespaces::instance();
     registry.registerNamespace("ns1", "http://impl.webservices.shanoir.org/");
     registry.registerNamespace("ns2", "http://finder.impl.webservices.shanoir.org/");
+    registry.registerNamespace("ns3", "http://importer.impl.webservices.shanoir.org/");
 
     QString ws = "StudyFinder";
     QString impl("http://finder.impl.webservices.shanoir.org/");
@@ -459,15 +460,21 @@ QtShanoir::upload()
     QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
     QtShanoirWebService::Query(ws, "setDatasetName", impl, QStringList() << "datasetName", QStringList() << d->dataToUpload.value("datasetName"));
     QtShanoirWebService::Query(ws, "setDatasetComment", impl, QStringList() << "datasetComment", QStringList() << d->dataToUpload.value("datasetComment"));
-    QtShanoirWebService::Query(ws, "setDatasetProcessingId", impl, QStringList() << "datasetProcessingId", QStringList() << d->dataToUpload.value("processingId"));
+    QtShanoirWebService::Query(ws, "setRefDatasetProcessingId", impl, QStringList() << "refDatasetProcessingId", QStringList() << d->dataToUpload.value("processingId"));
     QtShanoirWebService::Query(ws, "setProcessingComment", impl, QStringList() << "processingComment", QStringList() << d->dataToUpload.value("processingComment"));
     QtShanoirWebService::Query(ws, "setDatasetClass", impl, QStringList() << "datasetClass", QStringList() << d->dataToUpload.value("datasetType"));
     QtShanoirWebService::Query(ws, "setStudyId", impl, QStringList() << "studyId", QStringList() << d->dataToUpload.value("studyId"));
     QtShanoirWebService::Query(ws, "setInputDatasetIdList", impl, QStringList() << "inputDatasetIdList", QStringList() << d->dataToUpload.values("inputDatasets"));
 
-//    QtShanoirWebService::Query(ws,"uploadFile", impl, QStringList() << "dataHandler", QStringList() );//QByteArray here I suppose);
+    QFile file(d->dataToUpload.value("datasetPath"));
+    file.open(QIODevice::ReadOnly);
 
-    QtShanoirWebService::Query(ws, "importDataset", impl, QStringList(), QStringList());
+    QtShanoirWebService::Query(ws,"uploadFile", impl, QStringList() << "dataHandler" << "filename", QStringList() << file.readAll().toBase64() << d->dataToUpload.value("datasetPath"));//QByteArray
+
+    file.close();
+
+    QString xmlserial = QtShanoirWebService::Query(ws, "importDataset", impl, QStringList(), QStringList());
+    qDebug() << xmlserial;
 
     QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
 }
