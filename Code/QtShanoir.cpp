@@ -341,8 +341,13 @@ QtShanoir::downloadDataset(QString datasetId)
     dFile.write(bin);
     dFile.close();
 
+    QString metadataFileName = "";
+  
     if (d->downloadMetadata)
-        this->downloadMetadata(datasetId);
+    {
+      this->downloadMetadata(datasetId);
+      metadataFileName = dFile.fileName().replace(".nii", ".xml").replace(".zip", ".xml");
+    }
 
     if (dFile.fileName().contains(".zip")) {
         // Decompression using QuaZIP
@@ -376,14 +381,14 @@ QtShanoir::downloadDataset(QString datasetId)
             out.close();
 
             if (name.contains(".nii"))
-                emit downloadFinished(outFileName);
+                emit downloadFinished(outFileName,metadataFileName);
 
             file.close();
         }
         zipFile.close();
     }
     else
-        emit downloadFinished(dFile.fileName());
+        emit downloadFinished(dFile.fileName(),metadataFileName);
 }
 
 void

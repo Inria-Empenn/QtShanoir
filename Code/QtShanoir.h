@@ -37,8 +37,6 @@ class QtShanoir : public QObject
         clearTree();
         void
         downloadToDir(QString tmpDir);
-        void
-        setDownloadMetadata(bool meta);
         void setStudyNameFilter(QString text);
         void setPatientNameFilter(QString text);
         void setDatasetNameFilter(QString text);
@@ -75,7 +73,7 @@ class QtShanoir : public QObject
         void
         startUpload();
         void
-        downloadFinished(QString fileName);
+        downloadFinished(QString fileName, QString xmlFileName);
         void
         processingMap(QMap<int, QString> map);
 
