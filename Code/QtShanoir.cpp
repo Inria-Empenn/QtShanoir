@@ -473,9 +473,7 @@ QtShanoir::upload()
 
     QFile file(d->dataToUpload.value("datasetPath"));
     file.open(QIODevice::ReadOnly);
-
-    QtShanoirWebService::Query(ws,"uploadFile", impl, QStringList() << "dataHandler" << "filename", QStringList() << file.readAll().toBase64() << d->dataToUpload.value("datasetPath"));//QByteArray
-
+    QtShanoirWebService::Query(ws,"uploadFile", impl, QStringList() << "dataHandler" << "filename", QStringList() << file.readAll().toBase64() << QDir(d->dataToUpload.value("datasetPath")).dirName());//QByteArray
     file.close();
 
     QString xmlserial = QtShanoirWebService::Query(ws, "importDataset", impl, QStringList(), QStringList());
