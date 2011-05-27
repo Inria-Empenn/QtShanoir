@@ -153,6 +153,8 @@ QtShanoir::attachProgressWidget(QtShanoirProgressWidget * widget)
     d->progress = widget;
     if (d->progress)
         d->progress->download->hide();
+  
+  emit progressHidden();
 }
 
 void
@@ -443,6 +445,7 @@ QtShanoir::callDownload()
     if (d->progress) {
         d->progress->download->setValue(0);
         d->progress->download->show();
+      emit progressShown();
     }
     for (int i = 0; i < d->selectedIds.size(); i++) {
         d->curId = d->selectedIds.at(i);
@@ -451,7 +454,11 @@ QtShanoir::callDownload()
             d->progress->download->setValue((int) (100.00 * (i + 1) / d->selectedIds.size()));
     }
     if (d->progress)
-        d->progress->download->hide();
+    {
+      d->progress->download->hide();
+      emit progressHidden();
+    }
+  
     qDebug() << "Download finished";
 }
 

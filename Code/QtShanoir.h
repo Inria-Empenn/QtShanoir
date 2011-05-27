@@ -76,6 +76,8 @@ class QtShanoir : public QObject
         downloadFinished(QString fileName, QString xmlFileName);
         void
         processingMap(QMap<int, QString> map);
+        void progressShown();
+        void progressHidden();
 
     private slots:
         void
