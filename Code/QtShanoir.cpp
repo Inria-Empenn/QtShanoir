@@ -337,7 +337,11 @@ QtShanoir::downloadDataset(QString datasetId)
         return;
     }
 
-    QFile dFile(d->downloadDir + QDir::separator() + (d->downloadFileName.isEmpty() ? QString("%1.nii").arg(d->curId) : d->downloadFileName));
+    QString tmpName = d->downloadFileName.isEmpty() ? QString("%1.nii").arg(d->curId) : d->downloadFileName;
+    
+    tmpName.replace(QDir::separator(),"_");
+    
+    QFile dFile(d->downloadDir + QDir::separator() + tmpName);
 
     dFile.open(QFile::WriteOnly);
     dFile.write(bin);
