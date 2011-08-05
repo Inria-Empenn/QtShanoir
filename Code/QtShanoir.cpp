@@ -307,7 +307,11 @@ QtShanoir::downloadMetadata(QString datasetId)
 
     QDomDocument doc;
     doc.setContent(xmlserial);
-    QFile dFile(d->downloadDir + QDir::separator() + d->downloadFileName.replace(".nii", ".xml").replace(".zip", ".xml"));
+
+    QString tmpName = d->downloadFileName.replace(".nii", ".xml").replace(".zip", ".xml");
+    tmpName.replace(QDir::separator(),"_");
+
+    QFile dFile(d->downloadDir + QDir::separator() + tmpName);
     dFile.open(QFile::WriteOnly);
     dFile.write(doc.toString().toUtf8().data());
     dFile.close();
