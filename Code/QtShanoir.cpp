@@ -209,7 +209,7 @@ void
 QtShanoir::findExam(QString str)
 {
 
-    QString ws = "MrExaminationFinder";
+    QString ws = "ExaminationFinder";
     QString impl = "http://finder.impl.webservices.shanoir.org/";
 
     QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
@@ -344,7 +344,7 @@ QtShanoir::downloadDataset(QString datasetId)
     QString tmpName = d->downloadFileName.isEmpty() ? QString("%1.nii").arg(d->curId) : d->downloadFileName;
     
     tmpName.replace(QDir::separator(),"_");
-    
+
     QFile dFile(d->downloadDir + QDir::separator() + tmpName);
 
     dFile.open(QFile::WriteOnly);

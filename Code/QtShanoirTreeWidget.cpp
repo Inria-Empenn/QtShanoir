@@ -31,7 +31,7 @@ void
 QtShanoirTreeWidget::initConnections()
 {
     QObject::connect(treeWidget, SIGNAL(itemClicked (QTreeWidgetItem*, int)), this, SLOT(itemClicked(QTreeWidgetItem*, int)));
-    QObject::connect(treeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextExportMenu(QPoint)));
+    //QObject::connect(treeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextExportMenu(QPoint)));
 }
 
 void
