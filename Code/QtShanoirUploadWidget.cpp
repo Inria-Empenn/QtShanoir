@@ -99,7 +99,7 @@ QtShanoirUploadWidget::browseDataset()
     dialog.setFileMode(QFileDialog::ExistingFile);
     dialog.setDirectory(QDir::home().dirName());
     dialog.setWindowTitle("Open filename");
-    dialog.setNameFilter(tr("Images (*.nii *.vtk)"));
+    dialog.setNameFilter(tr("Images (*.nii *.nii.gz *.vtk)"));
 
     if (dialog.exec()) {
         d->datasetPath = dialog.selectedFiles()[0];

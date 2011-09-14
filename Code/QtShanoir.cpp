@@ -356,7 +356,7 @@ QtShanoir::downloadDataset(QString datasetId)
         return;
     }
 
-    QString tmpName = d->downloadFileName.isEmpty() ? QString("%1.nii").arg(d->curId) : d->downloadFileName;
+    QString tmpName = d->downloadFileName.isEmpty() ? QString("%1.nii.gz").arg(d->curId) : d->downloadFileName;
     
     tmpName.replace(QDir::separator(),"_");
 
@@ -371,7 +371,7 @@ QtShanoir::downloadDataset(QString datasetId)
     if (d->downloadMetadata)
     {
       this->downloadMetadata(datasetId);
-      metadataFileName = dFile.fileName().replace(".nii", ".xml").replace(".zip", ".xml");
+      metadataFileName = dFile.fileName().replace(".nii.gz", ".xml").replace(".nii", ".xml").replace(".zip", ".xml");
     }
 
     if (dFile.fileName().contains(".zip")) {
@@ -405,7 +405,7 @@ QtShanoir::downloadDataset(QString datasetId)
             }
             out.close();
 
-            if (name.contains(".nii"))
+            if (name.contains(".nii") ||name.contains(".nii.gz"))
                 emit downloadFinished(outFileName,metadataFileName);
 
             file.close();
@@ -472,7 +472,6 @@ QtShanoir::callDownload()
     }
     for (int i = 0; i < d->selectedIds.size(); i++) {
         d->curId = d->selectedIds.at(i);
-        qDebug() << d->curId;
         this->downloadDataset(QString::number(d->curId));
         if (d->progress)
             d->progress->download->setValue((int) (100.00 * (i + 1) / d->selectedIds.size()));
