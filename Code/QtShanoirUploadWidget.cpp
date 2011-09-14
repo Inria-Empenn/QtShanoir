@@ -82,7 +82,7 @@ QtShanoirUploadWidget::upload()
     d->uploadData.insert("processingComment", d->processingComment);
     for (int i = 0; i < d->inputDatasetList.size(); i++)
         d->uploadData.insert("inputDatasets", QString::number(d->inputDatasetList.at(i)));
-
+    
     if (!(d->uploadData.values("inputDatasets").isEmpty() ||
             d->uploadData.value("datasetName").isEmpty() ||
             d->uploadData.value("datasetPath").isEmpty() ||

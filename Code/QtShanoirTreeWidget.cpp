@@ -46,11 +46,18 @@ QtShanoirTreeWidget::itemClicked(QTreeWidgetItem* item, int)
     // Item has user defined datatype && the data was not fetched yet
     if (!item->data(0, QTreeWidgetItem::UserType + 3).isNull() && item->childCount() == 0)
         emit mrExamQuery(item->data(0, QTreeWidgetItem::UserType + 3).toString());
+    
     if (!item->data(0, QTreeWidgetItem::UserType + 4).isNull() && item->childCount() == 0)
         emit datasetQuery(item->data(0, QTreeWidgetItem::UserType + 4).toString(), item->data(0, QTreeWidgetItem::UserType + 5).toString());
+    
     if (!item->data(0, QTreeWidgetItem::UserType + 6).isNull())
+    {
         emit id(item->data(0, QTreeWidgetItem::UserType + 6).toString().toInt());
-
+    
+        if (item->childCount() == 0)
+            emit processingQuery(item->data(0, QTreeWidgetItem::UserType + 6).toString());
+    }
+        
     this->updateCheckBoxes(item);
 }
 
@@ -96,49 +103,79 @@ QtShanoirTreeWidget::contextExportMenu(const QPoint point)
 void
 QtShanoirTreeWidget::updateCheckBoxes(QTreeWidgetItem * item)
 {
-    if (item->checkState(0) == Qt::Checked) {
-        if ((item->type() == QTreeWidgetItem::UserType + 6) && !d->selectedId.contains(item->data(0, QTreeWidgetItem::UserType + 6).toInt())) {
+    if (item->checkState(0) == Qt::Checked) 
+    {
+        if ((item->type() == QTreeWidgetItem::UserType + 6) && !d->selectedId.contains(item->data(0, QTreeWidgetItem::UserType + 6).toInt())) 
+        {
             d->selectedId.insert(item->data(0, QTreeWidgetItem::UserType + 6).toInt(), item->text(0));
         }
-        for (int i = 0; i < item->childCount(); i++) {
-            item->child(i)->setCheckState(0, Qt::Checked);
-            if ((item->child(i)->type() == QTreeWidgetItem::UserType + 6) && !d->selectedId.contains(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt()))
-                d->selectedId.insert(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt(), item->child(i)->text(0));
-            for (int j = 0; j < item->child(i)->childCount(); j++) {
-                item->child(i)->child(j)->setCheckState(0, Qt::Checked);
-                if ((item->child(i)->child(j)->type() == QTreeWidgetItem::UserType + 6) && !d->selectedId.contains(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt()))
-                    d->selectedId.insert(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt(),item->child(i)->child(j)->text(0));
+        
+        if (item->type() != QTreeWidgetItem::UserType + 6)
+        {
+            for (int i = 0; i < item->childCount(); i++) 
+            {
+                item->child(i)->setCheckState(0, Qt::Checked);
+                if ((item->child(i)->type() == QTreeWidgetItem::UserType + 6) && !d->selectedId.contains(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt()))
+                    d->selectedId.insert(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt(), item->child(i)->text(0));
+                
+                for (int j = 0; j < item->child(i)->childCount(); j++) 
+                {
+                    item->child(i)->child(j)->setCheckState(0, Qt::Checked);
+                    if ((item->child(i)->child(j)->type() == QTreeWidgetItem::UserType + 6) && !d->selectedId.contains(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt()))
+                        d->selectedId.insert(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt(),item->child(i)->child(j)->text(0));
+                }
             }
         }
     }
-    else {
-        if (item->type() == QTreeWidgetItem::UserType + 3) {
-            for (int i = 0; i < item->childCount(); i++) {
+    else 
+    {
+        if (item->type() == QTreeWidgetItem::UserType + 3) 
+        {
+            for (int i = 0; i < item->childCount(); i++) 
+            {
                 item->child(i)->setCheckState(0, Qt::Unchecked);
-                for (int j = 0; j < item->child(i)->childCount(); j++) {
+                for (int j = 0; j < item->child(i)->childCount(); j++) 
+                {
                     d->selectedId.remove(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt());
-//                    d->selectedId.removeOne(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt());
+                    //d->selectedId.removeOne(item->child(i)->child(j)->data(0, QTreeWidgetItem::UserType + 6).toInt());
                     item->child(i)->child(j)->setCheckState(0, Qt::Unchecked);
                 }
             }
         }
-        if (item->type() == QTreeWidgetItem::UserType + 4) {
-            for (int i = 0; i < item->childCount(); i++) {
+        
+        if (item->type() == QTreeWidgetItem::UserType + 4) 
+        {
+            for (int i = 0; i < item->childCount(); i++) 
+            {
                 d->selectedId.remove(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt());
                 item->child(i)->setCheckState(0, Qt::Unchecked);
             }
             item->parent()->setCheckState(0, Qt::Unchecked);
         }
-        if (item->type() == QTreeWidgetItem::UserType + 6) {
+        
+        if (item->type() == QTreeWidgetItem::UserType + 6) 
+        {
             item->parent()->setCheckState(0, Qt::Unchecked);
             item->parent()->parent()->setCheckState(0, Qt::Unchecked);
             d->selectedId.remove(item->data(0, QTreeWidgetItem::UserType + 6).toInt());
         }
-    } emit
-    filename(QString(""));
+        
+        if (item->type() == QTreeWidgetItem::UserType + 7) 
+        {
+            for (int i = 0; i < item->childCount(); i++) 
+            {
+                d->selectedId.remove(item->child(i)->data(0, QTreeWidgetItem::UserType + 6).toInt());
+                item->child(i)->setCheckState(0, Qt::Unchecked);
+            }
+
+            item->parent()->setCheckState(0, Qt::Unchecked);
+            item->parent()->parent()->setCheckState(0, Qt::Unchecked);
+        }
+    } 
+    
+    emit filename(QString(""));
     //    qDebug()<< d->selectedId;
-    emit
-    selected(d->selectedId);
+    emit selected(d->selectedId);
 }
 
 void
@@ -252,7 +289,7 @@ QtShanoirTreeWidget::parseAcquisition(QString xmlserial, QRegExp datasetNameFilt
     // Sub root the document to remove the SOAP Enveloppe
 
     QTreeWidgetItem* sub = treeWidget->selectedItems().front();
-    QDomNode el = doc.firstChild().firstChildElement("mrDatasetResultList");
+    QDomNode el = doc.firstChild().firstChildElement("datasetResultList");
 
     if (el.isNull()) {
         QFont f = sub->font(0);
@@ -275,7 +312,7 @@ QtShanoirTreeWidget::parseAcquisition(QString xmlserial, QRegExp datasetNameFilt
 
         sub->addChild(exam);
       }
-      el = el.nextSiblingElement("mrDatasetResultList");
+      el = el.nextSiblingElement("datasetResultList");
     }
     sub->setExpanded(true);
     doc.clear();
@@ -283,3 +320,56 @@ QtShanoirTreeWidget::parseAcquisition(QString xmlserial, QRegExp datasetNameFilt
     emit queryFinished();
 }
 
+void
+QtShanoirTreeWidget::parseProcessingData(QString xmlserial)
+{
+    QDomDocument doc;
+    doc.setContent(xmlserial);
+    doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());
+    doc.removeChild(doc.firstChild());
+    // Sub root the document to remove the SOAP Enveloppe
+    
+    QTreeWidgetItem* sub = treeWidget->selectedItems().front();
+    QDomNode n = doc.firstChild().firstChildElement("return");
+        
+    while (!n.isNull()) {
+        QTreeWidgetItem* processType = new QTreeWidgetItem(QTreeWidgetItem::UserType + 7);
+        
+        processType->setText(0,QString(n.firstChildElement("refDatasetProcessing").firstChild().nodeValue()));
+        processType->setText(1,"PROCESS");
+        processType->setIcon(0, QIcon(":Images/datasetProcessing.16.16.png"));
+        processType->setCheckState(0, sub->checkState(0));
+        
+        QDomNode el = n.firstChildElement("outputs");
+        
+        while (!el.isNull())
+        {
+            QTreeWidgetItem* exam = new QTreeWidgetItem(QTreeWidgetItem::UserType + 6);
+        
+            QString dataName = el.firstChildElement("name").firstChild().nodeValue();
+            if (dataName == "")
+                dataName = el.firstChildElement("id").firstChild().nodeValue();
+        
+            QDate creationDate = QDate::fromString(el.firstChildElement("datasetCreationDate").firstChild().nodeValue(), Qt::ISODate);
+        
+            exam->setText(0, QString("%1 - %2").arg(dataName) .arg(creationDate.toString(Qt::SystemLocaleShortDate)));
+            exam->setText(1, "DATASET");
+            exam->setIcon(0, QIcon(":Images/dataset.64x64.png"));
+            exam->setData(0, QTreeWidgetItem::UserType + 6, QString(el.firstChildElement("id").firstChild().nodeValue()));
+            exam->setCheckState(0, sub->checkState(0));
+        
+            if (sub->checkState(0) == Qt::Checked)
+                d->selectedId.insert(exam->data(0, QTreeWidgetItem::UserType + 6).toInt(),exam->text(0));
+            
+            processType->addChild(exam);
+            el = el.nextSiblingElement("outputs");
+        }
+        
+        sub->addChild(processType);
+        n = n.nextSiblingElement("return");
+    }
+    sub->setExpanded(true);
+    doc.clear();
+    
+    emit queryFinished();
+}

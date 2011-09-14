@@ -26,6 +26,8 @@ class QtShanoirTreeWidget : public QWidget, public Ui::QtShanoirTree
         void
         datasetQuery(QString, QString);
         void
+        processingQuery(QString);
+        void
         id(int);
         void
         selected(QMap<int,QString>);
@@ -43,6 +45,8 @@ class QtShanoirTreeWidget : public QWidget, public Ui::QtShanoirTree
         itemClicked(QTreeWidgetItem* item, int column);
         void
         parseAcquisition(QString xmlserial, QRegExp datasetNameFilter);
+        void
+        parseProcessingData(QString xmlserial);
         void parseStudy(QString xmlserial, QRegExp patientNameFilter);
         void
         parseMrExamination(QString xmlserial, QString dateFilter);

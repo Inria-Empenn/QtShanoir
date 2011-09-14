@@ -100,6 +100,9 @@ class QtShanoir : public QObject
         void
         findDataset(QString, QString);
         void
+        findProcessing(QString datasetId);
+    
+        void
         currentId(int);
         void
         queryFinished();
