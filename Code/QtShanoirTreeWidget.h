@@ -18,7 +18,7 @@ class QtShanoirTreeWidget : public QWidget, public Ui::QtShanoirTree
 {
     Q_OBJECT
     public:
-        QtShanoirTreeWidget(QWidget * parent = 0);
+        QtShanoirTreeWidget(QWidget * parent = 0);;
 
     signals:
         void
@@ -39,21 +39,14 @@ class QtShanoirTreeWidget : public QWidget, public Ui::QtShanoirTree
         queryFinished();
 
     public slots:
-        void
-        itemDoubleClicked(QTreeWidgetItem* item, int column);
-        void
-        itemClicked(QTreeWidgetItem* item, int column);
-        void
-        parseAcquisition(QString xmlserial, QRegExp datasetNameFilter);
+        void itemDoubleClicked(QTreeWidgetItem* item, int column);
+        void itemClicked(QTreeWidgetItem* item, int column);
+        void parseAcquisition(QString xmlserial, QRegExp datasetNameFilter);
         void
         parseProcessingData(QString xmlserial);
         void parseStudy(QString xmlserial, QRegExp patientNameFilter);
-        void
-        parseMrExamination(QString xmlserial, QString dateFilter);
-        void
-        contextExportMenu( const QPoint point );
-//        void
-//        clearTree();
+        void parseMrExamination(QString xmlserial, QString dateFilter);
+        void contextExportMenu( const QPoint point );
 
     private:
         void

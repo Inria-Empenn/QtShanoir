@@ -65,6 +65,9 @@ class QtShanoir : public QObject
         getDatasetFilename(QString datasetId);
         void
         getProcessingListId();
+        void
+        getDatasetNatures();
+
     signals:
         void
         nextMessage();

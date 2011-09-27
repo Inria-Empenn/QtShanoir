@@ -24,163 +24,165 @@ QtShanoir * QtShanoir::_instance = 0;
 
 class QtShanoirPrivate
 {
-    public:
-        QtShanoirTreeWidget * tree;
-        QtShanoirProgressWidget * progress;
-        QtShanoirUploadWidget * upload;
-        int curId;
-        QList<int> selectedIds;
-        QString downloadDir;
-        QString downloadFileName;
-        bool downloadMetadata;
-        QList<QString> filesToUploadList;
+public:
+    QtShanoirTreeWidget * tree;
+    QtShanoirProgressWidget * progress;
+    QtShanoirUploadWidget * upload;
+    int curId;
+    QList<int> selectedIds;
+    QString downloadDir;
+    QString downloadFileName;
+    bool downloadMetadata;
+    QList<QString> filesToUploadList;
 
-        QMultiMap<QString, QString> dataToUpload;
+    QMultiMap<QString, QString> dataToUpload;
 
-        QRegExp studyNameFilter;
-        QString dateFilter;
-        QRegExp patientNameFilter;
-        QRegExp datasetNameFilter;
+    QRegExp studyNameFilter;
+    QString dateFilter;
+    QRegExp patientNameFilter;
+    QRegExp datasetNameFilter;
 };
 
 QtShanoir *
 QtShanoir::instance()
 {
-    if (_instance == 0)
+    if ( _instance == 0 )
         _instance = new QtShanoir();
     return _instance;
 }
 
 QtShanoir::QtShanoir() :
-    d(new QtShanoirPrivate)
+        d ( new QtShanoirPrivate )
 {
     d->tree = 0;
     d->progress = 0;
     d->downloadFileName = "";
     d->downloadMetadata = false;
 
-    d->studyNameFilter.setPattern("*");
-    d->patientNameFilter.setPattern("*");
+    d->studyNameFilter.setPattern ( "*" );
+    d->patientNameFilter.setPattern ( "*" );
     d->dateFilter = "";
-    d->datasetNameFilter.setPattern("*");
+    d->datasetNameFilter.setPattern ( "*" );
 
-    d->studyNameFilter.setPatternSyntax(QRegExp::Wildcard);
-    d->patientNameFilter.setPatternSyntax(QRegExp::Wildcard);
-    d->datasetNameFilter.setPatternSyntax(QRegExp::Wildcard);
+    d->studyNameFilter.setPatternSyntax ( QRegExp::Wildcard );
+    d->patientNameFilter.setPatternSyntax ( QRegExp::Wildcard );
+    d->datasetNameFilter.setPatternSyntax ( QRegExp::Wildcard );
 }
 
 void
-QtShanoir::setDateFilter(QString text)
+QtShanoir::setDateFilter ( QString text )
 {
 
-    QDate tmpDate = QDate::fromString(text, "dd/MM/yyyy");
-    d->dateFilter = tmpDate.toString(Qt::ISODate);
+    QDate tmpDate = QDate::fromString ( text, "dd/MM/yyyy" );
+    d->dateFilter = tmpDate.toString ( Qt::ISODate );
 
 }
 
 void
-QtShanoir::setStudyNameFilter(QString text)
+QtShanoir::setStudyNameFilter ( QString text )
 {
-    if (text != "")
-        d->studyNameFilter.setPattern(text);
+    if ( text != "" )
+        d->studyNameFilter.setPattern ( text );
     else
-        d->studyNameFilter.setPattern("*");
+        d->studyNameFilter.setPattern ( "*" );
 }
 
 void
-QtShanoir::setPatientNameFilter(QString text)
+QtShanoir::setPatientNameFilter ( QString text )
 {
-    if (text != "")
-        d->patientNameFilter.setPattern(text);
+    if ( text != "" )
+        d->patientNameFilter.setPattern ( text );
     else
-        d->patientNameFilter.setPattern("*");
+        d->patientNameFilter.setPattern ( "*" );
 }
 
 void
-QtShanoir::setDatasetNameFilter(QString text)
+QtShanoir::setDatasetNameFilter ( QString text )
 {
-    if (text != "")
-        d->datasetNameFilter.setPattern(text);
+    if ( text != "" )
+        d->datasetNameFilter.setPattern ( text );
     else
-        d->datasetNameFilter.setPattern("*");
+        d->datasetNameFilter.setPattern ( "*" );
 }
 
 void
-QtShanoir::setDownloadFilename(QString filename)
+QtShanoir::setDownloadFilename ( QString filename )
 {
     d->downloadFileName = filename;
 }
 
 void
-QtShanoir::setDownloadMetadata(int state)
+QtShanoir::setDownloadMetadata ( int state )
 {
-    d->downloadMetadata = (state == Qt::Checked);
+    d->downloadMetadata = ( state == Qt::Checked );
 }
 
 void
 QtShanoir::clearTree()
 {
     d->selectedIds.clear();
-    if (d->tree)
+    if ( d->tree )
         d->tree->treeWidget->clear();
 }
 
 void
 QtShanoir::init()
 {
-    if (d->tree)
+    if ( d->tree )
         QtShanoirSettings::Instance();
-    QObject::connect(this, SIGNAL(startDownload()), this, SLOT(callDownload()));
-    QObject::connect(this, SIGNAL(startUpload()), this, SLOT(upload()));
+    QObject::connect ( this, SIGNAL ( startDownload() ), this, SLOT ( callDownload() ) );
+    QObject::connect ( this, SIGNAL ( startUpload() ), this, SLOT ( upload() ) );
 }
 
 void
-QtShanoir::attachTreeWidget(QtShanoirTreeWidget * widget)
+QtShanoir::attachTreeWidget ( QtShanoirTreeWidget * widget )
 {
     d->tree = widget;
-    if (d->tree) {
-        QObject::connect(d->tree, SIGNAL(mrExamQuery(QString)), this, SLOT(findExam(QString)));
-        QObject::connect(d->tree, SIGNAL(datasetQuery(QString,QString)), this, SLOT(findDataset(QString,QString)));
-        QObject::connect(d->tree, SIGNAL(processingQuery(QString)), this, SLOT(findProcessing(QString)));
-        QObject::connect(d->tree, SIGNAL(id(int)), this, SLOT(currentId(int)));
-        QObject::connect(d->tree, SIGNAL(selected(QMap<int,QString>)), this, SLOT(updateSelected(QMap<int,QString>)));
-        QObject::connect(d->tree, SIGNAL(filename(QString)), this, SLOT(setDownloadFilename(QString)));
+    if ( d->tree )
+    {
+        QObject::connect ( d->tree, SIGNAL ( mrExamQuery ( QString ) ), this, SLOT ( findExam ( QString ) ) );
+        QObject::connect ( d->tree, SIGNAL ( datasetQuery ( QString,QString ) ), this, SLOT ( findDataset ( QString,QString ) ) );
+        QObject::connect ( d->tree, SIGNAL ( processingQuery ( QString ) ), this, SLOT ( findProcessing ( QString ) ) );
+        QObject::connect ( d->tree, SIGNAL ( id ( int ) ), this, SLOT ( currentId ( int ) ) );
+        QObject::connect ( d->tree, SIGNAL ( selected ( QMap<int,QString> ) ), this, SLOT ( updateSelected ( QMap<int,QString> ) ) );
+        QObject::connect ( d->tree, SIGNAL ( filename ( QString ) ), this, SLOT ( setDownloadFilename ( QString ) ) );
     }
 }
 
 void
-QtShanoir::attachProgressWidget(QtShanoirProgressWidget * widget)
+QtShanoir::attachProgressWidget ( QtShanoirProgressWidget * widget )
 {
     d->progress = widget;
-    if (d->progress)
+    if ( d->progress )
         d->progress->download->hide();
-  
-  emit progressHidden();
+
+    emit progressHidden();
 }
 
 void
-QtShanoir::attachUploadWidget(QtShanoirUploadWidget * widget)
+QtShanoir::attachUploadWidget ( QtShanoirUploadWidget * widget )
 {
     d->upload = widget;
-    if (d->upload && d->tree) {
-        QObject::connect(d->tree, SIGNAL(selected(QMap<int,QString>)), d->upload, SLOT(updateInputDataset(QMap<int,QString>)));
-        QObject::connect(d->tree, SIGNAL(studyMap(QMap<int,QString>)), d->upload, SLOT(updateStudyComboBox(QMap<int,QString>)));
-        QObject::connect(this, SIGNAL(processingMap(QMap<int, QString>)), d->upload, SLOT(updateProcessingComboBox(QMap<int, QString>)));
-        QObject::connect(d->upload, SIGNAL(uploadData(QMultiMap<QString, QString>)), this, SLOT(receiveUploadData(QMultiMap<QString, QString>)));
+    if ( d->upload && d->tree )
+    {
+        QObject::connect ( d->tree, SIGNAL ( selected ( QMap<int,QString> ) ), d->upload, SLOT ( updateInputDataset ( QMap<int,QString> ) ) );
+        QObject::connect ( d->tree, SIGNAL ( studyMap ( QMap<int,QString> ) ), d->upload, SLOT ( updateStudyComboBox ( QMap<int,QString> ) ) );
+        QObject::connect ( this, SIGNAL ( processingMap ( QMap<int, QString> ) ), d->upload, SLOT ( updateProcessingComboBox ( QMap<int, QString> ) ) );
+        QObject::connect ( d->upload, SIGNAL ( uploadData ( QMultiMap<QString, QString> ) ), this, SLOT ( receiveUploadData ( QMultiMap<QString, QString> ) ) );
     }
 }
 
 void
-QtShanoir::getError(QString xmlserial)
+QtShanoir::getError ( QString xmlserial )
 {
     QDomDocument doc;
-    doc.setContent(xmlserial);
+    doc.setContent ( xmlserial );
 
-    doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());
-    doc.removeChild(doc.firstChild());
+    doc.appendChild ( doc.firstChild().firstChildElement ( "SOAP-ENV:Body" ).firstChild() );
+    doc.removeChild ( doc.firstChild() );
     QString errmsg = doc.firstChild().firstChild().firstChild().nodeValue();
 
-    if (!errmsg.isEmpty())
+    if ( !errmsg.isEmpty() )
         qDebug() << "SOAP Error" << errmsg;
 }
 
@@ -188,90 +190,91 @@ void
 QtShanoir::populate()
 {
     QtSoapNamespaces &registry = QtSoapNamespaces::instance();
-    registry.registerNamespace("ns1", "http://impl.webservices.shanoir.org/");
-    registry.registerNamespace("ns2", "http://finder.impl.webservices.shanoir.org/");
-    registry.registerNamespace("ns3", "http://importer.impl.webservices.shanoir.org/");
+    registry.registerNamespace ( "ns1", "http://impl.webservices.shanoir.org/" );
+    registry.registerNamespace ( "ns2", "http://finder.impl.webservices.shanoir.org/" );
+    registry.registerNamespace ( "ns3", "http://importer.impl.webservices.shanoir.org/" );
 
     QString ws = "StudyFinder";
-    QString impl("http://finder.impl.webservices.shanoir.org/");
+    QString impl ( "http://finder.impl.webservices.shanoir.org/" );
 
-    QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-    QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-    QtShanoirWebService::Query(ws, "setStudyName", impl, QStringList() << "studyName", QStringList() << d->studyNameFilter.pattern());
-    QString xmlserial = QtShanoirWebService::Query(ws, "find", impl, QStringList(), QStringList());
+    QtShanoirWebService::Query ( ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login() );
+    QtShanoirWebService::Query ( ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password() );
+    QtShanoirWebService::Query ( ws, "setStudyName", impl, QStringList() << "studyName", QStringList() << d->studyNameFilter.pattern() );
+    QString xmlserial = QtShanoirWebService::Query ( ws, "find", impl, QStringList(), QStringList() );
 
-    QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
-    d->tree->parseStudy(xmlserial, d->patientNameFilter);
+    QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
+    d->tree->parseStudy ( xmlserial, d->patientNameFilter );
 
     this->getProcessingListId();
 }
 
 void
-QtShanoir::findExam(QString str)
+QtShanoir::findExam ( QString str )
 {
     QString ws = "ExaminationFinder";
     QString impl = "http://finder.impl.webservices.shanoir.org/";
 
-    QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-    QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-    QtShanoirWebService::Query(ws, "setSubjectIds", impl, QStringList() << "examinationSubjectIds", QStringList() << str);
-    QString xmlserial = QtShanoirWebService::Query(ws, "find", impl, QStringList(), QStringList());
+    QtShanoirWebService::Query ( ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login() );
+    QtShanoirWebService::Query ( ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password() );
+    QtShanoirWebService::Query ( ws, "setSubjectIds", impl, QStringList() << "examinationSubjectIds", QStringList() << str );
+    QString xmlserial = QtShanoirWebService::Query ( ws, "find", impl, QStringList(), QStringList() );
 
-    QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
-    d->tree->parseMrExamination(xmlserial, d->dateFilter);
+    QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
+    d->tree->parseMrExamination ( xmlserial, d->dateFilter );
 }
 
 void
-QtShanoir::findProcessing(QString datasetId)
+QtShanoir::findProcessing ( QString datasetId )
 {
     QString ws = "DatasetProcessingFinder";
     QString impl = "http://finder.impl.webservices.shanoir.org/";
-    
-    QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-    QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-    QtShanoirWebService::Query(ws, "setInputDatasetIds", impl, QStringList() << "datasetIds", QStringList() << datasetId);
-    QString xmlserial = QtShanoirWebService::Query(ws, "find", impl, QStringList(), QStringList());
-    
-    QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+
+    QtShanoirWebService::Query ( ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login() );
+    QtShanoirWebService::Query ( ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password() );
+    QtShanoirWebService::Query ( ws, "setInputDatasetIds", impl, QStringList() << "datasetIds", QStringList() << datasetId );
+    QString xmlserial = QtShanoirWebService::Query ( ws, "find", impl, QStringList(), QStringList() );
+
+    QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
     //qDebug() << xmlserial;
-    d->tree->parseProcessingData(xmlserial);    
+    d->tree->parseProcessingData ( xmlserial );
 }
 
 void
-QtShanoir::findDataset(QString examId, QString subjectId)
+QtShanoir::findDataset ( QString examId, QString subjectId )
 {
     QString ws = "DatasetFinder";
     QString impl = "http://finder.impl.webservices.shanoir.org/";
 
-    QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-    QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-    QtShanoirWebService::Query(ws, "setSubjectIds", impl, QStringList() << "datasetSubjectIds", QStringList() << subjectId);
-    QtShanoirWebService::Query(ws, "setExaminationIds", impl, QStringList() << "datasetExaminations", QStringList() << examId);
-    QString xmlserial = QtShanoirWebService::Query(ws, "find", impl, QStringList(), QStringList());
+    QtShanoirWebService::Query ( ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login() );
+    QtShanoirWebService::Query ( ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password() );
+    QtShanoirWebService::Query ( ws, "setSubjectIds", impl, QStringList() << "datasetSubjectIds", QStringList() << subjectId );
+    QtShanoirWebService::Query ( ws, "setExaminationIds", impl, QStringList() << "datasetExaminations", QStringList() << examId );
+    QString xmlserial = QtShanoirWebService::Query ( ws, "find", impl, QStringList(), QStringList() );
 
-    QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
-    d->tree->parseAcquisition(xmlserial, d->datasetNameFilter);
+    QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
+    d->tree->parseAcquisition ( xmlserial, d->datasetNameFilter );
 }
 
 void
-QtShanoir::getDatasetFilename(QString datasetId)
+QtShanoir::getDatasetFilename ( QString datasetId )
 {
     QString ws = "Downloader";
     QString impl = "http://impl.webservices.shanoir.org/";
 
     d->curId = datasetId.toInt();
 
-    QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-    QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-    QtShanoirWebService::Query(ws, "setDatasetId", impl, QStringList() << "datasetId", QStringList() << datasetId);
+    QtShanoirWebService::Query ( ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login() );
+    QtShanoirWebService::Query ( ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password() );
+    QtShanoirWebService::Query ( ws, "setDatasetId", impl, QStringList() << "datasetId", QStringList() << datasetId );
 
-    QString xmlserial = QtShanoirWebService::Query(ws, "getFileName", impl, QStringList(), QStringList());
-    QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+    QString xmlserial = QtShanoirWebService::Query ( ws, "getFileName", impl, QStringList(), QStringList() );
+    QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
 
     QDomDocument doc;
-    doc.setContent(xmlserial);
+    doc.setContent ( xmlserial );
     QDomNode n = doc.firstChild().firstChild().nextSibling().firstChild().firstChild();
-    if (n.isElement()) {
+    if ( n.isElement() )
+    {
         d->downloadFileName = n.toElement().text();
     }
 }
@@ -282,61 +285,95 @@ QtShanoir::getProcessingListId()
     QString ws = "ReferenceLister";
     QString impl = "http://impl.webservices.shanoir.org/";
 
-    QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-    QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
+    QtShanoirWebService::Query ( ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login() );
+    QtShanoirWebService::Query ( ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password() );
 
-    QString xmlserial = QtShanoirWebService::Query(ws, "listReferenceValue", impl, QStringList() << "arg0", QStringList() << "DatasetProcessing");
+    QString xmlserial = QtShanoirWebService::Query ( ws, "listReferenceValue", impl, QStringList() << "arg0", QStringList() << "DatasetProcessing" );
 
-    QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+    QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
 
     QMap<int, QString> map;
     int id;
     QString label;
     QDomDocument doc;
-    doc.setContent(xmlserial);
-    doc.appendChild(doc.firstChild().firstChildElement("SOAP-ENV:Body").firstChild());
-    doc.removeChild(doc.firstChild());
+    doc.setContent ( xmlserial );
+    doc.appendChild ( doc.firstChild().firstChildElement ( "SOAP-ENV:Body" ).firstChild() );
+    doc.removeChild ( doc.firstChild() );
 
     QDomNode n = doc.firstChild().firstChild();
-    while (!n.isNull()) {
-        id = n.firstChildElement("id").firstChild().toText().nodeValue().toInt();
-        label = n.firstChildElement("label").firstChild().toText().nodeValue();
-        map.insert(id, label);
+    while ( !n.isNull() )
+    {
+        id = n.firstChildElement ( "id" ).firstChild().toText().nodeValue().toInt();
+        label = n.firstChildElement ( "label" ).firstChild().toText().nodeValue();
+        map.insert ( id, label );
         n = n.nextSibling();
     }
-    emit processingMap(map);
+    emit processingMap ( map );
 }
 
 void
-QtShanoir::downloadMetadata(QString datasetId)
+QtShanoir::getDatasetNatures()
+{
+    QString ws = "ReferenceLister";
+    QString impl = "http://impl.webservices.shanoir.org/";
+
+    QtShanoirWebService::Query ( ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login() );
+    QtShanoirWebService::Query ( ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password() );
+
+    QString xmlserial = QtShanoirWebService::Query ( ws, "listReferenceValue", impl, QStringList() << "arg0", QStringList() << "" );
+
+    QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
+
+    QMap<int, QString> map;
+    int id;
+    QString label;
+    QDomDocument doc;
+    doc.setContent ( xmlserial );
+    doc.appendChild ( doc.firstChild().firstChildElement ( "SOAP-ENV:Body" ).firstChild() );
+    doc.removeChild ( doc.firstChild() );
+
+
+    doc.toString();
+
+//    QDomNode n = doc.firstChild().firstChild();
+//    while (!n.isNull()) {
+//        id = n.firstChildElement("id").firstChild().toText().nodeValue().toInt();
+//        label = n.firstChildElement("label").firstChild().toText().nodeValue();
+//        map.insert(id, label);
+//        n = n.nextSibling();
+//    }
+}
+
+void
+QtShanoir::downloadMetadata ( QString datasetId )
 {
     QString ws = "DatasetFinder";
     QString impl = "http://finder.impl.webservices.shanoir.org/";
 
-    QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-    QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-    QtShanoirWebService::Query(ws, "setDatasetIds", impl, QStringList() << "datasetIds", QStringList() << datasetId);
-    QString xmlserial = QtShanoirWebService::Query(ws, "find", impl, QStringList(), QStringList());
+    QtShanoirWebService::Query ( ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login() );
+    QtShanoirWebService::Query ( ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password() );
+    QtShanoirWebService::Query ( ws, "setDatasetIds", impl, QStringList() << "datasetIds", QStringList() << datasetId );
+    QString xmlserial = QtShanoirWebService::Query ( ws, "find", impl, QStringList(), QStringList() );
 
-    QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+    QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
 
     QDomDocument doc;
-    doc.setContent(xmlserial);
+    doc.setContent ( xmlserial );
 
-    QString tmpName = d->downloadFileName.replace(".nii", ".xml").replace(".zip", ".xml");
-    tmpName.replace(QDir::separator(),"_");
+    QString tmpName = d->downloadFileName.replace ( ".nii", ".xml" ).replace ( ".zip", ".xml" );
+    tmpName.replace ( QDir::separator(),"_" );
 
-    QFile dFile(d->downloadDir + QDir::separator() + tmpName);
-    dFile.open(QFile::WriteOnly);
-    dFile.write(doc.toString().toUtf8().data());
+    QFile dFile ( d->downloadDir + QDir::separator() + tmpName );
+    dFile.open ( QFile::WriteOnly );
+    dFile.write ( doc.toString().toUtf8().data() );
     dFile.close();
 
 }
 
 void
-QtShanoir::downloadDataset(QString datasetId)
+QtShanoir::downloadDataset ( QString datasetId )
 {
-    this->getDatasetFilename(datasetId);
+    this->getDatasetFilename ( datasetId );
     d->curId = datasetId.toInt();
 
     QString ws = "Downloader";
@@ -344,80 +381,84 @@ QtShanoir::downloadDataset(QString datasetId)
 
     d->curId = datasetId.toInt();
 
-    QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-    QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-    QtShanoirWebService::Query(ws, "setDatasetId", impl, QStringList() << "datasetId", QStringList() << datasetId);
+    QtShanoirWebService::Query ( ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login() );
+    QtShanoirWebService::Query ( ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password() );
+    QtShanoirWebService::Query ( ws, "setDatasetId", impl, QStringList() << "datasetId", QStringList() << datasetId );
 
-    QByteArray bin = QtShanoirWebService::BinaryQuery(ws, "download", impl, QStringList(), QStringList());
+    QByteArray bin = QtShanoirWebService::BinaryQuery ( ws, "download", impl, QStringList(), QStringList() );
 
-    QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
-    if (bin.isEmpty()) {
+    QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
+    if ( bin.isEmpty() )
+    {
         qDebug() << "Binary is empty";
         return;
     }
 
-    QString tmpName = d->downloadFileName.isEmpty() ? QString("%1.nii.gz").arg(d->curId) : d->downloadFileName;
-    
-    tmpName.replace(QDir::separator(),"_");
+    QString tmpName = d->downloadFileName.isEmpty() ? QString ( "%1.nii.gz" ).arg ( d->curId ) : d->downloadFileName;
 
-    QFile dFile(d->downloadDir + QDir::separator() + tmpName);
+    tmpName.replace ( QDir::separator(),"_" );
 
-    dFile.open(QFile::WriteOnly);
-    dFile.write(bin);
+    QFile dFile ( d->downloadDir + QDir::separator() + tmpName );
+
+    dFile.open ( QFile::WriteOnly );
+    dFile.write ( bin );
     dFile.close();
 
     QString metadataFileName = "";
-  
-    if (d->downloadMetadata)
+    if ( d->downloadMetadata )
     {
-      this->downloadMetadata(datasetId);
-      metadataFileName = dFile.fileName().replace(".nii.gz", ".xml").replace(".nii", ".xml").replace(".zip", ".xml");
+        this->downloadMetadata ( datasetId );
+        metadataFileName = dFile.fileName().replace ( ".nii.gz", ".xml" ).replace ( ".nii", ".xml" ).replace ( ".zip", ".xml" );
     }
-
-    if (dFile.fileName().contains(".zip")) {
+    if ( dFile.fileName().contains ( ".zip" ) )
+    {
         // Decompression using QuaZIP
-        QuaZip zipFile(dFile.fileName());
-        zipFile.open(QuaZip::mdUnzip);
+        QuaZip zipFile ( dFile.fileName() );
+        zipFile.open ( QuaZip::mdUnzip );
         QuaZipFileInfo info;
-        QuaZipFile file(&zipFile);
+        QuaZipFile file ( &zipFile );
 
-        for (bool more = zipFile.goToFirstFile(); more; more = zipFile.goToNextFile()) {
-            zipFile.getCurrentFileInfo(&info);
-            file.open(QIODevice::ReadOnly);
+        for ( bool more = zipFile.goToFirstFile(); more; more = zipFile.goToNextFile() )
+        {
+            zipFile.getCurrentFileInfo ( &info );
+            file.open ( QIODevice::ReadOnly );
             QString name = file.getActualFileName();
 
             QString outFileName = d->downloadDir + QDir::separator() + name;
-            QFile out(outFileName);
-            out.open(QIODevice::WriteOnly);
+            QFile out ( outFileName );
+            out.open ( QIODevice::WriteOnly );
 
             char buf[4096];
             char c;
             int len = 0;
-            while (file.getChar(&c)) {
+            while ( file.getChar ( &c ) )
+            {
                 buf[len++] = c;
-                if (len >= 4096) {
-                    out.write(buf, len);
+                if ( len >= 4096 )
+                {
+                    out.write ( buf, len );
                     len = 0;
                 }
             }
-            if (len > 0) {
-                out.write(buf, len);
+            if ( len > 0 )
+            {
+                out.write ( buf, len );
             }
             out.close();
 
-            if (name.contains(".nii") ||name.contains(".nii.gz"))
-                emit downloadFinished(outFileName,metadataFileName);
+            if ( name.contains ( ".nii" ) ||name.contains ( ".nii.gz" ) )
+                emit downloadFinished ( outFileName, metadataFileName );
 
             file.close();
         }
         zipFile.close();
     }
     else
-        emit downloadFinished(dFile.fileName(),metadataFileName);
+        emit downloadFinished ( dFile.fileName(), metadataFileName );
 }
 
 void
-QtShanoir::currentId(int id)
+QtShanoir::currentId ( int id )
 {
     d->curId = id;
 }
@@ -430,7 +471,7 @@ QtShanoir::find()
 }
 
 void
-QtShanoir::downloadToDir(QString directory)
+QtShanoir::downloadToDir ( QString directory )
 {
     d->downloadDir = directory;
     emit startDownload();
@@ -439,20 +480,22 @@ QtShanoir::downloadToDir(QString directory)
 void
 QtShanoir::download()
 {
-    if ((d->selectedIds.size() != 0) || !d->downloadFileName.isEmpty()) {
+    if ( ( d->selectedIds.size() != 0 ) || !d->downloadFileName.isEmpty() )
+    {
         // Open a QFileDialog in directory mode.
-        QFileDialog * dialog = new QFileDialog(d->tree);
-        dialog->setFileMode(QFileDialog::Directory);
-        dialog->setOption(QFileDialog::ShowDirsOnly, true);
-        dialog->setDirectory(QDir::home().dirName());
-        dialog->setWindowTitle(tr("Choose datasets download directory"));
+        QFileDialog * dialog = new QFileDialog ( d->tree );
+        dialog->setFileMode ( QFileDialog::Directory );
+        dialog->setOption ( QFileDialog::ShowDirsOnly, true );
+        dialog->setDirectory ( QDir::home().dirName() );
+        dialog->setWindowTitle ( tr ( "Choose datasets download directory" ) );
         QString directory;
-        if (dialog->exec()) {
-            directory = dialog->selectedFiles()[0];
+        if ( dialog->exec() )
+        {
+            directory = dialog->selectedFiles() [0];
         }
         dialog->close();
 
-        if (!directory.isEmpty()) // A file has been chosen
+        if ( !directory.isEmpty() ) // A file has been chosen
         {
             d->downloadDir = directory;
             emit startDownload();
@@ -465,23 +508,25 @@ void
 QtShanoir::callDownload()
 {
     qDebug() << "Start Download";
-    if (d->progress) {
-        d->progress->download->setValue(0);
-        d->progress->download->show();
-      emit progressShown();
-    }
-    for (int i = 0; i < d->selectedIds.size(); i++) {
-        d->curId = d->selectedIds.at(i);
-        this->downloadDataset(QString::number(d->curId));
-        if (d->progress)
-            d->progress->download->setValue((int) (100.00 * (i + 1) / d->selectedIds.size()));
-    }
-    if (d->progress)
+    if ( d->progress )
     {
-      d->progress->download->hide();
-      emit progressHidden();
+        d->progress->download->setValue ( 0 );
+        d->progress->download->show();
+        emit progressShown();
     }
-  
+    for ( int i = 0; i < d->selectedIds.size(); i++ )
+    {
+        d->curId = d->selectedIds.at ( i );
+        this->downloadDataset ( QString::number ( d->curId ) );
+        if ( d->progress )
+            d->progress->download->setValue ( ( int ) ( 100.00 * ( i + 1 ) / d->selectedIds.size() ) );
+    }
+    if ( d->progress )
+    {
+        d->progress->download->hide();
+        emit progressHidden();
+    }
+
     qDebug() << "Download finished";
 }
 
@@ -491,31 +536,32 @@ QtShanoir::upload()
     QString ws = "DatasetImporter";
     QString impl = "http://importer.impl.webservices.shanoir.org/";
 
-    QtShanoirWebService::Query(ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login());
-    QtShanoirWebService::Query(ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password());
-    QtShanoirWebService::Query(ws, "setDatasetName", impl, QStringList() << "datasetName", QStringList() << d->dataToUpload.value("datasetName"));
-    QtShanoirWebService::Query(ws, "setDatasetComment", impl, QStringList() << "datasetComment", QStringList() << d->dataToUpload.value("datasetComment"));
-    QtShanoirWebService::Query(ws, "setRefDatasetProcessingId", impl, QStringList() << "refDatasetProcessingId", QStringList() << d->dataToUpload.value("processingId"));
-    QtShanoirWebService::Query(ws, "setProcessingComment", impl, QStringList() << "processingComment", QStringList() << d->dataToUpload.value("processingComment"));
-    QtShanoirWebService::Query(ws, "setDatasetClass", impl, QStringList() << "datasetClass", QStringList() << d->dataToUpload.value("datasetType"));
-    QtShanoirWebService::Query(ws, "setStudyId", impl, QStringList() << "studyId", QStringList() << d->dataToUpload.value("studyId"));
-    
+    QtShanoirWebService::Query ( ws, "setUsername", impl, QStringList() << "username", QStringList() << QtShanoirSettings::Instance()->login() );
+    QtShanoirWebService::Query ( ws, "setPassword", impl, QStringList() << "dummy", QStringList() << QtShanoirSettings::Instance()->password() );
+    QtShanoirWebService::Query ( ws, "setDatasetName", impl, QStringList() << "datasetName", QStringList() << d->dataToUpload.value ( "datasetName" ) );
+    QtShanoirWebService::Query ( ws, "setDatasetComment", impl, QStringList() << "datasetComment", QStringList() << d->dataToUpload.value ( "datasetComment" ) );
+    QtShanoirWebService::Query ( ws, "setRefDatasetProcessingId", impl, QStringList() << "refDatasetProcessingId", QStringList() << d->dataToUpload.value ( "processingId" ) );
+    QtShanoirWebService::Query ( ws, "setProcessingComment", impl, QStringList() << "processingComment", QStringList() << d->dataToUpload.value ( "processingComment" ) );
+    QtShanoirWebService::Query ( ws, "setDatasetClass", impl, QStringList() << "datasetClass", QStringList() << d->dataToUpload.value ( "datasetType" ) );
+    QtShanoirWebService::Query ( ws, "setStudyId", impl, QStringList() << "studyId", QStringList() << d->dataToUpload.value ( "studyId" ) );
+
     QStringList argNames;
-    
-    for (int i = 0;i < d->dataToUpload.values("inputDatasets").size();++i)
+
+    for ( int i = 0;i < d->dataToUpload.values ( "inputDatasets" ).size();++i )
         argNames << "inputDatasetIdList";
-    
-    QtShanoirWebService::Query(ws, "setInputDatasetIdList", impl, argNames, QStringList() << d->dataToUpload.values("inputDatasets"));
-    
-    QFile file(d->dataToUpload.value("datasetPath"));
-    file.open(QIODevice::ReadOnly);
-    QtShanoirWebService::Query(ws,"uploadFile", impl, QStringList() << "dataHandler" << "filename", QStringList() << file.readAll().toBase64() << QDir(d->dataToUpload.value("datasetPath")).dirName());//QByteArray
+
+    QtShanoirWebService::Query ( ws, "setInputDatasetIdList", impl, argNames, QStringList() << d->dataToUpload.values ( "inputDatasets" ) );
+
+
+    QFile file ( d->dataToUpload.value ( "datasetPath" ) );
+    file.open ( QIODevice::ReadOnly );
+    QtShanoirWebService::Query ( ws, "uploadFile", impl, QStringList() << "dataHandler" << "filename", QStringList() << file.readAll().toBase64() << QDir ( d->dataToUpload.value ( "datasetPath" ) ).dirName() );//QByteArray
     file.close();
-    
-    QString xmlserial = QtShanoirWebService::Query(ws, "importDataset", impl, QStringList(), QStringList());
+
+    QString xmlserial = QtShanoirWebService::Query ( ws, "importDataset", impl, QStringList(), QStringList() );
     qDebug() << xmlserial;
 
-    QtShanoirWebService::Query(ws, "getErrorMessage", impl, QStringList(), QStringList());
+    QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
 }
 
 void
@@ -525,14 +571,14 @@ QtShanoir::callUpload()
 }
 
 void
-QtShanoir::receiveUploadData(QMultiMap<QString, QString> mmap)
+QtShanoir::receiveUploadData ( QMultiMap<QString, QString> mmap )
 {
     d->dataToUpload = mmap;
     emit startUpload();
 }
 
 void
-QtShanoir::updateSelected(QMap<int, QString> listId)
+QtShanoir::updateSelected ( QMap<int, QString> listId )
 {
     d->selectedIds = listId.keys();
 }
@@ -540,14 +586,14 @@ QtShanoir::updateSelected(QMap<int, QString> listId)
 void
 QtShanoir::queryFinished()
 {
-    if (d->progress)
-        d->progress->download->setValue(0);
+    if ( d->progress )
+        d->progress->download->setValue ( 0 );
 }
 
 void
-QtShanoir::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+QtShanoir::downloadProgress ( qint64 bytesReceived, qint64 bytesTotal )
 {
-    d->progress->download->setValue(100 * bytesReceived / bytesTotal);
+    d->progress->download->setValue ( 100 * bytesReceived / bytesTotal );
     qApp->processEvents();
 }
 

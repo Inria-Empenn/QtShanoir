@@ -18,7 +18,6 @@ Demo::Demo(QWidget * parent) :
     d(new DemoPrivate)
 {
     setupUi(this);
-//    d->controller = new QtShanoir;
     QtShanoir::instance()->attachProgressWidget(progressWidget);
     QtShanoir::instance()->attachTreeWidget(treeWidget);
     QtShanoir::instance()->attachUploadWidget(uploadWidget);
