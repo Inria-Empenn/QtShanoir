@@ -1,0 +1,24 @@
+QtShanoir - version 1.0
+(c) Alexandre Abadie, Olivier Commowick, Nicolas Wiest-Daesslé, Guillaume Renard
+=============================================
+contact : olivier.commowick@inria.fr
+=============================================
+
+1 - Presentation
+2 - Installation
+
+
+1 - Presentation
+================
+
+QtShanoir implements a Qt widget that communicate with a Shanoir server (See http://shanoir.org for more
+information).
+Due to its modular design, QtShanoir is very easy to integrate in a Qt based application (see the example
+in the code).
+
+2 - Installation
+================
+
+QtShanoir requires :
+ - CMake (version 2.8.5 and later),
+ - Qt (version 4.7 and later).
