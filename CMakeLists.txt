@@ -12,6 +12,7 @@ add_definitions(-g -Wno-deprecated)
 option(BUILD_PACKAGE "Configure QtShanoir packaging" OFF)
 option(BUILD_DEMO "Build example application" OFF)
 option(BUILD_SHARED_LIBS "Build QtShanoir with shared libraries." ON)
+option(BUILD_DOCUMENTATION "Build QtShanoir Documentation" OFF)
 
 if (BUILD_PACKAGE)
   include (${QTSHANOIR_SOURCE_DIR}/CMake/CPackConfig.cmake)
@@ -25,10 +26,11 @@ else (WIN32 AND BUILD_SHARED_LIBS)
 endif (WIN32 AND BUILD_SHARED_LIBS)
 mark_as_advanced(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
 
+
 #Configure doxygen documentation
-# if(BUILD_DOCUMENTATION)
-#   subdirs(Documentation/Doxygen)
-# endif(BUILD_DOCUMENTATION)
+if(BUILD_DOCUMENTATION)
+  add_subdirectory(Documentation/Doxygen)
+endif(BUILD_DOCUMENTATION)
 
 set (QTSHANOIR_CMAKE_MODULE_PATH ${QTSHANOIR_SOURCE_DIR}/CMake)
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${QTSHANOIR_CMAKE_MODULE_PATH}" ${PROJECT_SOURCE_DIR})
