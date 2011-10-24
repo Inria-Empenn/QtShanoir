@@ -62,4 +62,8 @@ COLS_IN_ALPHA_INDEX  = 3
 ENABLE_PREPROCESSING = YES
 MACRO_EXPANSION      = YES
 SEARCH_INCLUDES      = YES
-INCLUDE_PATH         = 
+INCLUDE_PATH         =
+
+HTML_HEADER      = @QTSHANOIR_SOURCE_DIR@/Documentation/Doxygen/header.html
+HTML_FOOTER      = @QTSHANOIR_SOURCE_DIR@/Documentation/Doxygen/footer.html
+HTML_STYLESHEET  = @QTSHANOIR_SOURCE_DIR@/Documentation/Doxygen/qtshanoir_dox.css
