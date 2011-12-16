@@ -129,5 +129,29 @@ configure_file(${QTSHANOIR_SOURCE_DIR}/CMake/QtShanoirConfig.cmake.in
               ${QTSHANOIR_BINARY_DIR}/QtShanoirConfig.cmake)
 
 if(BUILD_DEMO)
-subdirs(Demo)
+  add_subdirectory(Demo)
 endif(BUILD_DEMO)
+
+set(${PROJECT_NAME}_HEADERS
+  ${SAMPLE_HDRS}
+  ${SAMPLE_UI_HDRS}
+)
+
+install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include/qtshanoir)
+install(TARGETS qtshanoir LIBRARY DESTINATION lib)
+
+## ###################################################################
+## INSTALL RULES
+## ###################################################################
+if( EXISTS ${${PROJECT_NAME}_BINARY_DIR}/QtShanoirConfig.cmake
+AND EXISTS ${${PROJECT_NAME}_BINARY_DIR}/UseQtShanoir.cmake)
+
+install(FILES
+  ${${PROJECT_NAME}_BINARY_DIR}/QtShanoirConfig.cmake
+  ${${PROJECT_NAME}_BINARY_DIR}/UseQtShanoir.cmake
+  DESTINATION
+  share/qtshanoir)
+
+endif( EXISTS ${${PROJECT_NAME}_BINARY_DIR}/QtShanoirConfig.cmake
+   AND EXISTS ${${PROJECT_NAME}_BINARY_DIR}/UseQtShanoir.cmake)
+
