@@ -6,7 +6,7 @@ set(QTSHANOIR_VERSION_MAJOR "0")
 set(QTSHANOIR_VERSION_MINOR "1")
 set(QTSHANOIR_VERSION_PATCH "0")
 
-add_definitions(-g -Wno-deprecated)
+#add_definitions(-g -Wno-deprecated)
 
 # option(BUILD_DOCUMENTATION "Build QtShanoir Documentation" OFF)
 option(BUILD_PACKAGE "Configure QtShanoir packaging" OFF)
