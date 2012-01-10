@@ -27,5 +27,6 @@ link_directories(${QTSHANOIR_LIBRARY_DIRS})
 ## SETTING QTSHANOIR LIBS
 SET(QTSHANOIR_LIBS
 qtshanoir
+quazip
 )
 

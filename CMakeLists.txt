@@ -44,6 +44,16 @@ if(QT4_FOUND)
   include(${QT_USE_FILE})
 endif(QT4_FOUND)
 
+IF (WIN32)
+  find_package(ZLIB REQUIRED)
+  if (NOT ZLIB_FOUND)
+    message(STATUS "ZLib not found")
+  endif(NOT ZLIB_FOUND)
+  if (ZLIB_FOUND)
+    include_directories(${ZLIB_INCLUDE_DIRS})
+  endif(ZLIB_FOUND)
+ENDIF(WIN32)
+
 # QuaZIP: Nice Qt based decompression of zip files, GPL or LGPL license
 set(QUAZIP_SRCS
   ${QTSHANOIR_SOURCE_DIR}/Code/quazip/JlCompress.cpp
@@ -138,7 +148,15 @@ set(${PROJECT_NAME}_HEADERS
 )
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include/qtshanoir)
-install(TARGETS qtshanoir LIBRARY DESTINATION lib)
+
+if (WIN32)
+    install(TARGETS qtshanoir quazip ARCHIVE DESTINATION lib)
+    if(BUILD_SHARED_LIBS)
+      install(TARGETS qtshanoir quazip RUNTIME DESTINATION bin)
+    endif(BUILD_SHARED_LIBS)
+else(WIN32)
+    install(TARGETS qtshanoir quazip LIBRARY DESTINATION lib)
+endif (WIN32)
 
 ## ###################################################################
 ## INSTALL RULES
