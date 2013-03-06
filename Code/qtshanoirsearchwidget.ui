@@ -69,10 +69,26 @@
       <number>2</number>
      </property>
      <item>
-      <widget class="QLineEdit" name="studyName"/>
+      <widget class="QLineEdit" name="studyName">
+       <property name="font">
+        <font>
+         <pointsize>13</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="patientNameFilter"/>
+      <widget class="QLineEdit" name="patientNameFilter">
+       <property name="font">
+        <font>
+         <pointsize>13</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="examDateFilter">
@@ -88,7 +104,15 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="datasetNameFilter"/>
+      <widget class="QLineEdit" name="datasetNameFilter">
+       <property name="font">
+        <font>
+         <pointsize>13</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
