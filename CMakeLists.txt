@@ -149,14 +149,10 @@ set(${PROJECT_NAME}_HEADERS
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include/qtshanoir)
 
-if (WIN32)
-    install(TARGETS qtshanoir quazip ARCHIVE DESTINATION lib)
-    if(BUILD_SHARED_LIBS)
-      install(TARGETS qtshanoir quazip RUNTIME DESTINATION bin)
-    endif(BUILD_SHARED_LIBS)
-else(WIN32)
-    install(TARGETS qtshanoir quazip LIBRARY DESTINATION lib)
-endif (WIN32)
+install(TARGETS qtshanoir quazip 
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib)
 
 ## ###################################################################
 ## INSTALL RULES
