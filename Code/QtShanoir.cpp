@@ -337,7 +337,6 @@ QtShanoir::getDatasetNatures()
     QtShanoirWebService::Query ( ws, "getErrorMessage", impl, QStringList(), QStringList() );
 
     QMap<int, QString> map;
-    int id;
     QString label;
     QDomDocument doc;
     doc.setContent ( xmlserial );
