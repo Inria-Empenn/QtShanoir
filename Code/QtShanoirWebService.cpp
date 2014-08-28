@@ -30,6 +30,7 @@ class QtShanoirWebServicePrivate
         QNetworkRequest req;
 
         bool done;
+        bool requestSuccess;
         QString WebService, WsMethod, WsImpl;
         QStringList argname, argval;
 };
@@ -59,6 +60,11 @@ QtShanoirWebService::getRaw()
     return d->raw;
 }
 
+bool QtShanoirWebService::requestSuccess()
+{
+    return d->requestSuccess;
+}
+
 bool
 QtShanoirWebService::finished()
 {
@@ -74,8 +80,8 @@ QtShanoirWebService::getResponse()
     // Check if the response is a SOAP Fault message
     if (message.isFault()) {
         qDebug() << message.faultString().value().toString();
-        qDebug() << message.faultCode();
-        qDebug() << message.toXmlString();
+        d->result = message.faultString().value().toString();
+        d->requestSuccess = false;
     }
     else
         d->result = message.toXmlString();
@@ -95,20 +101,28 @@ QtShanoirWebService::sslErrors(const QList<QSslError> & errors)
     if (d->http.networkReply())
         d->http.networkReply()->ignoreSslErrors();
 
-    for (int i = 0; i < errors.size(); ++i) {
-        if (errors.at(i) == QSslError::SelfSignedCertificate || errors.at(i).error() == QSslError::SelfSignedCertificateInChain)
+    for (int i = 0; i < errors.size(); ++i)
+    {
+        if (errors.at(i).error() == QSslError::SelfSignedCertificate ||
+                errors.at(i).error() == QSslError::SelfSignedCertificateInChain ||
+                errors.at(i).error() == QSslError::CertificateUntrusted ||
+                errors.at(i).error() == QSslError::HostNameMismatch)
+        {
             d->http.networkReply()->ignoreSslErrors();
-        else {
-            qDebug() << errors.at(i).error() << errors.at(i).errorString();
         }
-        qDebug() << errors.at(i).error() << errors.at(i).errorString();
-
+        else
+        {
+            qDebug() << errors.at(i).errorString();
+            d->result = errors.at(i).errorString();
+            d->requestSuccess = false;
+        }
     }
 }
 
 void
 QtShanoirWebService::run()
 {
+    d->requestSuccess = true;
     QtSoapMessage request;
     request.setMethod(d->WsMethod, d->WsImpl);
 
@@ -143,8 +157,8 @@ QtShanoirWebService::query(QString WebService, QString WsMethod, QString WsImpl,
     this->run();
 }
 
-QString
-QtShanoirWebService::Query(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval)
+bool
+QtShanoirWebService::Query(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval, QString &queryResult)
 {
     QtShanoirWebService& query = QtShanoirWebService::Instance();
 
@@ -153,11 +167,12 @@ QtShanoirWebService::Query(QString WebService, QString WsMethod, QString WsImpl,
     while (!query.finished())
         qApp->processEvents();
 
-    return query.getresult();
+    queryResult = query.getresult();
+    return query.requestSuccess();
 }
 
-QByteArray
-QtShanoirWebService::BinaryQuery(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval)
+bool
+QtShanoirWebService::BinaryQuery(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval, QByteArray &queryResult)
 {
     QtShanoirWebService& query = QtShanoirWebService::Instance();
 
@@ -166,5 +181,6 @@ QtShanoirWebService::BinaryQuery(QString WebService, QString WsMethod, QString W
     while (!query.finished())
         qApp->processEvents();
 
-    return query.getRaw();
+    queryResult = query.getRaw();
+    return query.requestSuccess();
 }

@@ -77,8 +77,8 @@ class QtShanoir : public QObject
         getDatasetFilename(QString datasetId);
         void
         getProcessingListId();
-        void
-        getDatasetNatures();
+
+        QString getErrorMessage(QString xmlserial);
 
     signals:
         void
@@ -94,13 +94,13 @@ class QtShanoir : public QObject
         void progressShown();
         void progressHidden();
 
+        void queryFailed(QString reason);
+
     private slots:
         void
         callDownload();
         void
         callUpload();
-        void
-        getError(QString);
         void
         updateSelected(QMap<int,QString> );
         void

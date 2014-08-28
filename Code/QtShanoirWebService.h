@@ -57,6 +57,8 @@ class QtShanoirWebService : public QObject
         static QtShanoirWebService&
         Instance();
 
+        bool requestSuccess();
+
     public:
         void
         run();
@@ -64,10 +66,8 @@ class QtShanoirWebService : public QObject
         bool
         finished();
 
-        static QString
-        Query(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval);
-        static QByteArray
-        BinaryQuery(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval);
+        static bool Query(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval, QString &queryResult);
+        static bool BinaryQuery(QString WebService, QString WsMethod, QString WsImpl, QStringList argname, QStringList argval, QByteArray &queryResult);
 
     protected slots:
         void
