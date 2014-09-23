@@ -644,10 +644,15 @@ QtShanoir::downloadDataset ( QString datasetId )
         return;
     }
 
-    if ((xmlserialError != "")||(bin.isEmpty()))
+    if (bin.isEmpty())
     {
         emit queryFailed("Empty binary");
         return;
+    }
+
+    if (this->getErrorMessage(xmlserialError) != "")
+    {
+        emit queryFailed(this->getErrorMessage(xmlserialError));
     }
 
     QString tmpName = d->downloadFileName.isEmpty() ? QString ( "%1.nii.gz" ).arg ( d->curId ) : d->downloadFileName;
