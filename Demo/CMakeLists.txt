@@ -1,36 +1,42 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.10)
 
-project(QTSHANOIRDEMO)
+project(qtshanoir-demo)
 
-add_definitions(-g -Wno-deprecated)
+## #############################################################################
+## List Sources
+## #############################################################################
 
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${QTSHANOIRDEMO_SOURCE_DIR}")
-set (QTSHANOIR_DIR "${QTSHANOIR_BINARY_DIR}")
+list_source_files(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR} )
 
-find_package(QTSHANOIR REQUIRED)
-if (QTSHANOIR_FOUND)
-  include(${QTSHANOIR_USE_FILE})
-endif (QTSHANOIR_FOUND)
+## #############################################################################
+## include directorie.
+## #############################################################################
 
-set(DEMO_SRCS
-  ${QTSHANOIRDEMO_SOURCE_DIR}/main.cpp
-  ${QTSHANOIRDEMO_SOURCE_DIR}/Demo.cpp
-)
 
-set(DEMO_HDRS
-  ${QTSHANOIRDEMO_SOURCE_DIR}/Demo.h
-)
+include_directories(${${PROJECT_NAME}_INCLUDE_DIRS} ${QuaZip_INCLUDE_DIRS} ${DAO_INCLUDE_DIRS} ${GUI_INCLUDE_DIRS} )
 
-set(DEMO_UIS
-  ${QTSHANOIRDEMO_SOURCE_DIR}/demo.ui
-)
+## #############################################################################
+## Translate.
+## #############################################################################
 
-set(DEMO_MOC_HDRS ${DEMO_HDRS})
 
-qt4_wrap_ui( DEMO_UI_HDRS ${DEMO_UIS})
-qt4_wrap_cpp( DEMO_MOC_SRCS ${DEMO_MOC_HDRS})
 
-include_directories(${CMAKE_BINARY_DIR} ${QTSHANOIR_INCLUDE_DIR} ${QTSHANOIR_DIR} ${QTSHANOIRDEMO_SOURCE_DIR} ${QTSHANOIRDEMO_BINARY_DIR})
+## #############################################################################
+## Lib definition.
+## #############################################################################
 
-add_executable( qtshanoirdemo ${DEMO_SRCS} ${DEMO_MOC_SRCS} ${DEMO_UI_HDRS})
-target_link_libraries( qtshanoirdemo  ${QTSHANOIR_LIBS} ${QT_LIBRARIES} ${QT_QTNETWORK_LIBRARY}  ${QT_QTXML_LIBRARY})
+qt4_wrap_ui(${PROJECT_NAME}_UI ${${PROJECT_NAME}_UI} )
+
+add_executable(${PROJECT_NAME}
+  ${${PROJECT_NAME}_CFILES}
+  ${${PROJECT_NAME}_UI}
+  ${qm_files}
+  )
+
+target_link_libraries(${PROJECT_NAME}
+  ${QT_LIBRARIES}
+  DAO GUI
+  )
+message("lib ${QT_LIBRARIES}") 
+
+set_exe_install_rules(${PROJECT_NAME})

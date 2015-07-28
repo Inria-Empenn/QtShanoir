@@ -1,106 +1,69 @@
-/*
-    The QtShanoir library.
-    Copyright (C) 2011  INRIA, Université de Rennes 1
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-*/
-
-#include <QApplication>
-#include <iostream>
-#include <QFileDialog>
+#include <QtGui>
 #include <Demo.h>
 
-int
-main( int argc , char *argv[] )
-  {
-    QApplication app(argc, argv);
-    Demo demo;
-    demo.show();
-    return app.exec();
-  }
+int main( int argc , char *argv[] )
+{
+	QApplication app(argc, argv);
 
-//#include <Arguments.hh>
-//#include "qt_shanoir.h"
-//
-//
-//#include <QTextStream>
-//
-//#ifdef WIN32
-//void myMessageOutput(QtMsgType type, const char *msg)
-//{
-//    switch (type) {
-//    case QtDebugMsg:
-//        fprintf(stdout, "Debug: %s\n", msg);
-//        break;
-//    case QtWarningMsg:
-//        fprintf(stdout, "Warning: %s\n", msg);
-//        break;
-//    case QtCriticalMsg:
-//        fprintf(stdout, "Critical: %s\n", msg);
-//        break;
-//    case QtFatalMsg:
-//        fprintf(stdout, "Fatal: %s\n", msg);
-//        abort();
-//    }
-//}
-//
-//#endif
-//
-//int main(int ac,  char* av[])
-//{
-//#ifdef WIN32
-//    qInstallMsgHandler(myMessageOutput);
-//#endif
-//    // DJDecoderRegistration::registerCodecs();
-//    QCoreApplication::setOrganizationName("Neurinfo/CHU-Rennes");
-//    QCoreApplication::setOrganizationDomain("neurinfo.org");
-//    QCoreApplication::setApplicationName("MultiMRView");
-//
-//
-//    QApplication*  app = new QApplication(ac, av);
-//
-//    {
-//        QFile fsheet(":/StyleSheets/MRView.css");
-//        fsheet.open(QFile::ReadOnly);
-//        QTextStream in(&fsheet);
-//        QString sheet = in.readAll();
-//        qApp->setStyleSheet(sheet);
-//    }
-//    /*
-//    QScriptEngine engine;
-//
-//#if !defined(QT_NO_SCRIPTTOOLS)
-//    QScriptEngineDebugger debugger;
-//    debugger.attachTo(&engine);
-//    QMainWindow *debugWindow = debugger.standardWindow();
-//    debugWindow->resize(1024, 640);
-//    debugWindow->show();
-//
-//#endif
-//    */
-//
-//    std::cout << "Started\n";
-//    QtShanoir win;
-//    //  win.main(ac, av);
-//
-//    //    engine.newQObject(&win, QScriptEngine::AutoOwnership, QScriptEngine::PreferExistingWrapperObject);
-//
-//
-//    win.show();
-//    app->exec();
-//
-//    // DJDecoderRegistration::cleanup();
-//    return 0;
-//}
+            QDir iniDir (QDir::homePath() + QDir::separator() + ".shanoir");
+            if (!iniDir.exists())
+                QDir(QDir::homePath()).mkdir(".shanoir");
+            QString iniFile = iniDir.absolutePath() + QDir::separator() + "properties";
+
+                QLibrary library("DAO.dll");
+                if (!library.load())
+                        qDebug() << library.errorString();
+                else
+                        qDebug() << "library loaded";
+                typedef void (* CallFunction)(QString);
+                CallFunction cf = (CallFunction)library.resolve("configureSettings");
+                if (cf)
+                {
+                     cf(iniFile);
+                }
+                else
+                    qDebug() << "could not call function";
+
+
+
+
+/*
+	QTranslator qtTranslator;
+    qtTranslator.load("qt_" + QLocale::system().name(),QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app.installTranslator(&qtTranslator);
+	QTranslator myappTranslator;
+    myappTranslator.load("myapp_" + QLocale::system().name());
+    app.installTranslator(&myappTranslator);
+*/
+	/*path lib */
+	//QCoreApplication::addLibraryPath(const QString& path)
+	//qDebug()<<QDir::currentPath();
+	//SetDllDirectory("QDir::separator() + GUI");
+	//QCoreApplication::addLibraryPath("..\\GUI\\");
+
+//        QLibrary dao_library("DAO.dll");
+//        if (!dao_library.load())
+//                qDebug() << dao_library.errorString();
+//        else
+//                qDebug() << "library loaded";
+
+         QLibrary gui_library("GUI.dll");
+        if (!gui_library.load())
+                qDebug() << gui_library.errorString();
+	else
+		qDebug() << "library loaded";
+	typedef Demo* (* CreateWidgetFunction)(void);
+        CreateWidgetFunction cwf = (CreateWidgetFunction)gui_library.resolve("createShanoirMainwidget");
+	if (cwf) 
+	{
+		Demo* wid = cwf();
+		if (wid)
+			wid->show();
+	} 
+	else 
+	{
+		qDebug() << "Could not show widget from the loaded library";
+	}
+ return app.exec();
+}
+
