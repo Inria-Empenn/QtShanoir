@@ -35,8 +35,6 @@ include(set_lib_install_rules)
 include(set_exe_install_rules)
 
 
-
-
 ## #############################################################################
 ## Find packages.
 ## #############################################################################
@@ -70,6 +68,7 @@ message("I'm in dao")
 add_subdirectory(DAO)
 message("I'm in gui")
 add_subdirectory(GUI)
+message("I'm in gui")
 
 ## #############################################################################
 ## Configure the demo
@@ -81,4 +80,10 @@ option(BUILD_DEMO "Build example application" ON)
 
 if(BUILD_DEMO)
   add_subdirectory(Demo)
+endif(BUILD_DEMO)
+
+option(BUILD_COMMAND "Build command line toolkit" ON)
+
+if(BUILD_DEMO)
+  add_subdirectory(Command)
 endif(BUILD_DEMO)
