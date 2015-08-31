@@ -84,6 +84,6 @@ endif(BUILD_DEMO)
 
 option(BUILD_COMMAND "Build command line toolkit" ON)
 
-if(BUILD_DEMO)
+if(BUILD_COMMAND)
   add_subdirectory(Command)
-endif(BUILD_DEMO)
+endif()
