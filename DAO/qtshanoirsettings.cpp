@@ -4,7 +4,7 @@
 
 void QtShanoirSettings::loadSettings(QString iniFile)
 {
-     QFile file = iniFile;
+     QFile file(iniFile);
         if (file.exists() == false)
         this->initializeSettings(iniFile);
     else

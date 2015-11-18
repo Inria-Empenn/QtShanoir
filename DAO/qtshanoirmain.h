@@ -2,7 +2,7 @@
 #define QTSHANOIRMAIN
 
 #include <QtCore>
-#include "QtSoap.h"
+#include "qtsoap.h"
 #include "qtshanoirsettings.h"
 #include "qtshanoirdownload.h"
 #include "qtshanoirwebservice.h"
@@ -34,7 +34,7 @@ namespace GlobalData
 class QtShanoirMain
 {
 private:
-    
+
     int currentId;
     QtShanoirDownload download;
     QList<QString> selectedIds;

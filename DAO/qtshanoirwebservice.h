@@ -2,10 +2,10 @@
 #define QTSHANOIRWEBSERVICE_H
 
 #include <QtCore>
-#include <QtSoap.h>
 #include <QNetworkRequest>
 #include <QtNetwork>
 #include "qtshanoirmain.h"
+#include <qtsoap.h>
 
 
 
