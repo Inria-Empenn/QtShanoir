@@ -3174,7 +3174,7 @@ void QtSoapHttpTransport::submitRequest(QtSoapMessage &request, const QString &p
 {
     QNetworkRequest networkReq;
     networkReq.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml;charset=utf-8"));
-    networkReq.setRawHeader("SOAPAction", soapAction.toAscii());
+    networkReq.setRawHeader("SOAPAction", soapAction.toUtf8());
     url.setPath(path);
     networkReq.setUrl(url);
 
@@ -3185,7 +3185,7 @@ void QtSoapHttpTransport::submitRequest(QtSoapMessage &request, const QString &p
 void QtSoapHttpTransport::submitRequest(QNetworkRequest& networkReq, QtSoapMessage &request, const QString &path)
 {
     networkReq.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml;charset=utf-8"));
-    networkReq.setRawHeader("SOAPAction", soapAction.toAscii());
+    networkReq.setRawHeader("SOAPAction", soapAction.toUtf8());
     url.setPath(path);
     networkReq.setUrl(url);
 

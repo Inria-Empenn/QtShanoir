@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 2.6)
 
 project(QTSHANOIR)
 
-set(QTSHANOIR_VERSION_MAJOR "0")
-set(QTSHANOIR_VERSION_MINOR "1")
+set(QTSHANOIR_VERSION_MAJOR "1")
+set(QTSHANOIR_VERSION_MINOR "0")
 set(QTSHANOIR_VERSION_PATCH "0")
 
 #add_definitions(-g -Wno-deprecated)
@@ -13,6 +13,8 @@ option(BUILD_PACKAGE "Configure QtShanoir packaging" OFF)
 option(BUILD_DEMO "Build example application" OFF)
 option(BUILD_SHARED_LIBS "Build QtShanoir with shared libraries." ON)
 option(BUILD_DOCUMENTATION "Build QtShanoir Documentation" OFF)
+
+set(CMAKE_MACOSX_RPATH OFF)
 
 if (BUILD_PACKAGE)
   include (${QTSHANOIR_SOURCE_DIR}/CMake/CPackConfig.cmake)
@@ -37,12 +39,25 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${QTSHANOIR_CMAKE_MODULE_PATH}" ${P
 
 include (${QTSHANOIR_SOURCE_DIR}/CMake/QtShanoirSettings.cmake)
 
-find_package( Qt4 REQUIRED COMPONENTS QtCore QtGui QtNetwork QtXml)
-if(QT4_FOUND)
-  set(QT_USE_QTNETWORK true)
-  set(QT_USE_QTXML true)
-  include(${QT_USE_FILE})
-endif(QT4_FOUND)
+find_package(Qt5 REQUIRED COMPONENTS
+  Core
+  Gui
+  Network
+  Widgets
+  Xml
+  )
+
+## #############################################################################
+## Qt Auto tools
+## #############################################################################
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+SET(CMAKE_AUTOUIC ON)
+
+#   Find includes in corresponding build (and source) directories
+#   (nedded for generated files)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 IF (WIN32)
   find_package(ZLIB REQUIRED)
@@ -67,15 +82,12 @@ set(QUAZIP_SRCS
   ${QTSHANOIR_SOURCE_DIR}/Code/quazip/zip.c
 )
 
-set (QUAZIP_MOC_HDRS
-  ${QTSHANOIR_SOURCE_DIR}/Code/quazip/quazipfile.h
-)
+add_library(quazip ${QUAZIP_SRCS})
 
-qt4_wrap_cpp(QUAZIP_MOC_SRCS ${QUAZIP_MOC_HDRS})
-
-add_library(quazip ${QUAZIP_MOC_SRCS} ${QUAZIP_SRCS})
-
-target_link_libraries(quazip ${QT_LIBRARIES} z)
+target_link_libraries(quazip
+  Qt5::Core
+  z
+  )
 
 set(QTSHANOIR_RCCS
     ${QTSHANOIR_SOURCE_DIR}/Resources/qtshanoir.qrc
@@ -112,21 +124,27 @@ set(SAMPLE_UIS
   ${QTSHANOIR_SOURCE_DIR}/Code/qtshanoirtreewidget.ui
 )
 
-set(SAMPLE_MOC_HDRS ${SAMPLE_HDRS})
-
 set(QTSHANOIR_SRCS
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettings.cpp
 )
 
-qt4_add_resources(QTSHANOIR_RCC_SRCS ${QTSHANOIR_RCCS})
-qt4_wrap_ui( SAMPLE_UI_HDRS ${SAMPLE_UIS})
-qt4_wrap_cpp( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS})
-
 include_directories(${CMAKE_BINARY_DIR} ${QTSHANOIR_SOURCE_DIR}/Code/ ${QTSHANOIR_BINARY_DIR})
 
-add_library(qtshanoir ${QTSHANOIR_SRCS} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_UI_HDRS} ${QTSHANOIR_RCC_SRCS})
+add_library(qtshanoir
+  ${QTSHANOIR_SRCS}
+  ${SAMPLE_SRCS}
+  ${SAMPLE_UIS}
+  ${QTSHANOIR_RCCS}
+  )
 
-target_link_libraries(qtshanoir ${QT_LIBRARIES} ${QT_QTNETWORK_LIBRARY} ${QT_QTXML_LIBRARY} quazip)
+target_link_libraries(qtshanoir
+  Qt5::Core
+  Qt5::Gui
+  Qt5::Network
+  Qt5::Widgets
+  Qt5::Xml
+  quazip
+  )
 
 # External inclusion stuff :
 set(QTSHANOIR_USE_FILE ${QTSHANOIR_BINARY_DIR}/UseQtShanoir.cmake)
@@ -149,7 +167,7 @@ set(${PROJECT_NAME}_HEADERS
 
 install(FILES ${${PROJECT_NAME}_HEADERS} DESTINATION include/qtshanoir)
 
-install(TARGETS qtshanoir quazip 
+install(TARGETS qtshanoir quazip
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib)
@@ -168,4 +186,3 @@ install(FILES
 
 endif( EXISTS ${${PROJECT_NAME}_BINARY_DIR}/QtShanoirConfig.cmake
    AND EXISTS ${${PROJECT_NAME}_BINARY_DIR}/UseQtShanoir.cmake)
-

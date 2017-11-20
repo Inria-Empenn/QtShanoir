@@ -20,6 +20,7 @@
 #include <QtShanoirTreeWidget.h>
 #include <QtShanoir.h>
 #include <QtShanoirSettings.h>
+#include <QMenu>
 
 class QtShanoirTreeWidgetPrivate
 {

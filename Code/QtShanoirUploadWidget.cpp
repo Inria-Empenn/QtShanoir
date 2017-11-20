@@ -18,6 +18,7 @@
 */
 
 #include <QtShanoirUploadWidget.h>
+#include <QFileDialog>
 
 class QtShanoirUploadWidgetPrivate
 {
