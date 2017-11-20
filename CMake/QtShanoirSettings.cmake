@@ -14,7 +14,7 @@ SET (QTSHANOIR_INCLUDE_DIRS
 ## Modules include dirs
   ${QTSHANOIR_SOURCE_DIR}/Code
   ${QTSHANOIR_BINARY_DIR}
-  ${QTSHANOIR_INCLUDE_DIRS}/qtshanoir_autogen/include
+  ${QTSHANOIR_BINARY_DIR}/qtshanoir_autogen/include
 )
 
 ## SETTING QTSHANOIR LIBRARY DIRS
