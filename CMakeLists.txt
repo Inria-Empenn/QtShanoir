@@ -60,7 +60,7 @@ SET(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 IF (WIN32)
-  set(ZLIB_INCLUDE_DIRS "${Qt5_DIR}/../../../include/QtZip")
+  set(ZLIB_INCLUDE_DIRS "${Qt5_DIR}/../../../include/QtZlib")
   include_directories(${ZLIB_INCLUDE_DIRS})
 ENDIF(WIN32)
 
