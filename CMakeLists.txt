@@ -60,13 +60,8 @@ SET(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 IF (WIN32)
-  find_package(ZLIB REQUIRED)
-  if (NOT ZLIB_FOUND)
-    message(STATUS "ZLib not found")
-  endif(NOT ZLIB_FOUND)
-  if (ZLIB_FOUND)
-    include_directories(${ZLIB_INCLUDE_DIRS})
-  endif(ZLIB_FOUND)
+  set(ZLIB_INCLUDE_DIRS "${Qt5_DIR}/../../../include/QtZip")
+  include_directories(${ZLIB_INCLUDE_DIRS})
 ENDIF(WIN32)
 
 # QuaZIP: Nice Qt based decompression of zip files, GPL or LGPL license
