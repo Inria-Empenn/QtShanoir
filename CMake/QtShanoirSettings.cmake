@@ -26,9 +26,14 @@ SET (QTSHANOIR_LIBRARY_DIRS
 include_directories(${QTSHANOIR_INCLUDE_DIRS})
 link_directories(${QTSHANOIR_LIBRARY_DIRS})
 
+if (NOT WIN32)
+  set(ZLIB_LIBRARY z)
+endif()
+
 ## SETTING QTSHANOIR LIBS
 SET(QTSHANOIR_LIBS
-qtshanoir
-quazip
-)
+  qtshanoir
+  quazip
+  ${ZLIB_LBRARY}
+  )
 
