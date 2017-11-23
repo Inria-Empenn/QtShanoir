@@ -34,6 +34,5 @@ endif()
 SET(QTSHANOIR_LIBS
   qtshanoir
   quazip
-  ${ZLIB_LBRARY}
+  ${ZLIB_LIBRARY}
   )
-
