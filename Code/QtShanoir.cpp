@@ -670,7 +670,11 @@ QtShanoir::downloadDataset ( QString datasetId )
     {
         this->downloadMetadata ( datasetId );
         metadataFileName = dFile.fileName().replace ( ".nii.gz", ".xml" ).replace ( ".nii", ".xml" ).replace ( ".zip", ".xml" );
+        QFileInfo check_file(metadataFileName);
+        if (!check_file.exists() || !check_file.isFile())
+            metadataFileName.append(".gz");
     }
+
     if ( dFile.fileName().contains ( ".zip" ) )
     {
         // Decompression using QuaZIP
