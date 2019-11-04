@@ -123,7 +123,16 @@ set(QTSHANOIR_SRCS
   ${QTSHANOIR_SOURCE_DIR}/Code/QtShanoirSettings.cpp
 )
 
-include_directories(${CMAKE_BINARY_DIR} ${QTSHANOIR_SOURCE_DIR}/Code/ ${QTSHANOIR_BINARY_DIR} ${QTSHANOIR_BINARY_DIR}/qtshanoir_autogen/include)
+include_directories(
+    ${CMAKE_BINARY_DIR}
+    ${QTSHANOIR_SOURCE_DIR}/Code/
+    ${QTSHANOIR_BINARY_DIR}
+    ${QTSHANOIR_BINARY_DIR}/qtshanoir_autogen/include
+    ${QTSHANOIR_BINARY_DIR}/qtshanoir_autogen/include_Debug
+    ${QTSHANOIR_BINARY_DIR}/qtshanoir_autogen/include_Release
+    ${QTSHANOIR_BINARY_DIR}/qtshanoir_autogen/include_MinSizeRel
+    ${QTSHANOIR_BINARY_DIR}/qtshanoir_autogen/include_RelWithDebInfo
+    )
 
 add_library(qtshanoir
   ${QTSHANOIR_SRCS}
